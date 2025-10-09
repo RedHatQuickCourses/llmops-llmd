@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Untitled :: FIXME Course Title</title>
-    <link rel="prev" href="section1.html">
-    <link rel="next" href="section3.html">
+    <link rel="prev" href="section4.html">
+    <link rel="next" href="section6.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -60,7 +60,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section1.html">LLM-D Technical Reference</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section2.html">section2.adoc</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -69,7 +69,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section4.html">section4.adoc</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="section5.html">section5.adoc</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -145,7 +145,7 @@
   <ul>
     <li><a href="../index.html">FIXME Course Title</a></li>
     <li><a href="index.html">Karlos</a></li>
-    <li><a href="section2.html">section2.adoc</a></li>
+    <li><a href="section5.html">section5.adoc</a></li>
   </ul>
 </nav>
 </div>
@@ -154,69 +154,85 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<div class="admonitionblock warning siren">
+<div class="admonitionblock important zap">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-<div class="title">A TALE OF TWO LOAD BALANCERS</div>
+<div class="title">Unleash the Power!</div>
 <div class="paragraph">
-<p>Your Kubernetes cluster is powerful, but it&#8217;s not a mind reader. When it comes to LLMs, the old ways just don&#8217;t work. Let&#8217;s see why&#8230;&#8203;</p>
+<p>This is where the real magic happens. LLM-D gives you a set of powerful, production-ready techniques to supercharge your inference.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
+<hr>
 <div class="sect2">
-<h3 id="_the_clueless_load_balancer_the_old_way"><a class="anchor" href="#_the_clueless_load_balancer_the_old_way"></a>The Clueless Load Balancer (The Old Way)</h3>
+<h3 id="_superpower_1_intelligent_inference_scheduling"><a class="anchor" href="#_superpower_1_intelligent_inference_scheduling"></a>⚡ <strong>Superpower #1: Intelligent Inference Scheduling</strong></h3>
 <div class="paragraph">
-<p>Imagine a traffic cop sending sports cars and semi-trucks down the same narrow lane, one after the other. Chaos! That&#8217;s what a normal <strong>round-robin</strong> load balancer does to your LLM.</p>
+<p>The <code>llm-d-inference-scheduler</code> is the heart of the system. It uses a two-step "Filter-and-Score" process to find the perfect home for every single request.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>FILTER:</strong> "Who is even available for this job?" (Eliminates overloaded or incompatible pods).</p>
+</li>
+<li>
+<p><strong>SCORE:</strong> "Of the ones left, who is the <strong>best</strong> for the job?" (Scores pods based on load, and most importantly, who already has the KV Cache ready to go!).</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_2_prefilldecode_pd_disaggregation"><a class="anchor" href="#_superpower_2_prefilldecode_pd_disaggregation"></a>🚀 <strong>Superpower #2: Prefill/Decode (P/D) Disaggregation</strong></h3>
+<div class="paragraph">
+<p>This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Before:</strong> One big, clunky server trying to do everything.</p>
+</li>
+</ul>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>  +--------------------------------+
-  | Round-Robin LB           |
-  +-------------------------------+
-       |           |         |
-       V           V         V
-    [GPU 1]     [GPU 2]   [GPU 3]
-  (95% busy!) (10% busy) (Crying)</pre>
+<pre> +-------------------------------------+
+ | [ Monolithic GPU Server ]           |
+ |  - Juggling compute-heavy Prefill   |
+ |  - And memory-heavy Decode          |
+ |  - (Struggling to keep up!)         |
+ +-------------------------------------+</pre>
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Result:</strong> One GPU gets slammed with a huge request (a semi-truck), while others sit idle. Latency skyrockets, and your money burns.</p>
+<p><strong>After:</strong> A specialized team working in perfect harmony.</p>
 </li>
 </ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_genius_scheduler_the_llm_d_way"><a class="anchor" href="#_the_genius_scheduler_the_llm_d_way"></a>The Genius Scheduler (The LLM-D Way)</h3>
-<div class="paragraph">
-<p>Now, imagine a logistics expert who knows exactly what&#8217;s in every truck and which loading dock is free. That&#8217;s the <strong>LLM-D Inference Scheduler</strong>.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>  +-----------------+
-  | LLM-D Scheduler |
-  +-----------------+
-      |      |      |
-      V      V      V
-  [GPU 1] [GPU 2] [GPU 3]
-  (Balanced) (Happy) (Efficient)</pre>
+<pre> +------------------+      +------------------+
+ | [ Prefill Team ] |-----&gt;| [ Decode Team ]  |
+ | - A+ at compute  |      | - Masters of Memory|
+ | - Specialized GPUs|      | - Optimized GPUs |
+ +------------------+      +------------------+</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Result:</strong> Requests are routed intelligently based on their size and the real-time state of the cluster. Every GPU does its fair share. Performance soars.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The result? A massive <strong>25-50% performance boost</strong> for large models!</p>
 </div>
-<div class="admonitionblock caution brain">
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_3_wide_expert_parallelism"><a class="anchor" href="#_superpower_3_wide_expert_parallelism"></a>🌌 <strong>Superpower #3: Wide Expert Parallelism</strong></h3>
+<div class="admonitionblock caution stars">
 <table>
 <tr>
 <td class="icon">
@@ -224,18 +240,48 @@
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>The Big Secret: LLMs are STATEFUL!</strong> They create a <strong>KV Cache</strong> (think of it as short-term memory) for every conversation. If you route a follow-up question to a GPU that doesn&#8217;t have that memory&#8230;&#8203; BAM! You have to re-calculate everything. LLM-D is smart enough to remember where the conversation is happening.</p>
+<p><strong>Boss Level:</strong> This is for serving gargantuan Mixture-of-Experts (MoE) models.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_4_kv_cache_management"><a class="anchor" href="#_superpower_4_kv_cache_management"></a>🧠 <strong>Superpower #4: KV Cache Management</strong></h3>
+<div class="paragraph">
+<p>That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The <code>llm-d-kv-cache-manager</code> is a genius at moving that data to cheaper, more abundant storage.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Library Analogy</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Without LLM-D:</strong> Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!</p>
+</li>
+<li>
+<p><strong>With LLM-D (North-South Caching):</strong> You keep the book on your personal desk (CPU RAM). Faster!</p>
+</li>
+<li>
+<p><strong>With LLM-D (East-West Caching):</strong> You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <hr>
 <hr>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="section1.html">LLM-D Technical Reference</a></span>
-  <span class="next"><a href="section3.html">section3.adoc</a></span>
+  <span class="prev"><a href="section4.html">section4.adoc</a></span>
+  <span class="next"><a href="section6.html">section6.adoc</a></span>
 </nav>
 </article>
   </div>
