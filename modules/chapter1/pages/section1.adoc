@@ -1,6 +1,99 @@
-= Section 1
+// =====================================================================
+//      LLM-D: THE ULTIMATE GUIDE TO DISTRIBUTED INFERENCE
+//      AsciiDoc Course Page - Engaging & Visual Edition
+// =====================================================================
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+// PAGE 1: WELCOME TO THE FUTURE OF LLM SERVING!
+//======================================================================
+
+= LLM-D Technical Reference
+
+[literal]
+....
+  _      _      _       _       ____  
+ | |    | |    |  \___/  |     |  _ \  
+ | |    | |    | |\___/| |     | | | |
+ | |    | |    | |     | |     | | | | 
+ | |___ | |___ | |     | |     | | | | 
+ |_____||_____||_|     |_|     |____/ 
+
+  USER GUIDE & TECHNICAL REFERENCE
+....
+
+== What is LLM-D?
+
+
+llm-d is an open-source, Kubernetes-native distributed framework for Large Language Model (LLM) inference. 
+
+It is engineered to transform traditional single-server vLLM deployments into a distributed system, maximizing performance-per-dollar by directly confronting the architectural bottlenecks of LLM workloads. 
+
+The project's goal is providing well-lit paths for enterprises to adopt cutting-edge distributed inference techniques, thereby reducing the Total Cost of Ownership (TCO) and improving Service-Level Objectives (SLOs) for demanding Generative AI applications *for most models across most hardware accelerators*.
+
+
+****
+*A Little Sidebar...*
+
+🤔 **"But why should I care?"**
+
+Simple. LLMs are *expensive*. Every wasted GPU cycle is money down the drain. LLM-D is designed to plug those leaks, letting you serve more users, faster, and for a fraction of the cost. It's not just about tech; it's about making your AI projects economically viable.
+****
+
+'''
+'''
+++++
+<iframe 
+  src="https://demo.arcade.software/DwprD0GQFJ7bwQJBzw9D?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---
+
+
+
+
+
+
+// PAGE 7: THE LINGO - SPEAK LIKE A PRO
+//======================================================================
+
+[NOTE.nerd_face]
+.The Official LLM-D Glossary
+====
+Impress your colleagues with your deep knowledge of distributed inference terminology.
+====
+
+[cols="1,1,3"]
+|===
+| Icon | Term | Definition
+
+| ⚙️
+| **CRD**
+| Custom Resource Definition. The way you teach Kubernetes new tricks, like understanding what a `ModelService` is.
+
+| 📡
+| **GIE**
+| Gateway API Inference Extension. A special add-on for the Kubernetes Gateway API that makes it AI-aware.
+
+| 🧠
+| **Inference Scheduler**
+| The "Genius" component. The brain of the operation that intelligently routes requests.
+
+| ⚡
+| **TTFT**
+| Time-To-First-Token. The critical "need for speed" metric. How fast does the user see the first word?
+
+| 💸
+| **TCO**
+| Total Cost of Ownership. The number your CFO really cares about. LLM-D is designed to shrink this number.
+
+| 🤖
+| **MoE**
+| Mixture-of-Experts. A type of mega-model with specialized "expert" neural networks inside.
+|===

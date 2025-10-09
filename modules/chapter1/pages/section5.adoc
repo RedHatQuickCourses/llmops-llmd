@@ -1,0 +1,68 @@
+// PAGE 5: THE SUPERPOWERS - LLM-D'S CORE FEATURES
+//======================================================================
+
+[IMPORTANT.zap]
+.Unleash the Power!
+====
+This is where the real magic happens. LLM-D gives you a set of powerful, production-ready techniques to supercharge your inference.
+====
+
+---
+=== ⚡ **Superpower #1: Intelligent Inference Scheduling**
+
+The `llm-d-inference-scheduler` is the heart of the system. It uses a two-step "Filter-and-Score" process to find the perfect home for every single request.
+
+1.  **FILTER:** "Who is even available for this job?" (Eliminates overloaded or incompatible pods).
+2.  **SCORE:** "Of the ones left, who is the *best* for the job?" (Scores pods based on load, and most importantly, who already has the KV Cache ready to go!).
+
+---
+=== 🚀 **Superpower #2: Prefill/Decode (P/D) Disaggregation**
+
+This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!
+
+* **Before:** One big, clunky server trying to do everything.
+[literal]
+....
+ +-------------------------------------+
+ | [ Monolithic GPU Server ]           |
+ |  - Juggling compute-heavy Prefill   |
+ |  - And memory-heavy Decode          |
+ |  - (Struggling to keep up!)         |
+ +-------------------------------------+
+....
+
+* **After:** A specialized team working in perfect harmony.
+[literal]
+....
+ +------------------+      +------------------+
+ | [ Prefill Team ] |----->| [ Decode Team ]  |
+ | - A+ at compute  |      | - Masters of Memory|
+ | - Specialized GPUs|      | - Optimized GPUs |
+ +------------------+      +------------------+
+....
+The result? A massive **25-50% performance boost** for large models!
+
+---
+=== 🌌 **Superpower #3: Wide Expert Parallelism**
+
+[CAUTION.stars]
+====
+**Boss Level:** This is for serving gargantuan Mixture-of-Experts (MoE) models.
+====
+LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
+
+---
+=== 🧠 **Superpower #4: KV Cache Management**
+
+That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The `llm-d-kv-cache-manager` is a genius at moving that data to cheaper, more abundant storage.
+
+****
+*Library Analogy*
+
+- **Without LLM-D:** Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!
+- **With LLM-D (North-South Caching):** You keep the book on your personal desk (CPU RAM). Faster!
+- **With LLM-D (East-West Caching):** You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!
+****
+
+'''
+'''

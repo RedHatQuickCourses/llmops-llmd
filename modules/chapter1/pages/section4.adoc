@@ -1,0 +1,37 @@
+// PAGE 4: UNDER THE HOOD - THE ARCHITECT'S BLUEPRINT
+//======================================================================
+
+[NOTE.blueprint]
+.The Three Layers of Power
+====
+LLM-D isn't magic; it's just brilliant engineering. The architecture is a clean, three-tiered system designed for performance and control.
+====
+
+[literal]
+....
+   +-------------------------------------------------+
+   |  [ 1. THE BRAIN ] - Intelligent Routing Layer   |
+   |     (Kubernetes Gateway API + GIE)              |
+   +-------------------------------------------------+
+                       | (Smart Decisions)
+                       V
+   +-------------------------------------------------+
+   |  [ 2. THE MUSCLE ] - Distributed Serving Layer  |
+   |     (A team of high-performance vLLM pods)      |
+   +-------------------------------------------------+
+                       | (State Management)
+                       V
+   +-------------------------------------------------+
+   |  [ 3. THE MEMORY ] - Pluggable KV Cache Layer   |
+   |     (Manages conversation history efficiently)    |
+   +-------------------------------------------------+
+....
+
+****
+*The Master Conductor*
+
+Think of **Kubernetes** as the conductor of an orchestra. It makes sure all the musicians (pods) are in their seats and have their instruments. **LLM-D** is the special guest conductor who knows the symphony (your AI workload) inside and out, telling each musician exactly when and how to play for a perfect performance.
+****
+
+'''
+'''

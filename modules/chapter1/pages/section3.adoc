@@ -1,6 +1,17 @@
-= Section 3
+// PAGE 3: IS THIS FOR YOU? A QUICK CHECKLIST
+//======================================================================
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+[TIP.tada]
+.The LLM-D Litmus Test
+====
+Wondering if LLM-D is your new best friend? If you nod your head to most of these, the answer is a resounding YES!
+====
+
+- [x] 🏢 You run a **large-scale, high-throughput** AI service for many users.
+- [x] 💰 You are constantly worried about the **Total Cost of Ownership (TCO)** of your GPU farm.
+- [x] 🤖 Your applications involve **complex conversations**, RAG, or AI agents.
+- [x] ☸️ You live and breathe **Kubernetes** and want a cloud-native solution.
+- [x] 📈 You have a crack **Platform or SRE team** ready to level up their infrastructure.
+
+'''
+'''
