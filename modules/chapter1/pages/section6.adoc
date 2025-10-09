@@ -1,5 +1,6 @@
 // PAGE 6: THE PAYOFF - SHOW ME THE NUMBERS!
 //======================================================================
+= LLM-D Benefits
 
 [TIP.moneybag]
 .Performance, Performance, Performance!
@@ -13,5 +14,3 @@ Here's a taste of what public benchmarks have shown:
 * **2x HIGHER** 📈 queries-per-second (QPS). Serve double the users with the same hardware!
 * **Massive TCO Reduction** 💸. Achieve more with less. Stop buying more GPUs and start using the ones you have more efficiently.
 
-'''
-'''

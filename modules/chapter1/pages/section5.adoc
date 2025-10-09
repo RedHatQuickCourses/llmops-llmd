@@ -1,5 +1,6 @@
 // PAGE 5: THE SUPERPOWERS - LLM-D'S CORE FEATURES
 //======================================================================
+= LLM-D Features
 
 [IMPORTANT.zap]
 .Unleash the Power!

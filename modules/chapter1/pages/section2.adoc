@@ -1,6 +1,8 @@
 // PAGE 2: THE PROBLEM - WHY YOUR CLUSTER IS CRYING FOR HELP
 //======================================================================
 
+= Round Robin versus LLM-Way
+
 [WARNING.siren]
 .A TALE OF TWO LOAD BALANCERS
 ====
@@ -13,8 +15,8 @@ Imagine a traffic cop sending sports cars and semi-trucks down the same narrow l
 
 [literal]
 ....
-  +--------------------------------+
-  | Round-Robin LB           |
+  +-------------------------------+
+  | Round-Robin LB                |
   +-------------------------------+
        |           |         |
        V           V         V
@@ -30,12 +32,12 @@ Now, imagine a logistics expert who knows exactly what's in every truck and whic
 
 [literal]
 ....
-  +-----------------+
-  | LLM-D Scheduler |
-  +-----------------+
-      |      |      |
-      V      V      V
-  [GPU 1] [GPU 2] [GPU 3]
+  +-------------------------+
+  | LLM-D Scheduler         |
+  +-------------------------+
+      |         |         |
+      V         V         V
+    [GPU 1]  [GPU 2]   [GPU 3]
   (Balanced) (Happy) (Efficient)
 ....
 
