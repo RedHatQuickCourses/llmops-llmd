@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Untitled :: FIXME Course Title</title>
+    <title>Round Robin versus LLM-Way :: FIXME Course Title</title>
     <link rel="prev" href="section1.html">
     <link rel="next" href="section3.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -55,25 +55,22 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Karlos</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section1.html">LLM-D Technical Reference</a>
-  </li>
+<ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="section2.html">section2.adoc</a>
+    <a class="nav-link" href="section2.html">Round Robin versus LLM-Way</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section3.html">section3.adoc</a>
+    <a class="nav-link" href="section3.html">Use Case Identification</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section4.html">section4.adoc</a>
+    <a class="nav-link" href="section4.html">LLM-D Architecture</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section5.html">section5.adoc</a>
+    <a class="nav-link" href="section5.html">LLM-D Features</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section6.html">section6.adoc</a>
+    <a class="nav-link" href="section6.html">LLM-D Benefits</a>
   </li>
 </ul>
   </li>
@@ -144,8 +141,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">FIXME Course Title</a></li>
-    <li><a href="index.html">Karlos</a></li>
-    <li><a href="section2.html">section2.adoc</a></li>
+    <li><a href="section1.html">LLM-D Technical Reference</a></li>
+    <li><a href="section2.html">Round Robin versus LLM-Way</a></li>
   </ul>
 </nav>
 </div>
@@ -154,6 +151,9 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
+<h1 class="page">Round Robin versus LLM-Way</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="admonitionblock warning siren">
 <table>
 <tr>
@@ -169,6 +169,8 @@
 </tr>
 </table>
 </div>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_the_clueless_load_balancer_the_old_way"><a class="anchor" href="#_the_clueless_load_balancer_the_old_way"></a>The Clueless Load Balancer (The Old Way)</h3>
 <div class="paragraph">
@@ -176,8 +178,8 @@
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>  +--------------------------------+
-  | Round-Robin LB           |
+<pre>  +-------------------------------+
+  | Round-Robin LB                |
   +-------------------------------+
        |           |         |
        V           V         V
@@ -200,12 +202,12 @@
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>  +-----------------+
-  | LLM-D Scheduler |
-  +-----------------+
-      |      |      |
-      V      V      V
-  [GPU 1] [GPU 2] [GPU 3]
+<pre>  +-------------------------+
+  | LLM-D Scheduler         |
+  +-------------------------+
+      |         |         |
+      V         V         V
+    [GPU 1]  [GPU 2]   [GPU 3]
   (Balanced) (Happy) (Efficient)</pre>
 </div>
 </div>
@@ -235,7 +237,7 @@
 </div>
 <nav class="pagination">
   <span class="prev"><a href="section1.html">LLM-D Technical Reference</a></span>
-  <span class="next"><a href="section3.html">section3.adoc</a></span>
+  <span class="next"><a href="section3.html">Use Case Identification</a></span>
 </nav>
 </article>
   </div>
