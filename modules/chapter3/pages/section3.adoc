@@ -1,21 +1,20 @@
 = OpenShift AI: Distributed Inference Architecture
-:toc: left
-:icons: font
+
 
 [TIP.tada] 
 .The Implementer's "Litmus Test"
 
 Wondering if this architecture is the right solution for your project? If you're an Operator, Consultant, or Services member and you nod your head to these points, this guide is for you.
 
-[x] ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.
+ - [x] ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.
 
-[x]  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.
+ - [x]  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.
 
-[x] 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.
+ - [x] 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.
 
-[x] 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.
+ - [x] 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.
 
-[x] 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn't working.
+ - [x] 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn't working.
 
 '''
 '''

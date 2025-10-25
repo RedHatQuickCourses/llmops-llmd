@@ -1,21 +1,19 @@
 = OpenShift AI: Deep Dive on KV Cache Management
-:toc: left
-:icons: font
 
 [TIP.tada]
 .The KV Cache "Litmus Test"
 
 The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to these points, this deep dive is for you.
 
-[x] 📈 You run high-concurrency services with many simultaneous users.
+ - [x] 📈 You run high-concurrency services with many simultaneous users.
 
-[x] 🗣️ Your application is a chatbot or RAG system that requires long conversation histories (context).
+ - [x] 🗣️ Your application is a chatbot or RAG system that requires long conversation histories (context).
 
-[x] 🐢 You are suffering from high Time-To-First-Token (TTFT) as your request queues get backed up.
+ - [x] 🐢 You are suffering from high Time-To-First-Token (TTFT) as your request queues get backed up.
 
-[x] 💸 Your expensive GPU VRAM is constantly full, limiting the total number of users you can serve.
+ - [x] 💸 Your expensive GPU VRAM is constantly full, limiting the total number of users you can serve.
 
-[x] 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.
+ - [x] 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.
 
 '''
 '''

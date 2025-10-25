@@ -1,3 +1,87 @@
 = Lab Environment
 
-FIXME: Instructions for accessing the lab environment for this hands-on based training.
+== Interative Experience Overview ?
+
+This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
+
+'''
+
+++++
+<iframe 
+  src="https://demo.arcade.software/ol87rAAlnjMqn5udqGRx?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---
+
+
+== Interative Experience Overview ?
+
+This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
+
+'''
+
+++++
+<iframe 
+  src="https://demo.arcade.software/7kP2UIb8NS0se6vuGV5Z?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---
+
+== Interative Experience Overview ?
+
+This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
+
+'''
+
+++++
+<iframe 
+  src="https://demo.arcade.software/8x2PYzS7BCQJU06Eaycd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---
+
+
+== Interative Experience Overview ?
+
+This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
+
+'''
+
+++++
+<iframe 
+  src="https://demo.arcade.software/x7ffTWS6g8Dy5GBm8mYS?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---

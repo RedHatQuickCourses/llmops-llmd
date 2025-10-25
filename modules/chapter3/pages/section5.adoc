@@ -1,6 +1,5 @@
 = Lab: Deploying Your First Distributed Inference Service
-:toc: left
-:icons: font
+
 
 [preface]
 Welcome to the hands-on lab for OpenShift AI's Distributed Inference.
