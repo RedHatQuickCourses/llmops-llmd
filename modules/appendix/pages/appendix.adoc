@@ -35,3 +35,50 @@ Impress your colleagues with your deep knowledge of distributed inference termin
 | **MoE**
 | Mixture-of-Experts. A type of mega-model with specialized "expert" neural networks inside.
 |===
+
+= Taxonomy to Know
+:toc: left
+:icons: font
+
+Before diving into the architecture, here is an optional guide to the key terms and resources. Use it to learn the language or simply as a quick refresher on what all the technical terms mean.
+
+== Core Taxonomy: Speaking the Language
+
+Understand these key terms to get the most out of the technical deep dive and discussions.
+
+[dl]
+OpenShift AI::
+Red Hat's end-to-end platform for building, deploying, and managing AI/ML models at scale on the hybrid cloud.
+
+Distributed Inference (LLM-D)::
+The feature within OpenShift AI (powered by open-source LLM-D) that orchestrates inference across multiple servers for scalability and efficiency.
+
+vLLM::
+The high-performance inference engine used by OpenShift AI. It's known for its efficiency, but LLM-D is what scales it across the cluster.
+
+Inference Gateway (EPP)::
+The "brain" or "smart router" that intercepts all requests and decides which pod is the best one to handle it (using the Endpoint Picker Protocol).
+
+Prefill::
+The first phase of inference: processing the user's input prompt. This is a compute-heavy (parallel) operation and often the main bottleneck.
+
+Decode::
+The second phase of inference: generating the response token by token. This is a memory-bandwidth-heavy (sequential) operation.
+
+KV Cache::
+The model's "short-term memory" created during Prefill. It lives in expensive GPU VRAM. Reusing this cache is the primary goal of smart scheduling.
+
+Cache-Aware Routing::
+The scheduler's "smart" ability to send a request to a pod that already has the KV Cache for that conversation, skipping the expensive Prefill step.
+
+TTFT (Time To First Token)::
+A key metric for user experience. How long does the user wait from pressing "Enter" to seeing the first word of the response? (Measures responsiveness).
+
+TPOT (Time Per Output Token)::
+A key metric for performance. Once the response starts, how fast do the new words appear? (Measures generation speed).
+
+SLO (Service-Level Objective)::
+Your performance promise. A specific, measurable goal, e.g., "99% of all requests must have a TTFT under 500ms."
+
+TCO (Total Cost of Ownership)::
+The ultimate business metric. How much does it cost to run your AI factory? Efficient scheduling (less GPU waste) directly lowers your TCO.

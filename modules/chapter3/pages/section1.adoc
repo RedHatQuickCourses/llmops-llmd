@@ -1,6 +1,43 @@
-= Section 1
+= LLM-D Benefits
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+[TIP.moneybag]
+.Performance, Performance, Performance!
+====
+At the end of the day, it's all about results. LLM-D delivers tangible gains that you can show to your boss.
+====
+
+Here's a taste of what public benchmarks have shown:
+
+* **3x LOWER** 📉 average Time-To-First-Token (TTFT). Users perceive your app as being 3x faster!
+* **2x HIGHER** 📈 queries-per-second (QPS). Serve double the users with the same hardware!
+* **Massive TCO Reduction** 💸. Achieve more with less. Stop buying more GPUs and start using the ones you have more efficiently.
+
+
+****
+🤔 **"But why should I care?"**
+
+Simple. LLMs are *expensive*. Every wasted GPU cycle is money down the drain. LLM-D is designed to plug those leaks, letting you serve more users, faster, and for a fraction of the cost. It's not just about tech; it's about making your AI projects economically viable.
+****
+
+'''
+== Interative Experience Overview ?
+
+This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
+
+'''
+
+++++
+<iframe 
+  src="https://demo.arcade.software/eiSWW6LSpF4UusiD0SYR?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+---
+

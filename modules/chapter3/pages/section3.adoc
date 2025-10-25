@@ -1,0 +1,141 @@
+= OpenShift AI: Distributed Inference Architecture
+:toc: left
+:icons: font
+
+[TIP.tada] 
+.The Implementer's "Litmus Test"
+
+Wondering if this architecture is the right solution for your project? If you're an Operator, Consultant, or Services member and you nod your head to these points, this guide is for you.
+
+[x] ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.
+
+[x]  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.
+
+[x] 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.
+
+[x] 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.
+
+[x] 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn't working.
+
+'''
+'''
+
+Architectural Advantage:
+OpenShift AI's Distributed Inference (powered by LLM-D) is an opinionated, Kubernetes-native stack. Its strength is that it's not a "black box." It is a set of composable, cloud-native components:
+. An intelligent, AI-aware routing layer built on the Kubernetes Gateway API that makes real-time, telemetry-driven decisions.
+. A disaggregated serving layer that runs the high-performance vLLM engine in separate, independently scalable Prefill and Decode pods.
+. A declarative, CRD-based API (ModelService) that allows you to define your desired state and let the OpenShift controller handle the complex orchestration.
+
+Performance Drivers:
+This architecture's performance gains come from exploiting the unique nature of LLM workloads, not just serving them.
+. Prefill/Decode Disaggregation: It physically separates the slow, compute-heavy Prefill (prompt processing) from the fast, memory-heavy Decode (token generation). This is the key to solving the "head-of-line blocking" problem.
+. Cache-Aware Routing: The "brain" (Inference Gateway) knows which pods have which conversation caches. It intelligently routes requests to pods that already have the data, completely skipping the expensive Prefill step.
+. Optimized Engine: It uses vLLM as its core engine, which provides best-in-class features like PagedAttention for highly efficient memory management.
+
+The Strategic Goal (For Implementers):
+Your goal is to build a stable, scalable, and cost-effective "AI Factory" for your organization. This architecture is your blueprint. It provides a single pane of glass (OpenShift) to manage a secure (on-prem, hybrid) service that lowers TCO (by maximizing GPU use) and proves its value through fine-grained observability.
+
+'''
+'''
+[#deep-dive]
+== Architecture Deep Dive: For Implementers
+
+Now that you understand the "why," let's explore the "how." As an implementer, your job is to assemble the puzzle. This section details the pieces you'll need.
+
+=== Part 1: The Foundation (The Prerequisites)
+
+Before you deploy a single model, you must have the right foundation. Failure here is the #1 cause of implementation issues.
+
+[cols="1a,2a"]
+|===
+|Component |Requirement & (The "Why")
+
+|Kubernetes / OpenShift
+|Kubernetes 1.30+ or OpenShift 4.17+.
+(This is a modern stack that relies on up-to-date Kubernetes features and the Gateway API).
+
+|Gateway API
+|A compliant Gateway API implementation.
+(This is the "front door" for all traffic. The llm-d quickstart provides kGateway, but in production, this will likely be OpenShift Service Mesh (Istio)).
+
+|GPU Hardware
+|NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
+(This stack is built for high-performance, not consumer cards. vLLM is optimized for these specific architectures).
+
+|GPU Operators
+|NVIDIA GPU Operator & Node Feature Discovery (NFD) Operator.
+(These are non-negotiable. The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler).
+
+|Networking (CRITICAL)
+|High-Speed, Low-Latency Fabric.
+(For "East-West" traffic between nodes, you need InfiniBand or RoCE (RDMA). This is for high-speed cache transfers. NVLink is used for "North-South" traffic within a node).
+|===
+
+[WARNING.fire] 
+.A Note on Networking
+
+Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing.
+A slow network will make your distributed system slower than a single pod. Verify your networking fabric before you deploy.
+
+=== Part 2: The Core Components (The "Puzzle Pieces")
+
+This architecture is based on the llmd.jpg reference diagram. Let's break down each component's job.
+
+[image:https://www.google.com/search?q=https://i.imgur.com/8mJ19vE.jpeg[LLM-D Architecture Diagram,700,align="center"]]
+
+[cols="1a,3a"]
+|===
+|Component |Role in the System (What It Does)
+
+|Inference Gateway
+(kGateway / Istio)
+|This is the "Smart Router" and the single entry point for all users. It hosts the "brain" (the Endpoint Picker) and is responsible for intercepting the user's request, asking the brain where to send it, and then routing it to the correct pod.
+
+|Inference Scheduler
+(Endpoint Picker / EPP)
+|This is the "Brain". It is a plug-in to the Gateway. It does not move data; it only makes decisions. It filters all possible pods (removing overloaded or incompatible ones) and then scores the rest, giving a massive bonus to the pod that has the KV Cache.
+
+|LLM-D Controller
+(The "Orchestrator")
+|This is the "Kubernetes Operator" you install. Its job is to watch for new ModelService CRDs. When you create one, this controller builds all the other pieces: the Prefill Deployment, the Decode Deployment, the Services, and the Gateway routing rules.
+
+|vLLM Pods (Prefill)
+|These are the "Heavy Lifters." A pool of pods (a Deployment) optimized only for the slow, compute-heavy Prefill task. They create the KV Cache and (in a shared model) write it to the cache pool.
+
+|vLLM Pods (Decode)
+|These are the "Sprinters." A pool of pods (a separate Deployment) optimized only for the fast, memory-heavy Decode task. They read the KV Cache and generate tokens one by one. You can scale them independently (e.g., 2 Prefill pods, 10 Decode pods).
+|===
+
+=== Part 3: The Data Flow (The "Request Lifecycle")
+
+This is how the pieces work together. Understanding this flow is key to troubleshooting.
+
+. 1. Request In: A user sends an HTTP/gRPC request to the Gateway's route.
+. 2. The "Brain" Decides: The Gateway forwards the request metadata to the Inference Scheduler (EPP).
+. 3. The "Brain" Asks: The Scheduler queries its Model Telemetry cache (which has data from Prometheus & the pods) to get the load and KV Cache status of all pods.
+. 4. The "Brain" Answers: The Scheduler filters and scores the pods. It picks one (e.g., decode-pod-7 because it has the cache and low load) and tells the Gateway.
+. 5. Routing: The Gateway forwards the actual request to decode-pod-7.
+. 6. (If Cache Miss): If the Scheduler finds no pod with the cache (a "cache miss"), it routes the request to a Prefill pod first. That pod writes to the cache, and then the request is forwarded to a Decode pod.
+. 7. Response Out: The Decode pod streams the response back to the user through the Gateway.
+
+=== Part 4: Observability (Proving It Works)
+
+As an implementer, you must prove the value. This stack is built for observability.
+
+[NOTE.info] 
+.The "Golden Signals" for Implementers
+
+Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) to the "Why Buy?" value props.
+
+To Prove Performance (SLOs):
+
+vllm_llmd_time_to_first_token_seconds (TTFT): This is your "responsiveness" metric. Your goal is to keep this low and stable.
+
+vllm_llmd_time_per_output_token_seconds (TPOT): This is your "generation speed."
+
+To Prove TCO (Cost Savings):
+
+vllm_llmd_kv_cache_hit_rate: This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.
+
+vllm_llmd_gpu_utilization_seconds: This proves your GPUs are being used effectively, not sitting idle.
+====

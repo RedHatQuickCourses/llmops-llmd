@@ -1,6 +1,37 @@
-= Section 2
+= Use Case Identification
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+[TIP.tada]
+.The LLM-D Litmus Test
+====
+Wondering if LLM-D is your new best friend? If you nod your head to most of these, the answer is a resounding YES!
+====
+
+- [x] 🏢 You run a **large-scale, high-throughput** AI service for many users.
+- [x] 💰 You are constantly worried about the **Total Cost of Ownership (TCO)** of your GPU farm.
+- [x] 🤖 Your applications involve **complex conversations**, RAG, or AI agents.
+- [x] ☸️ You live and breathe **Kubernetes** and want a cloud-native solution.
+- [x] 📈 You have a crack **Platform or SRE team** ready to level up their infrastructure.
+
+'''
+'''
+
+*Architectural Advantage:* 
+llm-d's primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of: 
+
+ . An *intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension*, which makes dynamic, telemetry-driven scheduling decisions; 
+ . A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and 
+ . A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.
+
+
+*Performance Drivers:* 
+
+The framework's significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques. 
+
+Key among these are *Prefill/Decode (P/D) disaggregation*, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA's Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.
+
+
+*Competitive Positioning:* 
+
+Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes. 
+
+This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.
