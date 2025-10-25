@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Untitled :: FIXME Course Title</title>
-    <link rel="prev" href="../chapter3/section2.html">
+    <link rel="prev" href="../chapter3/section5.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -79,10 +79,10 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter2/index.html">Chapter 2</a>
+    <a class="nav-link" href="../chapter2/index.html">index.adoc</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter2/section1.html">Section 1</a>
+    <a class="nav-link" href="../chapter2/section1.html">xyz</a>
   </li>
 </ul>
   </li>
@@ -92,13 +92,22 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter3/index.html">Chapter 3</a>
+    <a class="nav-link" href="../chapter3/index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter3/section1.html">Section 1</a>
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter3/section2.html">Section 2</a>
+    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section3.html">OpenShift AI: Distributed Inference Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section4.html">OpenShift AI: Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section5.html">Lab: Deploying Your First Distributed Inference Service</a>
   </li>
 </ul>
   </li>
@@ -210,8 +219,72 @@
 </tr>
 </tbody>
 </table>
+<h1 id="_taxonomy_to_know" class="sect0"><a class="anchor" href="#_taxonomy_to_know"></a>Taxonomy to Know</h1>
+<div class="paragraph">
+<p>Before diving into the architecture, here is an optional guide to the key terms and resources. Use it to learn the language or simply as a quick refresher on what all the technical terms mean.</p>
+</div>
+<div class="sect1">
+<h2 id="_core_taxonomy_speaking_the_language"><a class="anchor" href="#_core_taxonomy_speaking_the_language"></a>Core Taxonomy: Speaking the Language</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Understand these key terms to get the most out of the technical deep dive and discussions.</p>
+</div>
+<div class="dlist dl">
+<dl>
+<dt>OpenShift AI</dt>
+<dd>
+<p>Red Hat&#8217;s end-to-end platform for building, deploying, and managing AI/ML models at scale on the hybrid cloud.</p>
+</dd>
+<dt>Distributed Inference (LLM-D)</dt>
+<dd>
+<p>The feature within OpenShift AI (powered by open-source LLM-D) that orchestrates inference across multiple servers for scalability and efficiency.</p>
+</dd>
+<dt>vLLM</dt>
+<dd>
+<p>The high-performance inference engine used by OpenShift AI. It&#8217;s known for its efficiency, but LLM-D is what scales it across the cluster.</p>
+</dd>
+<dt>Inference Gateway (EPP)</dt>
+<dd>
+<p>The "brain" or "smart router" that intercepts all requests and decides which pod is the best one to handle it (using the Endpoint Picker Protocol).</p>
+</dd>
+<dt>Prefill</dt>
+<dd>
+<p>The first phase of inference: processing the user&#8217;s input prompt. This is a compute-heavy (parallel) operation and often the main bottleneck.</p>
+</dd>
+<dt>Decode</dt>
+<dd>
+<p>The second phase of inference: generating the response token by token. This is a memory-bandwidth-heavy (sequential) operation.</p>
+</dd>
+<dt>KV Cache</dt>
+<dd>
+<p>The model&#8217;s "short-term memory" created during Prefill. It lives in expensive GPU VRAM. Reusing this cache is the primary goal of smart scheduling.</p>
+</dd>
+<dt>Cache-Aware Routing</dt>
+<dd>
+<p>The scheduler&#8217;s "smart" ability to send a request to a pod that already has the KV Cache for that conversation, skipping the expensive Prefill step.</p>
+</dd>
+<dt>TTFT (Time To First Token)</dt>
+<dd>
+<p>A key metric for user experience. How long does the user wait from pressing "Enter" to seeing the first word of the response? (Measures responsiveness).</p>
+</dd>
+<dt>TPOT (Time Per Output Token)</dt>
+<dd>
+<p>A key metric for performance. Once the response starts, how fast do the new words appear? (Measures generation speed).</p>
+</dd>
+<dt>SLO (Service-Level Objective)</dt>
+<dd>
+<p>Your performance promise. A specific, measurable goal, e.g., "99% of all requests must have a TTFT under 500ms."</p>
+</dd>
+<dt>TCO (Total Cost of Ownership)</dt>
+<dd>
+<p>The ultimate business metric. How much does it cost to run your AI factory? Efficient scheduling (less GPU waste) directly lowers your TCO.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="../chapter3/section2.html">Section 2</a></span>
+  <span class="prev"><a href="../chapter3/section5.html">Lab: Deploying Your First Distributed Inference Service</a></span>
 </nav>
 </article>
   </div>
