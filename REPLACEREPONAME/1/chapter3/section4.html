@@ -161,20 +161,6 @@
 </aside>
 <article class="doc">
 <h1 class="page">OpenShift AI: Deep Dive on KV Cache Management</h1>
-<div id="toc" class="toc">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#deep-dive">Deep Dive: Understanding the KV Cache</a>
-<ul class="sectlevel2">
-<li><a href="#_what_is_the_kv_cache">What is the KV Cache?</a></li>
-<li><a href="#_why_is_the_cache_a_performance_bottleneck">Why is the Cache a Performance Bottleneck?</a></li>
-<li><a href="#_caching_strategy_1_independent_caching_vram_to_ram_offload">Caching Strategy 1: Independent Caching (VRAM to RAM Offload)</a></li>
-<li><a href="#_caching_strategy_2_shared_caching_distributed_cache_pool">Caching Strategy 2: Shared Caching (Distributed Cache Pool)</a></li>
-</ul>
-</li>
-<li><a href="#_summary_when_to_use_each_strategy">Summary: When to Use Each Strategy</a></li>
-</ul>
-</div>
 <div id="preamble">
 <div class="sectionbody">
 <div class="admonitionblock tip tada">
@@ -190,20 +176,24 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>[x] 📈 You run high-concurrency services with many simultaneous users.</p>
-</div>
-<div class="paragraph">
-<p>[x] 🗣️ Your application is a chatbot or RAG system that requires long conversation histories (context).</p>
-</div>
-<div class="paragraph">
-<p>[x] 🐢 You are suffering from high Time-To-First-Token (TTFT) as your request queues get backed up.</p>
-</div>
-<div class="paragraph">
-<p>[x] 💸 Your expensive GPU VRAM is constantly full, limiting the total number of users you can serve.</p>
-</div>
-<div class="paragraph">
-<p>[x] 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> 📈 You run high-concurrency services with many simultaneous users.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🗣️ Your application is a chatbot or RAG system that requires long conversation histories (context).</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🐢 You are suffering from high Time-To-First-Token (TTFT) as your request queues get backed up.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 💸 Your expensive GPU VRAM is constantly full, limiting the total number of users you can serve.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.</p>
+</li>
+</ul>
 </div>
 <hr>
 <hr>

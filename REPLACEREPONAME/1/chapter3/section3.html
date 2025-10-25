@@ -161,19 +161,6 @@
 </aside>
 <article class="doc">
 <h1 class="page">OpenShift AI: Distributed Inference Architecture</h1>
-<div id="toc" class="toc">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#deep-dive">Architecture Deep Dive: For Implementers</a>
-<ul class="sectlevel2">
-<li><a href="#_part_1_the_foundation_the_prerequisites">Part 1: The Foundation (The Prerequisites)</a></li>
-<li><a href="#_part_2_the_core_components_the_puzzle_pieces">Part 2: The Core Components (The "Puzzle Pieces")</a></li>
-<li><a href="#_part_3_the_data_flow_the_request_lifecycle">Part 3: The Data Flow (The "Request Lifecycle")</a></li>
-<li><a href="#_part_4_observability_proving_it_works">Part 4: Observability (Proving It Works)</a></li>
-</ul>
-</li>
-</ul>
-</div>
 <div id="preamble">
 <div class="sectionbody">
 <div class="admonitionblock tip tada">
@@ -189,20 +176,24 @@ Wondering if this architecture is the right solution for your project? If you&#8
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>[x] ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.</p>
-</div>
-<div class="paragraph">
-<p>[x]  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.</p>
-</div>
-<div class="paragraph">
-<p>[x] 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.</p>
-</div>
-<div class="paragraph">
-<p>[x] 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.</p>
-</div>
-<div class="paragraph">
-<p>[x] 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn&#8217;t working.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i>  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn&#8217;t working.</p>
+</li>
+</ul>
 </div>
 <hr>
 <hr>
