@@ -2,7 +2,6 @@ name: llmops-llmd
 title: vLLM to AI Factory Scaling with LLM-D
 version: 1
 nav:
-- modules/ROOT/nav.adoc
 - modules/LABENV/nav.adoc
 - modules/chapter3/nav.adoc
 - modules/appendix/nav.adoc

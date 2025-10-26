@@ -1,6 +1,6 @@
 site:
-  title: FIXME Course Title
-  start_page: REPLACEREPONAME::index.adoc
+  title: vLLM to AI Factory Scaling with LLM-D
+  start_page: llmops-llmd::index.adoc
 
 content:
   sources:
