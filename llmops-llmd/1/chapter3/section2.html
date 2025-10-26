@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Use Case Identification :: FIXME Course Title</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="section3.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">FIXME Course Title</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">appendix.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a></li>
+    <li><a href="section2.html">Use Case Identification</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Use Case Identification</h1>
+<div class="admonitionblock tip tada">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">The LLM-D Litmus Test</div>
+<div class="paragraph">
+<p>Wondering if LLM-D is your new best friend? If you nod your head to most of these, the answer is a resounding YES!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> 🏢 You run a <strong>large-scale, high-throughput</strong> AI service for many users.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 💰 You are constantly worried about the <strong>Total Cost of Ownership (TCO)</strong> of your GPU farm.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🤖 Your applications involve <strong>complex conversations</strong>, RAG, or AI agents.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> ☸️ You live and breathe <strong>Kubernetes</strong> and want a cloud-native solution.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 📈 You have a crack <strong>Platform or SRE team</strong> ready to level up their infrastructure.</p>
+</li>
+</ul>
+</div>
+<hr>
+<hr>
+<div class="paragraph">
+<p><strong>Architectural Advantage:</strong>
+llm-d&#8217;s primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>An <strong>intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension</strong>, which makes dynamic, telemetry-driven scheduling decisions;</p>
+</li>
+<li>
+<p>A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and</p>
+</li>
+<li>
+<p>A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Performance Drivers:</strong></p>
+</div>
+<div class="paragraph">
+<p>The framework&#8217;s significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques.</p>
+</div>
+<div class="paragraph">
+<p>Key among these are <strong>Prefill/Decode (P/D) disaggregation</strong>, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA&#8217;s Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.</p>
+</div>
+<div class="paragraph">
+<p><strong>Competitive Positioning:</strong></p>
+</div>
+<div class="paragraph">
+<p>Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes.</p>
+</div>
+<div class="paragraph">
+<p>This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.</p>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">LLM-D Benefits</a></span>
+  <span class="next"><a href="section3.html">Deep Dive on KV Cache Management</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

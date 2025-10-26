@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Distributed Inference Architecture :: FIXME Course Title</title>
+    <link rel="prev" href="section3.html">
+    <link rel="next" href="section5.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">FIXME Course Title</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">appendix.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a></li>
+    <li><a href="section4.html">Distributed Inference Architecture</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Distributed Inference Architecture</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock tip tada">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">The Implementer&#8217;s "Litmus Test"</div>
+Wondering if this architecture is the right solution for your project? If you&#8217;re an Operator, Consultant, or Services member and you nod your head to these points, this guide is for you.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i>  hybrid_cloud You must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn&#8217;t working.</p>
+</li>
+</ul>
+</div>
+<hr>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deep-dive"><a class="anchor" href="#deep-dive"></a>Architecture Deep Dive: For Implementers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you understand the "why," let&#8217;s explore the "how." As an implementer, your job is to assemble the puzzle. This section details the pieces you&#8217;ll need.</p>
+</div>
+<div class="sect2">
+<h3 id="_part_1_the_foundation_the_prerequisites"><a class="anchor" href="#_part_1_the_foundation_the_prerequisites"></a>Part 1: The Foundation (The Prerequisites)</h3>
+<div class="paragraph">
+<p>Before you deploy a single model, you must have the right foundation. Failure here is the #1 cause of implementation issues.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Requirement &amp; (The "Why")</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Kubernetes / OpenShift</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Kubernetes 1.30+ or OpenShift 4.17+.
+(This is a modern stack that relies on up-to-date Kubernetes features and the Gateway API).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Gateway API</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A compliant Gateway API implementation.
+(This is the "front door" for all traffic. The llm-d quickstart provides kGateway, but in production, this will likely be OpenShift Service Mesh (Istio)).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>GPU Hardware</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
+(This stack is built for high-performance, not consumer cards. vLLM is optimized for these specific architectures).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>GPU Operators</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>NVIDIA GPU Operator &amp; Node Feature Discovery (NFD) Operator.
+(These are non-negotiable. The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Networking (CRITICAL)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>High-Speed, Low-Latency Fabric.
+(For "East-West" traffic between nodes, you need InfiniBand or RoCE (RDMA). This is for high-speed cache transfers. NVLink is used for "North-South" traffic within a node).</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning fire">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="title">A Note on Networking</div>
+Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing.
+A slow network will make your distributed system slower than a single pod. Verify your networking fabric before you deploy.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_part_2_the_core_components_the_puzzle_pieces"><a class="anchor" href="#_part_2_the_core_components_the_puzzle_pieces"></a>Part 2: The Core Components (The "Puzzle Pieces")</h3>
+<div class="paragraph">
+<p>This architecture is based on the llmd.jpg reference diagram. Let&#8217;s break down each component&#8217;s job.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/llmd.png" alt="LLM-D Architecture Diagram" width="700"></span></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Role in the System (What It Does)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Inference Gateway
+(kGateway / Istio)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>This is the "Smart Router" and the single entry point for all users. It hosts the "brain" (the Endpoint Picker) and is responsible for intercepting the user&#8217;s request, asking the brain where to send it, and then routing it to the correct pod.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Inference Scheduler
+(Endpoint Picker / EPP)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>This is the "Brain". It is a plug-in to the Gateway. It does not move data; it only makes decisions. It filters all possible pods (removing overloaded or incompatible ones) and then scores the rest, giving a massive bonus to the pod that has the KV Cache.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>LLM-D Controller
+(The "Orchestrator")</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>This is the "Kubernetes Operator" you install. Its job is to watch for new ModelService CRDs. When you create one, this controller builds all the other pieces: the Prefill Deployment, the Decode Deployment, the Services, and the Gateway routing rules.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>vLLM Pods (Prefill)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>These are the "Heavy Lifters." A pool of pods (a Deployment) optimized only for the slow, compute-heavy Prefill task. They create the KV Cache and (in a shared model) write it to the cache pool.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>vLLM Pods (Decode)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>These are the "Sprinters." A pool of pods (a separate Deployment) optimized only for the fast, memory-heavy Decode task. They read the KV Cache and generate tokens one by one. You can scale them independently (e.g., 2 Prefill pods, 10 Decode pods).</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_part_3_the_data_flow_the_request_lifecycle"><a class="anchor" href="#_part_3_the_data_flow_the_request_lifecycle"></a>Part 3: The Data Flow (The "Request Lifecycle")</h3>
+<div class="paragraph">
+<p>This is how the pieces work together. Understanding this flow is key to troubleshooting.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>1. Request In: A user sends an HTTP/gRPC request to the Gateway&#8217;s route.</p>
+</li>
+<li>
+<p>2. The "Brain" Decides: The Gateway forwards the request metadata to the Inference Scheduler (EPP).</p>
+</li>
+<li>
+<p>3. The "Brain" Asks: The Scheduler queries its Model Telemetry cache (which has data from Prometheus &amp; the pods) to get the load and KV Cache status of all pods.</p>
+</li>
+<li>
+<p>4. The "Brain" Answers: The Scheduler filters and scores the pods. It picks one (e.g., decode-pod-7 because it has the cache and low load) and tells the Gateway.</p>
+</li>
+<li>
+<p>5. Routing: The Gateway forwards the actual request to decode-pod-7.</p>
+</li>
+<li>
+<p>6. (If Cache Miss): If the Scheduler finds no pod with the cache (a "cache miss"), it routes the request to a Prefill pod first. That pod writes to the cache, and then the request is forwarded to a Decode pod.</p>
+</li>
+<li>
+<p>7. Response Out: The Decode pod streams the response back to the user through the Gateway.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_part_4_observability_proving_it_works"><a class="anchor" href="#_part_4_observability_proving_it_works"></a>Part 4: Observability (Proving It Works)</h3>
+<div class="paragraph">
+<p>As an implementer, you must prove the value. This stack is built for observability.</p>
+</div>
+<div class="admonitionblock note info">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">The "Golden Signals" for Implementers</div>
+Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) to the "Why Buy?" value props.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To Prove Performance (SLOs):</p>
+</div>
+<div class="paragraph">
+<p>vllm_llmd_time_to_first_token_seconds (TTFT): This is your "responsiveness" metric. Your goal is to keep this low and stable.</p>
+</div>
+<div class="paragraph">
+<p>vllm_llmd_time_per_output_token_seconds (TPOT): This is your "generation speed."</p>
+</div>
+<div class="paragraph">
+<p>To Prove TCO (Cost Savings):</p>
+</div>
+<div class="paragraph">
+<p>vllm_llmd_kv_cache_hit_rate: This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.</p>
+</div>
+<div class="paragraph">
+<p>vllm_llmd_gpu_utilization_seconds: This proves your GPUs are being used effectively, not sitting idle.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section3.html">Deep Dive on KV Cache Management</a></span>
+  <span class="next"><a href="section5.html">Lab: Deploying Your First Distributed Inference Service</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Round Robin versus LLM-Way :: FIXME Course Title</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">FIXME Course Title</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section3.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">appendix.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="section2.html">Round Robin versus LLM-Way</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Round Robin versus LLM-Way</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock warning siren">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="title">A TALE OF TWO LOAD BALANCERS</div>
+<div class="paragraph">
+<p>Your Kubernetes cluster is powerful, but it&#8217;s not a mind reader. When it comes to LLMs, the old ways just don&#8217;t work. Let&#8217;s see why&#8230;&#8203;</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_clueless_load_balancer_the_old_way"><a class="anchor" href="#_the_clueless_load_balancer_the_old_way"></a>The Clueless Load Balancer (The Old Way)</h3>
+<div class="paragraph">
+<p>Imagine a traffic cop sending sports cars and semi-trucks down the same narrow lane, one after the other. Chaos! That&#8217;s what a normal <strong>round-robin</strong> load balancer does to your LLM.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  +-------------------------------+
+  | Round-Robin LB                |
+  +-------------------------------+
+       |           |         |
+       V           V         V
+    [GPU 1]     [GPU 2]   [GPU 3]
+  (95% busy!) (10% busy) (Crying)</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Result:</strong> One GPU gets slammed with a huge request (a semi-truck), while others sit idle. Latency skyrockets, and your money burns.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_genius_scheduler_the_llm_d_way"><a class="anchor" href="#_the_genius_scheduler_the_llm_d_way"></a>The Genius Scheduler (The LLM-D Way)</h3>
+<div class="paragraph">
+<p>Now, imagine a logistics expert who knows exactly what&#8217;s in every truck and which loading dock is free. That&#8217;s the <strong>LLM-D Inference Scheduler</strong>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  +-------------------------+
+  | LLM-D Scheduler         |
+  +-------------------------+
+      |         |         |
+      V         V         V
+    [GPU 1]  [GPU 2]   [GPU 3]
+  (Balanced) (Happy) (Efficient)</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Result:</strong> Requests are routed intelligently based on their size and the real-time state of the cluster. Every GPU does its fair share. Performance soars.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution brain">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>The Big Secret: LLMs are STATEFUL!</strong> They create a <strong>KV Cache</strong> (think of it as short-term memory) for every conversation. If you route a follow-up question to a GPU that doesn&#8217;t have that memory&#8230;&#8203; BAM! You have to re-calculate everything. LLM-D is smart enough to remember where the conversation is happening.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+<hr>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

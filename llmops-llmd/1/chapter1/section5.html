@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LLM-D Features :: FIXME Course Title</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">FIXME Course Title</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section3.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">appendix.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="section5.html">LLM-D Features</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">LLM-D Features</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock important zap">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Unleash the Power!</div>
+<div class="paragraph">
+<p>This is where the real magic happens. LLM-D gives you a set of powerful, production-ready techniques to supercharge your inference.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_superpower_1_intelligent_inference_scheduling"><a class="anchor" href="#_superpower_1_intelligent_inference_scheduling"></a>⚡ <strong>Superpower #1: Intelligent Inference Scheduling</strong></h3>
+<div class="paragraph">
+<p>The <code>llm-d-inference-scheduler</code> is the heart of the system. It uses a two-step "Filter-and-Score" process to find the perfect home for every single request.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>FILTER:</strong> "Who is even available for this job?" (Eliminates overloaded or incompatible pods).</p>
+</li>
+<li>
+<p><strong>SCORE:</strong> "Of the ones left, who is the <strong>best</strong> for the job?" (Scores pods based on load, and most importantly, who already has the KV Cache ready to go!).</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_2_prefilldecode_pd_disaggregation"><a class="anchor" href="#_superpower_2_prefilldecode_pd_disaggregation"></a>🚀 <strong>Superpower #2: Prefill/Decode (P/D) Disaggregation</strong></h3>
+<div class="paragraph">
+<p>This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Before:</strong> One big, clunky server trying to do everything.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre> +-------------------------------------+
+ | [ Monolithic GPU Server ]           |
+ |  - Juggling compute-heavy Prefill   |
+ |  - And memory-heavy Decode          |
+ |  - (Struggling to keep up!)         |
+ +-------------------------------------+</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>After:</strong> A specialized team working in perfect harmony.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre> +------------------+      +------------------+
+ | [ Prefill Team ] |-----&gt;| [ Decode Team ]  |
+ | - A+ at compute  |      | - Masters of Memory|
+ | - Specialized GPUs|      | - Optimized GPUs |
+ +------------------+      +------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result? A massive <strong>25-50% performance boost</strong> for large models!</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_3_wide_expert_parallelism"><a class="anchor" href="#_superpower_3_wide_expert_parallelism"></a>🌌 <strong>Superpower #3: Wide Expert Parallelism</strong></h3>
+<div class="admonitionblock caution stars">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Boss Level:</strong> This is for serving gargantuan Mixture-of-Experts (MoE) models.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_superpower_4_kv_cache_management"><a class="anchor" href="#_superpower_4_kv_cache_management"></a>🧠 <strong>Superpower #4: KV Cache Management</strong></h3>
+<div class="paragraph">
+<p>That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The <code>llm-d-kv-cache-manager</code> is a genius at moving that data to cheaper, more abundant storage.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Library Analogy</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Without LLM-D:</strong> Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!</p>
+</li>
+<li>
+<p><strong>With LLM-D (North-South Caching):</strong> You keep the book on your personal desk (CPU RAM). Faster!</p>
+</li>
+<li>
+<p><strong>With LLM-D (East-West Caching):</strong> You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<hr>
+<hr>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
