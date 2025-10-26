@@ -80,7 +80,7 @@ A slow network will make your distributed system slower than a single pod. Verif
 
 This architecture is based on the llmd.jpg reference diagram. Let's break down each component's job.
 
-[image:https://www.google.com/search?q=https://i.imgur.com/8mJ19vE.jpeg[LLM-D Architecture Diagram,700,align="center"]]
+image:llmd.png[LLM-D Architecture Diagram,700,align="center"]
 
 [cols="1a,3a"]
 |===
