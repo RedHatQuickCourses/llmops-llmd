@@ -35,14 +35,15 @@ This lab guide assumes you have ALREADY COMPLETED the "OpenShift AI: Lab Environ
 
 Your OpenShift environment must have the following components running:
 
-An OpenShift 4.17+ cluster.
+ * An OpenShift 4.17+ cluster.
 
-At least two GPU-enabled nodes (e.g., L40S or A100).
+ * At least two GPU-enabled nodes (e.g., L40S or A100).
 
-The Node Feature Discovery (NFD) Operator.
+ * The Node Feature Discovery (NFD) Operator.
 
-The NVIDIA GPU Operator.
-====
+ * The NVIDIA GPU Operator.
+
+---
 
 If your environment is ready, let's begin.
 
@@ -64,13 +65,12 @@ oc new-project $NAMESPACE
 This lab requires kubectl, helm, yq, and git. This repository contains a helper script to install them.
 
 [NOTE]
-This guide assumes you are running these commands from a terminal within the cloned course repository.
+This guide assumes you are running these commands from a terminal within the cloned course repository. From the root of this repository
+
 
 [source,bash]
 
-From the root of this repository
-
-./prereq/client-setup/install-deps.sh
+prereq/client-setup/install-deps.sh
 
 === 3. Create Your HuggingFace Token Secret
 
@@ -82,9 +82,7 @@ To download models like Llama 3, the service needs a HuggingFace (HF) token.
 [source,bash]
 
 oc create secret generic hf-token 
-
 --from-literal=token=YOUR_TOKEN_HERE 
-
 --namespace $NAMESPACE
 
 == Part 2: Deploy the OpenShift AI Inference Stack
@@ -98,9 +96,7 @@ First, we deploy the kgateway, which will act as our smart router.
 [source,bash]
 
 helm install llm-d-gateway ./charts/kgateway 
-
 -n $NAMESPACE 
-
 --wait
 
 === 2. Deploy the "Inference Scheduling" Service
@@ -110,11 +106,8 @@ Next, we deploy the core of the lab: the LLM-D controller and the vLLM model ser
 [source,bash]
 
 helm install llm-d-vllm-deployment ./charts/llm-d-vllm-deployment 
-
 -n $NAMESPACE 
-
 -f ./charts/llm-d-vllm-deployment/values.yaml 
-
 --wait
 
 [NOTE]
@@ -131,7 +124,7 @@ Created a ModelService resource for llama-3-8b-chat-hf.
 Deployed two separate sets of pods: one for Prefill and one for Decode.
 
 Configured the Gateway to route traffic to them.
-====
+
 
 == Part 3: Validation
 
@@ -186,11 +179,11 @@ The "Why Buy?" of this stack is its efficiency. The Helm charts automatically cr
 
 In the OpenShift Console, you can go to Observe > Dashboards and use the built-in "user workload monitoring" to query metrics like:
 
-vllm_llmd_time_to_first_token_seconds (TTFT)
+ * vllm_llmd_time_to_first_token_seconds (TTFT)
 
-vllm_llmd_time_per_output_token_seconds (TPOT)
+ * vllm_llmd_time_per_output_token_seconds (TPOT)
 
-vllm_llmd_kv_cache_hit_rate (Your most important TCO metric!)
+ * vllm_llmd_kv_cache_hit_rate (Your most important TCO metric!)
 
 == Part 5: Lab Cleanup
 
@@ -200,15 +193,15 @@ When you are finished, use Helm to remove all components and then delete the pro
 
 Uninstall the llm-d deployment
 
-helm uninstall llm-d-vllm-deployment -n $NAMESPACE
+ * helm uninstall llm-d-vllm-deployment -n $NAMESPACE
 
-Uninstall the gateway
+ * Uninstall the gateway
 
-helm uninstall llm-d-gateway -n $NAMESPACE
+ * helm uninstall llm-d-gateway -n $NAMESPACE
 
-Delete the project
+ * Delete the project
 
-oc delete project $NAMESPACE
+ * oc delete project $NAMESPACE
 
 == Lab Complete
 Congratulations! You have successfully deployed, validated, and tested a distributed, scalable AI inference stack on OpenShift AI.

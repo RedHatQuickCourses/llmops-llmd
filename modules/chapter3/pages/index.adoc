@@ -1,5 +1,7 @@
 = From vLLM to AI Factory: Scaling with LLM-D
 
+====
+
 [literal]
 ....
      _      _      _       _       ____  
@@ -10,29 +12,46 @@
     |_____||_____||_|     |_|     |____/ 
 
   OPENSHIFTS AI'S SOLUTION FOR DISTRUBUTED INFERENCE
-....
+
+====
 
 
-Why build an "AI Factory" when cheap API tokens exist? This interactive journey shows you why.
+[IMPORTANT]
+.Prerequisite Knowledge
+
+This course assumes you are already familiar with the basics of Kubernetes and vLLM Inference. We will be building on those core concepts.
+
+[QUOTE.icon-question-circle, "The Core Question"]
+Why build an "AI Factory" when cheap API tokens exist?
+
+This interactive journey shows you why.
 
 Discover how OpenShift AI's Distributed Inference (powered by LLM-D) gives you what public APIs can't: guaranteed performance SLOs, a lower TCO by eliminating GPU waste, and true hybrid cloud security.
 
-This is your "Front Door" to the complete learning path, designed to provide multiple depths of knowledge—from the high-level "Why" to the hands-on "How" for consultants and services.
+This course is your "Front Door" to the complete learning path, designed to provide multiple depths of knowledge—from the high-level "Why" for executives and sales to the hands-on "How" for consultants and services.
 
----
+'''
+
+== How This Course Works
 
 This course is a multi-format learning journey. You will find a mix of videos, technical articles, and resource links, but the core of this course is delivered through Interactive Arcades.
 
-What is an "Arcade"?
+[TIP.icon-play-circle]
+.What is an "Arcade"?
+
 An Arcade is an interactive demonstration. You'll read the content on each slide and then click on "hotspots" (like blinking dots or text boxes) to move through the presentation. This format is used for both conceptual guides and some lab exercises.
 
-Pro-Tips for the Best Experience
+[NOTE]
+.Pro-Tips for the Best Experience
+
 Here are a few tips to get you started:
 
-Go Full Screen: This is the highly recommended way to use Arcades. Use the "expand" icon (usually in the top-right corner) to ensure hotspots and text don't overlap.
+*Go Full Screen:* This is the highly recommended way to use Arcades. Use the "expand" icon (usually in the top-right corner) to ensure hotspots and text don't overlap.
 
-Navigate: Use the arrows in the top-left corner to move forward and back through the presentation.
+*Navigate:* Use the arrows in the top-left corner to move forward and back through the presentation.
 
-Track Your Progress: The bar at the bottom of the window shows your progression through the interactive segments.
+*Track Your Progress:* The bar at the bottom of the window shows your progression through the interactive segments.
 
 If you're new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.
+
+Let's begin.
