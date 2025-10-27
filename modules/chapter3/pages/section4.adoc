@@ -109,15 +109,15 @@ As an implementer, you must prove the value. This stack is built for observabili
 
 Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) to the "Why Buy?" value props.
 
-To Prove Performance (SLOs):
+*To Prove Performance (SLOs):*
 
-vllm_llmd_time_to_first_token_seconds (TTFT): This is your "responsiveness" metric. Your goal is to keep this low and stable.
+*vllm_llmd_time_to_first_token_seconds (TTFT):* This is your "responsiveness" metric. Your goal is to keep this low and stable.
 
-vllm_llmd_time_per_output_token_seconds (TPOT): This is your "generation speed."
+*vllm_llmd_time_per_output_token_seconds (TPOT):* This is your "generation speed."
 
-To Prove TCO (Cost Savings):
+*To Prove TCO (Cost Savings):*
 
-vllm_llmd_kv_cache_hit_rate: This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.
+*vllm_llmd_kv_cache_hit_rate:* This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.
 
-vllm_llmd_gpu_utilization_seconds: This proves your GPUs are being used effectively, not sitting idle.
+*vllm_llmd_gpu_utilization_seconds:* This proves your GPUs are being used effectively, not sitting idle.
 ====
