@@ -47,25 +47,19 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section1.html">LLM-D Benefits</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section2.html">Use Case Identification</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
-  </li>
-</ul>
   </li>
 </ul>
   </li>
@@ -105,7 +99,6 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="index.html">From vLLM to AI Factory: Scaling with LLM-D</a></li>
     <li><a href="section4.html">Distributed Inference Architecture</a></li>
   </ul>
 </nav>
@@ -355,22 +348,22 @@ Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) 
 </table>
 </div>
 <div class="paragraph">
-<p>To Prove Performance (SLOs):</p>
+<p><strong>To Prove Performance (SLOs):</strong></p>
 </div>
 <div class="paragraph">
-<p>vllm_llmd_time_to_first_token_seconds (TTFT): This is your "responsiveness" metric. Your goal is to keep this low and stable.</p>
+<p><strong>vllm_llmd_time_to_first_token_seconds (TTFT):</strong> This is your "responsiveness" metric. Your goal is to keep this low and stable.</p>
 </div>
 <div class="paragraph">
-<p>vllm_llmd_time_per_output_token_seconds (TPOT): This is your "generation speed."</p>
+<p><strong>vllm_llmd_time_per_output_token_seconds (TPOT):</strong> This is your "generation speed."</p>
 </div>
 <div class="paragraph">
-<p>To Prove TCO (Cost Savings):</p>
+<p><strong>To Prove TCO (Cost Savings):</strong></p>
 </div>
 <div class="paragraph">
-<p>vllm_llmd_kv_cache_hit_rate: This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.</p>
+<p><strong>vllm_llmd_kv_cache_hit_rate:</strong> This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.</p>
 </div>
 <div class="paragraph">
-<p>vllm_llmd_gpu_utilization_seconds: This proves your GPUs are being used effectively, not sitting idle.</p>
+<p><strong>vllm_llmd_gpu_utilization_seconds:</strong> This proves your GPUs are being used effectively, not sitting idle.</p>
 </div>
 <div class="exampleblock">
 <div class="content">

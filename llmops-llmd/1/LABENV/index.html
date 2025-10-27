@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>RDHP Lab: Environment Setup :: vLLM to AI Factory Scaling with LLM-D</title>
     <link rel="prev" href="../index.html">
-    <link rel="next" href="../chapter3/index.html">
+    <link rel="next" href="../chapter3/section1.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -47,25 +47,19 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter3/index.html">From vLLM to AI Factory: Scaling with LLM-D</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section3.html">Deep Dive on KV Cache Management</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section4.html">Distributed Inference Architecture</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section5.html">Lab: Deploying Your First Distributed Inference Service</a>
-  </li>
-</ul>
   </li>
 </ul>
   </li>
@@ -136,19 +130,16 @@ Welcome to the lab setup guide. This is the crucial Step 0 before you can run th
 <hr>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_1_lab_setup_overview_and_steps"><a class="anchor" href="#_1_lab_setup_overview_and_steps"></a>1. Lab Setup: Overview and Steps</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_1_lab_setup_overview_and_steps"><a class="anchor" href="#_1_lab_setup_overview_and_steps"></a>1. Lab Setup: Overview and Steps</h3>
 <div class="paragraph">
 <p>This first experience covers the entire lab environment overview. It provides links to the Red Hat Demo Platform (RHDP) Catalog item, the steps to configure the environment once it completes provisioning, and finally, it provides a link to the official LLM-D GitHub Repository where you&#8217;ll continue using the open-source lab to deploy the "well-lit path" for distributed inference.</p>
 </div>
 <hr>
 <iframe src="https://demo.arcade.software/ol87rAAlnjMqn5udqGRx?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_2_ordering_from_the_red_hat_demo_platform"><a class="anchor" href="#_2_ordering_from_the_red_hat_demo_platform"></a>2. Ordering from the Red Hat Demo Platform</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_2_ordering_from_the_red_hat_demo_platform"><a class="anchor" href="#_2_ordering_from_the_red_hat_demo_platform"></a>2. Ordering from the Red Hat Demo Platform</h3>
 <div class="paragraph">
 <p>This experience showcases the steps to provision an LLM-D compatible environment using the Red Hat Demo Platform. It starts by selecting the Catalog item and shows an example of the configuration options to select when ordering.</p>
 </div>
@@ -158,20 +149,16 @@ Welcome to the lab setup guide. This is the crucial Step 0 before you can run th
 <hr>
 <iframe src="https://demo.arcade.software/7kP2UIb8NS0se6vuGV5Z?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_3_getting_started_in_the_openshift_cluster"><a class="anchor" href="#_3_getting_started_in_the_openshift_cluster"></a>3. Getting Started in the OpenShift Cluster</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_3_getting_started_in_the_openshift_cluster"><a class="anchor" href="#_3_getting_started_in_the_openshift_cluster"></a>3. Getting Started in the OpenShift Cluster</h3>
 <div class="paragraph">
 <p>This experience starts with a running RHDP environment and shows the steps to log into the environment and validate the MachineSets and worker nodes available to the cluster.</p>
 </div>
 <hr>
 <iframe src="https://demo.arcade.software/8x2PYzS7BCQJU06Eaycd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_4_configuring_the_cluster_operators_and_machinesets"><a class="anchor" href="#_4_configuring_the_cluster_operators_and_machinesets"></a>4. Configuring the Cluster (Operators and MachineSets)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_4_configuring_the_cluster_operators_and_machinesets"><a class="anchor" href="#_4_configuring_the_cluster_operators_and_machinesets"></a>4. Configuring the Cluster (Operators and MachineSets)</h3>
 <div class="paragraph">
 <p>This experience uses the AI BU Services GitHub repository to clone setup files. It shows how to:</p>
 </div>
@@ -197,10 +184,9 @@ Welcome to the lab setup guide. This is the crucial Step 0 before you can run th
 <hr>
 <iframe src="https://demo.arcade.software/x7ffTWS6g8Dy5GBm8mYS?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
-</div>
 <nav class="pagination">
   <span class="prev"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></span>
-  <span class="next"><a href="../chapter3/index.html">From vLLM to AI Factory: Scaling with LLM-D</a></span>
+  <span class="next"><a href="../chapter3/section1.html">LLM-D Benefits</a></span>
 </nav>
 </article>
   </div>
