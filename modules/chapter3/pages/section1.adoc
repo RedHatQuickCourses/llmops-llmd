@@ -28,7 +28,7 @@ This experience showcases how OpenShift AI streamlines Generative AI inference u
 
 ++++
 <iframe 
-  src="https://demo.arcade.software/cPWE8K9hzaSZP3pDUHjO?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  src="https://demo.arcade.software/bZ3A3RCHZwGvEEDFQCjQ?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
   width="100%" 
   height="600px" 
   frameborder="0" 
