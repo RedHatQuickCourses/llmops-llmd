@@ -1,0 +1,232 @@
+= Hands-on Lab: Deploying Distributed Inference
+
+
+This lab guides you through deploying, validating, and securing a scalable, efficient, and enterprise-grade inference stack on your OpenShift cluster.
+
+[IMPORTANT.icon-info-circle] 
+.The "Why Take This Lab
+
+
+The answer is Performance, Security, and Cost (TCO).
+
+Guaranteed Performance: You will deploy a stack that intelligently routes traffic, eliminating "hotspots" and queue-blocking to ensure your SLOs are met.
+
+Lowered TCO: You'll set the foundation for stopping GPU waste, maximizing your hardware utilization.
+
+Runs Securely: You will deploy this stack on your OpenShift cluster and learn to secure it with enterprise-grade authentication, ensuring your proprietary data never leaves your control.
+
+
+== Lab Overview
+
+This hands-on lab follows a GitOps-style deployment based on the official llm-d QuickStart. We will deploy the "inference scheduling" well-lit path and then explore how to secure the deployed model endpoints.
+
+This guide assumes you have already completed the "Lab Environment Setup" and have a cluster ready.
+
+Your Starting Point: Lab Prerequisites
+
+OpenShift Cluster 4.19.19+ (RHOAI 2.25+).
+
+You have cluster-admin permissions.
+
+You have at least one GPU-enabled node (e.g., g6.xlarge, L40S, A100).
+
+The NVIDIA GPU Operator is installed and running.
+
+'''
+
+== Part 1: Cluster & Client Setup
+
+Before deploying the model, we must prepare the cluster to run llm-d dependencies and configure your client tools.
+
+. Install the OpenShift Web Terminal + The Web Terminal in the OpenShift console is the easiest way to run these commands. If you have not already, install the "Web Terminal" operator from OperatorHub. 
+
+[NOTE.icon-lightbulb]
+
+If the Web Terminal icon (a small >_ in the top-right masthead) doesn't appear after installation, reload your browser page.
+
+To ensure your web terminal has all necessary tools (like helm and yq), apply the enhanced web terminal configuration:  
+
+[source,bash]
+oc apply -k https://github.com/redhat-na-ssa/llm-d-demo/demo/web-terminal
+
+. Clone the Deployment Repository + This demo repository contains all the GitOps manifests needed for the lab. 
+
+[source,bash]
+git clone https://github.com/redhat-na-ssa/llm-d-demo.git 
+cd llm-d-demo
+
+. Scale Your GPU Nodes (If Necessary) T.his lab requires at least one GPU node. If you used the RHDP lab setup, you may have already created a g6.xlarge machineset. Let's ensure it's scaled to 1.
+
+[source,bash]
+.Check your machinesets
+oc get machineset -n openshift-machine-api
+
+Scale your GPU machineset to 1 (if not already)
+
+(Replace 'YOUR-GPU-MACHINESET' with the name from the command above)
+
+oc scale machineset YOUR-GPU-MACHINESET -n openshift-machine-api --replicas=1
+
+. Install llm-d Cluster Dependencies + This kustomize (-k) command will apply all the necessary prerequisites for llm-d on OCP 4.19+, including CRDs and dependencies. + 
+
+[source,bash,subs="quotes,macros"]
+.Run this from inside the 'llm-d-demo' git repo
+until oc apply -k gitops/ocp-4.19; do : ; done
+
+'''
+
+== Part 2: Deploy the llm-d QuickStart
+
+Now that the cluster is ready, we will deploy the llm-d stack and a sample model using the "inference scheduling" well-lit path.
+
+. Create the Demo Project 
+
+[source,bash]
+oc new-project demo-llm
+
+. Create a HuggingFace Token Secret + (If you haven't already from the lab setup) + 
+
+[source,bash,subs="quotes,macros"]
+.Replace YOUR_TOKEN_HERE with your actual HF token
+oc create secret generic hf-token
+--from-literal=token=YOUR_TOKEN_HERE
+--namespace demo-llm
+
+. Deploy the llm-d QuickStart. This single command deploys the LLMInferenceService for the gpt-oss-20b model. It also creates a 40G Persistent Volume Claim (PVC) to cache the model, saving download time on future restarts. 
+
+[source,bash,subs="quotes,macros"]
+.Run this from inside the 'llm-d-demo' git repo
+until oc apply -k demo/llm-d; do : ; done
+
+This Helm chart will automatically install the llm-d controller, deploy the ModelService CRD, create the Prefill/Decode pods, and configure the Gateway.
+
+'''
+
+== Part 3: Validate the Deployment
+
+Let's check that all components are running and then send a test request.
+
+. Wait for the LLMInferenceService to be Available + 
+
+[source,bash]
+.Wait for the STATUS to show 'Ready' or 'Available'
+oc get llminferenceservice -n demo-llm -w
+
+. Get the Inference URL + The service is exposed via the main OpenShift AI Ingress Gateway. + 
+
+[source,bash,subs="quotes,macros"]
+export INFERENCE_URL=$(
+oc -n openshift-ingress get gateway openshift-ai-inference
+-o jsonpath='{.status.addresses[0].value}'
+)
+
+echo $INFERENCE_URL
+
+. Define the Model and Prompt + [source,bash]
+
+export LLM=openai/gpt-oss-20b export LLM_SVC=${LLM##*/} export PROMPT="Explain the difference between supervised and unsupervised learning in machine learning."
+
+. Send the Inference Request (as Anonymous) + By default, RHOAI 3.0 enables authentication. This first request is expected to fail with a 401 Unauthorized error. + 
+
+[source,bash,subs="attributes+"]
+curl -s -X POST http://${INFERENCE\_URL}/demo-llm/${LLM_SVC}/v1/completions
+-H "Content-Type: application/json"
+-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 200, "temperature": 0.7 }'
+
+You should see an "Unauthorized" message. This is correct! It means our enterprise security is working.
+
+'''
+
+== Part 4: Secure Inference with Authentication
+
+This module covers the "enterprise-grade" part of the lab. We will create a ServiceAccount, grant it the minimum required permissions, and then successfully make an authenticated request.
+
+. Set the ServiceAccount Name + 
+
+[source,bash]
+export SA_NAME=llm-user export TEST_NS=demo-llm
+
+. Create the ServiceAccount 
+
+[source,bash,subs="attributes+"]
+oc create sa ${SA_NAME} -n ${TEST_NS}
+
+. Create the RBAC (Role and RoleBinding) + This is the key step. We create a Role that can only get the llminferenceservices resource, and a RoleBinding to give that permission to our new ServiceAccount. + 
+
+[source,text]
+----
+cat <<EOF | oc apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+name: llm-inferenceservice-reader
+namespace: $TEST_NS
+rules:
++
+apiGroups: ["serving.kserve.io"]
+resources: ["llminferenceservices"]
+verbs: ["get"]
++
+resourceNames: ["gpt-oss-20b"] # Optional: Uncomment to restrict to one service
++
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+name: llm-inferenceservice-reader-binding
+namespace: $TEST_NS
+subjects:
++
+kind: ServiceAccount
+name: $SA_NAME
+namespace: $TEST_NS
+roleRef:
+kind: Role
+name: llm-inferenceservice-reader
+apiGroup: rbac.authorization.k8s.io
+EOF
+
+----
+
+
+=== Generate a JWT Token for the ServiceAccount 
+
+[source,bash,subs="attributes+"]
+export TEST_TOKEN=$(oc create token ${SA_NAME} -n ${TEST_NS})
+
+. Send the Authenticated Request + Now, we send the same request as before, but this time we add the Authorization: Bearer header with our new token. + 
+
+[source,bash,subs="attributes+"]
+curl -s -X POST http://${INFERENCE\_URL}/demo-llm/${LLM_SVC}/v1/completions
+-H "Content-Type: application/json"
+-H "Authorization: Bearer ${TEST\_TOKEN}"   
+\-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 200, "temperature": 0.7 }' | jq .choices[0].text
+
+[TIP.icon-check-circle] 
+.Success!
+
+You should now see a 200 OK response and the JSON output from the model, successfully explaining supervised vs. unsupervised learning. You have deployed and secured an enterprise-grade AI service.
+
+'''
+
+== Part 5: Monitoring & Cleanup
+
+. Monitoring (The "Why Buy?")
++
+You can prove the value of this stack using OpenShift's built-in monitoring. 
+
+Navigate to Observe > Dashboards in the OpenShift console. You can use the built-in "user workload monitoring" to query metrics like
+
+ * vllm_llmd_time_to_first_token_seconds (TTFT) 
+ * vllm_llmd_kv_cache_hit_rate (the TCO metric!).
+
+---
+
+=== Cleanup + To remove the resources from this lab: + 
+
+[source,bash,subs="quotes,macros"]
+.Run this from inside the 'llm-d-demo' git repo
+oc delete -k demo/llm-d
+
+[source,bash,subs="quotes,macros"]
+.Delete the ServiceAccount and RBAC
+oc delete sa ${SA_NAME} -n ${TEST_NS} oc delete role llm-inferenceservice-reader -n ${TEST_NS} oc delete rolebinding llm-inferenceservice-reader-binding -n ${TEST_NS}

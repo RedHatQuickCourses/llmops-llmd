@@ -1,0 +1,188 @@
+= Hands-on Lab: Deploying Distributed Inference with OpenShift AI
+:icons: font
+
+[IMPORTANT.icon-info-circle]
+.Lab Goal & Prerequisites
+
+This lab guides you through deploying a model using OpenShift AI's Distributed Inference feature (Technology Preview), powered by LLM-D. You will create a ModelService custom resource to deploy a pre-configured model stack.
+
+Prerequisites:
+
+You have completed the Lab Environment Setup guide. Your OpenShift cluster (4.17+) has GPU nodes and the required operators (NFD, NVIDIA GPU Operator) installed and running.
+
+You have oc (OpenShift CLI) access to your cluster with permissions to create resources in a project.
+
+You have created a Hugging Face token secret named hf-token in your target project (as detailed in the Lab Setup Guide or official documentation).
+
+
+'''
+
+== Introduction: The ModelService Custom Resource
+
+In OpenShift AI, Distributed Inference deployments are managed declaratively using the ModelService Custom Resource Definition (CRD). Instead of manually configuring gateways, controllers, and vLLM deployments, you define the desired state in a single ModelService object, and the system handles the rest.
+
+This lab will deploy a sample ModelService configured for the "Inference Scheduling" well-lit path, which includes intelligent routing.
+
+'''
+
+== Part 1: Prepare Your Project
+
+First, ensure you are in the correct OpenShift project where you created your hf-token secret. If you haven't created one, do so now.
+
+. Create a new project (if needed):
++
+[source,bash]
+
+oc new-project my-llm-d-lab
+
+Replace my-llm-d-lab with your preferred project name.
+
+. Verify your Hugging Face token secret exists:
++
+[source,bash]
+
+oc get secret hf-token -n my-llm-d-lab
+
+If this command returns "not found," revisit the Lab Environment Setup guide or the official documentation to create the secret.
+
+'''
+
+== Part 2: Define and Create the ModelService
+
+Now, you will define the ModelService resource in a YAML file. This example uses a small, publicly available model for simplicity.
+
+. Create a YAML file named modelservice-sample.yaml with the following content:
++
+[source,yaml]
+
+apiVersion: llm.stack.gov.il/v1alpha1
+kind: ModelService
+metadata:
+name: llama-3-8b-chat-hf-sample # Unique name for this model deployment
+namespace: my-llm-d-lab        # IMPORTANT: Use your project name here
+spec:
+modelId: meta-llama/Meta-Llama-3-8B-Instruct # Model from Hugging Face
+source:
+huggingface:
+secretKeyRef:
+name: hf-token # Name of the secret containing your HF token
+replicas: 1 # Start with one replica set (adjust later for scale)
+
+(Optional: Add resource requests/limits, tolerations, etc. here if needed)
+
+[NOTE.icon-pencil]
+
+Key Fields:
+ * metadata.name: Must be unique within the namespace.
+ * metadata.namespace: Crucially, set this to your project name.
+ * spec.modelId: The Hugging Face model identifier.
+ * spec.source.huggingface.secretKeyRef.name: Points to your hf-token secret.
+
+
+
+. Apply the ModelService manifest to your cluster:
++
+[source,bash]
+
+oc apply -f modelservice-sample.yaml -n my-llm-d-lab
+
+'''
+
+== Part 3: Validate the Deployment
+
+Creating the ModelService triggers the OpenShift AI operator to provision all the necessary backend components. This process takes several minutes as container images are pulled and pods are started.
+
+. Monitor the ModelService status:
++
+[source,bash]
+
+oc get modelservice llama-3-8b-chat-hf-sample -n my-llm-d-lab -w
+
+Wait until the STATUS column shows Ready or Available. Press Ctrl+C to exit the watch.
+
+. Check the deployed pods:
++
+[source,bash]
+
+oc get pods -n my-llm-d-lab
+
+You should see pods related to the ModelService name you chose, likely including:
+
+Pods for the inference gateway (e.g., llm-d-gateway-...)
+
+Pods for the llm-d controller manager
+
+Pods for the vLLM model deployment itself (potentially separate prefill and decode pods, depending on the default configuration)
+
+. Find the Inference Endpoint (Route):
++
+The ModelService automatically creates an OpenShift Route to expose the inference API.
++
+[source,bash]
+
+oc get route llama-3-8b-chat-hf-sample -n my-llm-d-lab -o jsonpath='{.spec.host}'
+
+Copy this hostname. You will need it to send inference requests.
+
+If your pods are running and you have a route hostname, the deployment is successful!
+
+'''
+
+== Part 4: Send an Inference Request (Basic Test)
+
+Let's send a simple request using curl to verify the endpoint is working.
+
+. Set the route hostname to an environment variable:
++
+[source,bash]
+
+export MODEL_ROUTE="your-route-hostname-here" # Paste the hostname from the previous step
+
+. Send a sample completion request:
++
+[source,bash,subs="attributes+"]
+
+curl -k https://${MODEL_ROUTE}/v1/completions 
+
+-H "Content-Type: application/json" 
+
+-d '{
+"model": "meta-llama/Meta-Llama-3-8B-Instruct",
+"prompt": "Translate the following English text to French: 'Hello, world!'",
+"max_tokens": 20,
+"temperature": 0.1
+}'
+
+You should receive a JSON response containing the model's translation.
+
+[TIP.icon-check-circle]
+.Success!
+
+Receiving a valid JSON response confirms that your distributed inference service is up and running correctly.
+
+'''
+
+== Part 5: Cleanup
+
+When you are finished with the lab, remove the deployed resources.
+
+. Delete the ModelService:
++
+[source,bash]
+
+oc delete modelservice llama-3-8b-chat-hf-sample -n my-llm-d-lab
+
+This will trigger the deletion of all associated deployments, services, and routes.
+
+. (Optional) Delete the project:
++
+[source,bash]
+
+oc delete project my-llm-d-lab
+
+'''
+
+[IMPORTANT.icon-trophy]
+.Lab Complete!
+
+Congratulations! You have successfully deployed, validated, and tested a model using OpenShift AI's Distributed Inference feature. You are now ready to explore more advanced configurations
