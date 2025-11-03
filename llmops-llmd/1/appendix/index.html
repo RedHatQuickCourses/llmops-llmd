@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>LLM-D Features :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>RDHP Lab: Environment Setup :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="appendix.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -61,10 +62,10 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../appendix/appendix.html">Taxonomy to Know</a>
+    <a class="nav-link" href="appendix.html">Taxonomy to Know</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../appendix/index.html">RDHP Lab: Environment Setup</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="index.html">RDHP Lab: Environment Setup</a>
   </li>
 </ul>
   </li>
@@ -99,7 +100,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section5.html">LLM-D Features</a></li>
+    <li><a href="appendix.html">Taxonomy to Know</a></li>
+    <li><a href="index.html">RDHP Lab: Environment Setup</a></li>
   </ul>
 </nav>
 </div>
@@ -108,136 +110,85 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">LLM-D Features</h1>
+<h1 class="page">RDHP Lab: Environment Setup</h1>
 <div id="preamble">
 <div class="sectionbody">
-<div class="admonitionblock important zap">
+<div class="admonitionblock note icon-cogs">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">Unleash the Power!</div>
-<div class="paragraph">
-<p>This is where the real magic happens. LLM-D gives you a set of powerful, production-ready techniques to supercharge your inference.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_superpower_1_intelligent_inference_scheduling"><a class="anchor" href="#_superpower_1_intelligent_inference_scheduling"></a>⚡ <strong>Superpower #1: Intelligent Inference Scheduling</strong></h3>
-<div class="paragraph">
-<p>The <code>llm-d-inference-scheduler</code> is the heart of the system. It uses a two-step "Filter-and-Score" process to find the perfect home for every single request.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>FILTER:</strong> "Who is even available for this job?" (Eliminates overloaded or incompatible pods).</p>
-</li>
-<li>
-<p><strong>SCORE:</strong> "Of the ones left, who is the <strong>best</strong> for the job?" (Scores pods based on load, and most importantly, who already has the KV Cache ready to go!).</p>
-</li>
-</ol>
-</div>
-<hr>
-</div>
-<div class="sect2">
-<h3 id="_superpower_2_prefilldecode_pd_disaggregation"><a class="anchor" href="#_superpower_2_prefilldecode_pd_disaggregation"></a>🚀 <strong>Superpower #2: Prefill/Decode (P/D) Disaggregation</strong></h3>
-<div class="paragraph">
-<p>This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Before:</strong> One big, clunky server trying to do everything.</p>
-</li>
-</ul>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre> +-------------------------------------+
- | [ Monolithic GPU Server ]           |
- |  - Juggling compute-heavy Prefill   |
- |  - And memory-heavy Decode          |
- |  - (Struggling to keep up!)         |
- +-------------------------------------+</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>After:</strong> A specialized team working in perfect harmony.</p>
-</li>
-</ul>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre> +------------------+      +------------------+
- | [ Prefill Team ] |-----&gt;| [ Decode Team ]  |
- | - A+ at compute  |      | - Masters of Memory|
- | - Specialized GPUs|      | - Optimized GPUs |
- +------------------+      +------------------+</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The result? A massive <strong>25-50% performance boost</strong> for large models!</p>
-</div>
-<hr>
-</div>
-<div class="sect2">
-<h3 id="_superpower_3_wide_expert_parallelism"><a class="anchor" href="#_superpower_3_wide_expert_parallelism"></a>🌌 <strong>Superpower #3: Wide Expert Parallelism</strong></h3>
-<div class="admonitionblock caution stars">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>Boss Level:</strong> This is for serving gargantuan Mixture-of-Experts (MoE) models.</p>
-</div>
+<div class="title">Your Starting Point</div>
+Welcome to the lab setup guide. This is the crucial Step 0 before you can run the "AI QuickStart" lab.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.</p>
+<p>This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment on the Red Hat Demo Platform (RHDP). Follow these four steps in order, and you&#8217;ll be ready to deploy.</p>
 </div>
 <hr>
 </div>
-<div class="sect2">
-<h3 id="_superpower_4_kv_cache_management"><a class="anchor" href="#_superpower_4_kv_cache_management"></a>🧠 <strong>Superpower #4: KV Cache Management</strong></h3>
-<div class="paragraph">
-<p>That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The <code>llm-d-kv-cache-manager</code> is a genius at moving that data to cheaper, more abundant storage.</p>
 </div>
-<div class="sidebarblock">
-<div class="content">
+<div class="sect2">
+<h3 id="_1_lab_setup_overview_and_steps"><a class="anchor" href="#_1_lab_setup_overview_and_steps"></a>1. Lab Setup: Overview and Steps</h3>
 <div class="paragraph">
-<p><strong>Library Analogy</strong></p>
+<p>This first experience covers the entire lab environment overview. It provides links to the Red Hat Demo Platform (RHDP) Catalog item, the steps to configure the environment once it completes provisioning, and finally, it provides a link to the official LLM-D GitHub Repository where you&#8217;ll continue using the open-source lab to deploy the "well-lit path" for distributed inference.</p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/ol87rAAlnjMqn5udqGRx?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_2_ordering_from_the_red_hat_demo_platform"><a class="anchor" href="#_2_ordering_from_the_red_hat_demo_platform"></a>2. Ordering from the Red Hat Demo Platform</h3>
+<div class="paragraph">
+<p>This experience showcases the steps to provision an LLM-D compatible environment using the Red Hat Demo Platform. It starts by selecting the Catalog item and shows an example of the configuration options to select when ordering.</p>
+</div>
+<div class="paragraph">
+<p>Link: <a href="https://catalog.demo.redhat.com/catalog?utm_source=webapp&amp;utm_medium=share-link&amp;search=aws+open&amp;item=babylon-catalog-prod%2Fsandboxes-gpte.sandbox-ocp.prod">AWS with OpenShift Open Environment</a></p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/7kP2UIb8NS0se6vuGV5Z?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_3_getting_started_in_the_openshift_cluster"><a class="anchor" href="#_3_getting_started_in_the_openshift_cluster"></a>3. Getting Started in the OpenShift Cluster</h3>
+<div class="paragraph">
+<p>This experience starts with a running RHDP environment and shows the steps to log into the environment and validate the MachineSets and worker nodes available to the cluster.</p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/8x2PYzS7BCQJU06Eaycd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_4_configuring_the_cluster_operators_and_machinesets"><a class="anchor" href="#_4_configuring_the_cluster_operators_and_machinesets"></a>4. Configuring the Cluster (Operators and MachineSets)</h3>
+<div class="paragraph">
+<p>This experience uses the AI BU Services GitHub repository to clone setup files. It shows how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Without LLM-D:</strong> Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!</p>
+<p>Deploy the GPU MachineSet.</p>
 </li>
 <li>
-<p><strong>With LLM-D (North-South Caching):</strong> You keep the book on your personal desk (CPU RAM). Faster!</p>
+<p>Scale the MachineSet for the lab.</p>
 </li>
 <li>
-<p><strong>With LLM-D (East-West Caching):</strong> You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!</p>
+<p>Install the Node Feature Discovery (NFD) and NVIDIA GPU Operators.</p>
+</li>
+<li>
+<p>Deploy the ClusterPolicy to activate the GPUs.</p>
 </li>
 </ul>
 </div>
-</div>
+<div class="paragraph">
+<p>Once this is complete, your cluster is ready for the main lab.</p>
 </div>
 <hr>
-<hr>
+<iframe src="https://demo.arcade.software/x7ffTWS6g8Dy5GBm8mYS?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="appendix.html">Taxonomy to Know</a></span>
+</nav>
 </article>
   </div>
 </main>
