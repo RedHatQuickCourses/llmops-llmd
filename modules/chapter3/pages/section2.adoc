@@ -13,25 +13,76 @@ Wondering if LLM-D is your new best friend? If you nod your head to most of thes
 - [x] 📈 You have a crack **Platform or SRE team** ready to level up their infrastructure.
 
 '''
+
+== Identifying the Right Business Problem
+
+LLM-D is not just a technical tool; it's a solution to specific, expensive business problems. See if you recognize any of these common scenarios.
+
+[cols="1,1,1a",options="header"]
+|===
+| Business Problem
+| Symptom (What You're Seeing)
+| How llm-d Solves It
+
+| Skyrocketing AI OpEx & Poor ROI
+| "Our GPU budget is out of control. We keep buying more hardware, but our user capacity doesn't double. We can't make this project economically viable."
+| llm-d's Intelligent Scheduling and KV Cache Management stop waste. They pack more users and more models onto the same hardware, directly lowering TCO and improving your cost-per-query.
+
+| Inconsistent or Slow AI Applications
+| "Our users complain the chatbot is 'slow to start' (High $TTFT$) or 'stutters' during a long answer (High $TPOT$). Our RAG app times out under load."
+| llm-d's P/D Disaggregation and Smart Scheduling are built to solve this. They eliminate hotspots and optimize the pipeline for fast, consistent responses, allowing you to meet your SLOs.
+
+| Data Sovereignty & Security Mandates
+| "Our legal and compliance teams have blocked the use of third-party APIs. We have to build this in-house, but we can't sacrifice performance."
+| llm-d runs inside your OpenShift cluster. Your proprietary data never leaves your secure, private, or hybrid cloud environment. It delivers public-cloud performance with private-cloud security.
+
+| Inability to Run Next-Gen Models
+| "We're stuck on 7B models. We want to use a new 8x7B (MoE) model to stay competitive, but we have no way to serve it efficiently."
+| llm-d's Wide Expert Parallelism is specifically designed to serve massive Mixture-of-Experts (MoE) models, giving you a clear path to run next-generation AI.
+|===
+
 '''
+== Who is This For? The Skills You Need
 
-*Architectural Advantage:* 
-llm-d's primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of: 
+LLM-D is incredibly powerful, but it is not a "magic button." It is a solution designed for a specific set of users.
 
- . An *intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension*, which makes dynamic, telemetry-driven scheduling decisions; 
- . A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and 
- . A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.
+=== Persona 1: The Operator (Your Platform/SRE Team)
+This is the primary user who installs, configures, and manages llm-d. This team should have:
 
+ * Strong Kubernetes/OpenShift Expertise: Deep understanding of Operators, networking (Gateway API), and security contexts.
 
-*Performance Drivers:* 
+ * Helm & GitOps Fluency: Deployments are managed via Helm charts, ideally in a GitOps workflow.
 
-The framework's significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques. 
+ * Observability Skills: Comfortable with Prometheus and Grafana for monitoring GPU, network, and scheduler-level metrics.
 
-Key among these are *Prefill/Decode (P/D) disaggregation*, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA's Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.
+ * Hardware Awareness: Understands GPU hardware, NVIDIA drivers, and node configurations.
 
+=== Persona 2: The User (Your Data Scientists & App Developers)
+This is the consumer of the llm-d service. For them, life gets simpler. They should:
 
-*Competitive Positioning:* 
+ * Be API-Driven: They only need to know the OpenAI-compatible API endpoint provided by the platform team.
 
-Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes. 
+ U Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.
+
+'''
+[NOTE.book]
+.llm-d at a Glance: The Technical Deep Dive
+
+For architects and platform leads, here is a summary of llm-d's core technical advantages.
+
+=== Architectural Advantage
+llm-d's primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:
+
+. An intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension, which makes dynamic, telemetry-driven scheduling decisions;
+. A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and
+. A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.
+
+=== Performance Drivers
+The framework's significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques.
+
+Key among these are Prefill/Decode (P/D) disaggregation, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA's Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.
+
+=== Competitive Positioning
+Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes.
 
 This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.
