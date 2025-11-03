@@ -11,7 +11,7 @@
     | |___ | |___ | |     | |     | | | | 
     |_____||_____||_|     |_|     |____/ 
 
-  OPENSHIFTS AI'S SOLUTION FOR DISTRUBUTED INFERENCE
+  DISTRUBUTED INFERENCE WITH LLM-D
 
 ====
 
