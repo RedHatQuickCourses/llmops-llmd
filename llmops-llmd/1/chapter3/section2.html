@@ -49,13 +49,10 @@
     <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
+    <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section6.html">Hands-on Lab: Deploying Distributed Inference</a>
   </li>
 </ul>
   </li>
@@ -111,6 +108,8 @@
 </aside>
 <article class="doc">
 <h1 class="page">Use Case Identification</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="admonitionblock tip tada">
 <table>
 <tr>
@@ -146,15 +145,130 @@
 </ul>
 </div>
 <hr>
-<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_identifying_the_right_business_problem"><a class="anchor" href="#_identifying_the_right_business_problem"></a>Identifying the Right Business Problem</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p><strong>Architectural Advantage:</strong>
-llm-d&#8217;s primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:</p>
+<p>LLM-D is not just a technical tool; it&#8217;s a solution to specific, expensive business problems. See if you recognize any of these common scenarios.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Business Problem</th>
+<th class="tableblock halign-left valign-top">Symptom (What You&#8217;re Seeing)</th>
+<th class="tableblock halign-left valign-top">How llm-d Solves It</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Skyrocketing AI OpEx &amp; Poor ROI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Our GPU budget is out of control. We keep buying more hardware, but our user capacity doesn&#8217;t double. We can&#8217;t make this project economically viable."</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>llm-d&#8217;s Intelligent Scheduling and KV Cache Management stop waste. They pack more users and more models onto the same hardware, directly lowering TCO and improving your cost-per-query.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inconsistent or Slow AI Applications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Our users complain the chatbot is 'slow to start' (High $TTFT$) or 'stutters' during a long answer (High $TPOT$). Our RAG app times out under load."</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>llm-d&#8217;s P/D Disaggregation and Smart Scheduling are built to solve this. They eliminate hotspots and optimize the pipeline for fast, consistent responses, allowing you to meet your SLOs.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Sovereignty &amp; Security Mandates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Our legal and compliance teams have blocked the use of third-party APIs. We have to build this in-house, but we can&#8217;t sacrifice performance."</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>llm-d runs inside your OpenShift cluster. Your proprietary data never leaves your secure, private, or hybrid cloud environment. It delivers public-cloud performance with private-cloud security.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inability to Run Next-Gen Models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"We&#8217;re stuck on 7B models. We want to use a new 8x7B (MoE) model to stay competitive, but we have no way to serve it efficiently."</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>llm-d&#8217;s Wide Expert Parallelism is specifically designed to serve massive Mixture-of-Experts (MoE) models, giving you a clear path to run next-generation AI.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_who_is_this_for_the_skills_you_need"><a class="anchor" href="#_who_is_this_for_the_skills_you_need"></a>Who is This For? The Skills You Need</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>LLM-D is incredibly powerful, but it is not a "magic button." It is a solution designed for a specific set of users.</p>
+</div>
+<div class="sect2">
+<h3 id="_persona_1_the_operator_your_platformsre_team"><a class="anchor" href="#_persona_1_the_operator_your_platformsre_team"></a>Persona 1: The Operator (Your Platform/SRE Team)</h3>
+<div class="paragraph">
+<p>This is the primary user who installs, configures, and manages llm-d. This team should have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Strong Kubernetes/OpenShift Expertise: Deep understanding of Operators, networking (Gateway API), and security contexts.</p>
+</li>
+<li>
+<p>Helm &amp; GitOps Fluency: Deployments are managed via Helm charts, ideally in a GitOps workflow.</p>
+</li>
+<li>
+<p>Observability Skills: Comfortable with Prometheus and Grafana for monitoring GPU, network, and scheduler-level metrics.</p>
+</li>
+<li>
+<p>Hardware Awareness: Understands GPU hardware, NVIDIA drivers, and node configurations.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_persona_2_the_user_your_data_scientists_app_developers"><a class="anchor" href="#_persona_2_the_user_your_data_scientists_app_developers"></a>Persona 2: The User (Your Data Scientists &amp; App Developers)</h3>
+<div class="paragraph">
+<p>This is the consumer of the llm-d service. For them, life gets simpler. They should:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Be API-Driven: They only need to know the OpenAI-compatible API endpoint provided by the platform team.</p>
+<div class="literalblock">
+<div class="content">
+<pre>U Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<hr>
+<div class="admonitionblock note book">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">llm-d at a Glance: The Technical Deep Dive</div>
+For architects and platform leads, here is a summary of llm-d&#8217;s core technical advantages.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_architectural_advantage"><a class="anchor" href="#_architectural_advantage"></a>Architectural Advantage</h3>
+<div class="paragraph">
+<p>llm-d&#8217;s primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>An <strong>intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension</strong>, which makes dynamic, telemetry-driven scheduling decisions;</p>
+<p>An intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension, which makes dynamic, telemetry-driven scheduling decisions;</p>
 </li>
 <li>
 <p>A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and</p>
@@ -164,23 +278,26 @@ llm-d&#8217;s primary strength is its clean, three-layered architecture, which i
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p><strong>Performance Drivers:</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_performance_drivers"><a class="anchor" href="#_performance_drivers"></a>Performance Drivers</h3>
 <div class="paragraph">
 <p>The framework&#8217;s significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques.</p>
 </div>
 <div class="paragraph">
-<p>Key among these are <strong>Prefill/Decode (P/D) disaggregation</strong>, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA&#8217;s Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.</p>
+<p>Key among these are Prefill/Decode (P/D) disaggregation, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA&#8217;s Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.</p>
 </div>
-<div class="paragraph">
-<p><strong>Competitive Positioning:</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_competitive_positioning"><a class="anchor" href="#_competitive_positioning"></a>Competitive Positioning</h3>
 <div class="paragraph">
 <p>Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes.</p>
 </div>
 <div class="paragraph">
 <p>This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.</p>
+</div>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="section1.html">LLM-D Benefits</a></span>
