@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab: Deploying Your First Distributed Inference Service :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>Hands-on Lab: Proving the Value of llm-d :: vLLM to AI Factory Scaling with LLM-D</title>
     <link rel="prev" href="section4.html">
     <link rel="next" href="../appendix/appendix.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -46,13 +46,10 @@
     <a class="nav-link" href="section2.html">Use Case Identification</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
-  </li>
-  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+    <a class="nav-link" href="section5.html">Hands-on Lab: Proving the Value of llm-d</a>
   </li>
 </ul>
   </li>
@@ -64,6 +61,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">RDHP Lab: Environment Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
   </li>
 </ul>
   </li>
@@ -98,7 +101,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section5.html">Lab: Deploying Your First Distributed Inference Service</a></li>
+    <li><a href="section5.html">Hands-on Lab: Proving the Value of llm-d</a></li>
   </ul>
 </nav>
 </div>
@@ -107,189 +110,390 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab: Deploying Your First Distributed Inference Service</h1>
+<h1 class="page">Hands-on Lab: Proving the Value of llm-d</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Welcome to the hands-on lab for OpenShift AI&#8217;s Distributed Inference.</p>
+<p>This lab guides you through deploying, comparing, and validating a scalable and efficient inference stack on your OpenShift cluster. You will not just deploy llm-d, you will prove its value.</p>
 </div>
-<div class="paragraph">
-<p>In this guide, you will deploy your first distributed AI inference service on OpenShift AI. You will follow the "well-lit path" for Inference Scheduling (powered by LLM-D) to deploy a highly efficient, scalable, and enterprise-grade service.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_lab_goal"><a class="anchor" href="#_lab_goal"></a>Lab Goal</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>By the end of this lab, you will have:</p>
-</div>
-<div class="paragraph">
-<p>Installed the OpenShift AI Gateway (kgateway).</p>
-</div>
-<div class="paragraph">
-<p>Deployed a vLLM model service with disaggregated (separate) Prefill and Decode pods.</p>
-</div>
-<div class="paragraph">
-<p>Validated that your deployment is running and ready for inference.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_why_buy_this_lab"><a class="anchor" href="#_the_why_buy_this_lab"></a>The "Why Buy?" This Lab</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This lab proves the core value of OpenShift AI&#8217;s distributed inference:</p>
-</div>
-<div class="paragraph">
-<p>Performance: You will deploy a stack that intelligently separates large "Prefill" jobs from small "Decode" jobs. This eliminates queue-blocking and is the key to guaranteeing your performance SLOs.</p>
-</div>
-<div class="paragraph">
-<p>Lower TCO: You stop wasting expensive GPU cycles. This architecture is designed to maximize GPU utilization, so you get the full value from your hardware.</p>
-</div>
-<div class="paragraph">
-<p>Security: The entire stack runs on your private OpenShift cluster, in your hybrid cloud environment, ensuring your proprietary data never leaves your control.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_before_you_begin_prerequisites"><a class="anchor" href="#_before_you_begin_prerequisites"></a>Before You Begin: Prerequisites</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This lab guide assumes you have ALREADY COMPLETED the "OpenShift AI: Lab Environment Setup" guide.</p>
-</div>
-<div class="admonitionblock important">
+<div class="admonitionblock important icon-info-circle">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-<div class="title">Lab Environment Check</div>
-Your OpenShift environment must have the following components running:
+<div class="title">The "Why Take This Lab?"</div>
+The answer is Performance, TCO, and Security. This lab focuses on the first two. You will learn how to:
 </td>
 </tr>
 </table>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>An OpenShift 4.17+ cluster.</p>
-</li>
-<li>
-<p>At least two GPU-enabled nodes (e.g., L40S or A100).</p>
-</li>
-<li>
-<p>The Node Feature Discovery (NFD) Operator.</p>
-</li>
-<li>
-<p>The NVIDIA GPU Operator.</p>
-</li>
-</ul>
-</div>
-<hr>
 <div class="paragraph">
-<p>If your environment is ready, let&#8217;s begin.</p>
+<p>Prove Guaranteed Performance: You will visually identify and eliminate "hotspots" and queue-blocking to prove you can meet your SLOs.</p>
+</div>
+<div class="paragraph">
+<p>Prove Lowered TCO: You will find the "Golden Signals" in OpenShift Monitoring that directly translate to cost savings and maximized GPU utilization.</p>
+</div>
+<div class="paragraph">
+<p>Run Securely: You will set the foundation for enterprise-grade authentication, ensuring your proprietary data never leaves your control.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_1_client_and_namespace_setup"><a class="anchor" href="#_part_1_client_and_namespace_setup"></a>Part 1: Client and Namespace Setup</h2>
+<h2 id="_lab_overview"><a class="anchor" href="#_lab_overview"></a>Lab Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>First, we need to prepare your client (your local machine or bastion) and the OpenShift project where we&#8217;ll work.</p>
+<p>This hands-on lab follows a "compare-and-contrast" model. We will first deploy a vLLM model using a basic Kubernetes scheduler and observe its limitations. Then, we will deploy the exact same model using the llm-d Intelligent Inference Scheduler ("Well-Lit Path 1") and use OpenShift&#8217;s monitoring tools to see the difference.</p>
+</div>
+<div class="paragraph">
+<p>This guide assumes you have already completed the "Lab Environment Setup" and have a cluster ready.</p>
 </div>
 <div class="sect2">
-<h3 id="_1_set_namespace_variable"><a class="anchor" href="#_1_set_namespace_variable"></a>1. Set Namespace Variable</h3>
+<h3 id="_your_starting_point_lab_prerequisites"><a class="anchor" href="#_your_starting_point_lab_prerequisites"></a>Your Starting Point: Lab Prerequisites</h3>
 <div class="paragraph">
-<p>To make commands easier to copy/paste, let&#8217;s set a namespace variable and create that project.</p>
+<p>OpenShift Cluster 4.19.19+ (RHOAI 2.25+).</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export NAMESPACE="llm-d-lab"
-oc new-project $NAMESPACE</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_get_the_required_client_tools"><a class="anchor" href="#_2_get_the_required_client_tools"></a>2. Get the Required Client Tools</h3>
 <div class="paragraph">
-<p>This lab requires kubectl, helm, yq, and git. This repository contains a helper script to install them.</p>
+<p>You have cluster-admin permissions.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-This guide assumes you are running these commands from a terminal within the cloned course repository. From the root of this repository
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">prereq/client-setup/install-deps.sh</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_3_create_your_huggingface_token_secret"><a class="anchor" href="#_3_create_your_huggingface_token_secret"></a>3. Create Your HuggingFace Token Secret</h3>
 <div class="paragraph">
-<p>To download models like Llama 3, the service needs a HuggingFace (HF) token.</p>
+<p>You have at least one GPU-enabled node (e.g., g6.xlarge, L40S, A100).</p>
+</div>
+<div class="paragraph">
+<p>The NVIDIA GPU Operator is installed and running.</p>
+</div>
+<div class="paragraph">
+<p>The Authorino Operator is installed and running.</p>
+</div>
+<div class="paragraph">
+<p>LeaderWorkerSet Operator provides the ability to deploy a LWS in OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>LeaderWorkerSet: An API for deploying a group of pods as a unit of replication. It aims to address common deployment patterns of AI/ML inference workloads, especially multi-host inference workloads where the LLM will be sharded and run across multiple devices on multiple nodes.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_part_1_cluster_client_setup"><a class="anchor" href="#_part_1_cluster_client_setup"></a>Part 1: Cluster &amp; Client Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before deploying the model, we must prepare the cluster to run llm-d dependencies and configure your client tools.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>If you don&#8217;t have one, go to your HuggingFace Profile, navigate to Settings &#8594; Access Tokens, and create a new token with "read" permissions.</p>
+<p>Install the OpenShift Web Terminal</p>
+<div class="paragraph">
+<p>The Web Terminal in the OpenShift console is the easiest way to run these commands. If you have not already, install the "Web Terminal" operator from OperatorHub.</p>
+</div>
+<div class="admonitionblock note icon-lightbulb">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the Web Terminal icon (a small <strong>&gt;_</strong> in the top-right console) doesn&#8217;t appear after installation, reload your browser page.
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
-<p>Create the Kubernetes secret in your project (replace YOUR_TOKEN_HERE with your new token).</p>
+<p>To ensure your web terminal has all necessary tools (like helm and yq), apply the enhanced web terminal configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -k https://github.com/redhat-na-ssa/llm-d-demo/demo/web-terminal</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Clone the Deployment Repository</p>
+<div class="paragraph">
+<p>This demo repository contains all the GitOps manifests needed for the lab.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/redhat-na-ssa/llm-d-demo.git
+cd llm-d-demo</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Scale Your GPU Nodes (If Necessary)</p>
+<div class="paragraph">
+<p>This lab requires at least one GPU node. If you used the RHDP lab setup, you may have already created a g6.xlarge machineset. Let&#8217;s ensure it&#8217;s scaled to 1.</p>
+</div>
+<div class="listingblock">
+<div class="title">Check your machinesets</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get machineset -n openshift-machine-api</code></pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>Scale your GPU machineset to 1 (if not already)</p>
+</div>
+<div class="paragraph">
+<p>(Replace 'YOUR-GPU-MACHINESET' with the name from the command above)</p>
+</div>
+<div class="paragraph">
+<p>oc scale machineset YOUR-GPU-MACHINESET -n openshift-machine-api --replicas=1</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install llm-d Cluster Dependencies</p>
+<div class="paragraph">
+<p>This kustomize (-k) command will apply all the necessary prerequisites for llm-d on OCP 4.19+, including the Gateway API CRDs and other dependencies.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic hf-token
---from-literal=token=YOUR_TOKEN_HERE
---namespace $NAMESPACE</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Run this from inside the 'llm-d-demo' git repo</code></pre>
 </div>
 </div>
+</li>
+</ol>
 </div>
+<div class="paragraph">
+<p>until oc apply -k gitops/ocp-4.19; do : ; done</p>
+</div>
+<hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_2_deploy_the_openshift_ai_inference_stack"><a class="anchor" href="#_part_2_deploy_the_openshift_ai_inference_stack"></a>Part 2: Deploy the OpenShift AI Inference Stack</h2>
+<h2 id="_part_2_the_basic_deployment_our_baseline"><a class="anchor" href="#_part_2_the_basic_deployment_our_baseline"></a>Part 2: The "Basic" Deployment (Our Baseline)</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now we will deploy the two main components using the Helm charts included in this repository.</p>
+<p>First, we&#8217;ll deploy a model the "basic" way, using a standard Kubernetes Service for load balancing. This will create the "hotspot" problem we want to solve.</p>
 </div>
-<div class="sect2">
-<h3 id="_1_install_the_gateway_provider"><a class="anchor" href="#_1_install_the_gateway_provider"></a>1. Install the Gateway Provider</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the Demo Project</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project demo-llm</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a HuggingFace Token Secret</p>
 <div class="paragraph">
-<p>First, we deploy the kgateway, which will act as our smart router.</p>
+<p>(If you haven&#8217;t already from the lab setup)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm install llm-d-gateway ./charts/kgateway
--n $NAMESPACE
---wait</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Replace YOUR_TOKEN_HERE with your actual HF token</code></pre>
 </div>
 </div>
+</li>
+</ol>
 </div>
-<div class="sect2">
-<h3 id="_2_deploy_the_inference_scheduling_service"><a class="anchor" href="#_2_deploy_the_inference_scheduling_service"></a>2. Deploy the "Inference Scheduling" Service</h3>
 <div class="paragraph">
-<p>Next, we deploy the core of the lab: the LLM-D controller and the vLLM model service. This "Inference Scheduling" path is the recommended "well-lit path" for a production-ready deployment.</p>
+<p>oc create secret generic hf-token</p>
+</div>
+<div class="paragraph">
+<p>--from-literal=token=YOUR_TOKEN_HERE</p>
+</div>
+<div class="paragraph">
+<p>--namespace demo-llm</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Deploy the "Basic" Model</p>
+<div class="paragraph">
+<p>This manifest (from the demo repo) deploys a vLLM model as a standard Deployment and exposes it with a Service. It does not use the llm-d scheduler.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm install llm-d-vllm-deployment ./charts/llm-d-vllm-deployment
--n $NAMESPACE
--f ./charts/llm-d-vllm-deployment/values.yaml
---wait</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Run this from inside the 'llm-d-demo' git repo</code></pre>
 </div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>until oc apply -k demo/llm-basic; do : ; done</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wait for the "Basic" Pods to be Ready</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Wait for the STATUS to show 'Running'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>oc get pods -n demo-llm -l app=llm-basic -w</p>
+</div>
+<div class="paragraph">
+<p>You should see 2 pods running, e.g., llm-basic-deployment-&#8230;&#8203;.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_part_3_the_smart_deployment_path_1_intelligent_scheduler"><a class="anchor" href="#_part_3_the_smart_deployment_path_1_intelligent_scheduler"></a>Part 3: The "Smart" Deployment (Path 1: Intelligent Scheduler)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, we will deploy the exact same model, but this time using the llm-d QuickStart. This will deploy it using the ModelService CRD, which automatically configures the intelligent KServe "Next GenAI" Controller and the Inference scheduler (EPP).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Deploy the llm-d QuickStart</p>
+<div class="paragraph">
+<p>This command deploys the LLMInferenceService for the gpt-oss-20b model.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Run this from inside the 'llm-d-demo' git repo</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>until oc apply -k demo/llm-d; do : ; done</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wait for the llm-d Pods to be Ready</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Wait for the STATUS to show 'Ready' or 'Available'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>oc get llminferenceservice -n demo-llm -w</p>
+</div>
+<div class="paragraph">
+<p>This will create a new set of pods for the llm-d deployment. You now have two separate deployments of the same model.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_part_4_prove_the_value_observability"><a class="anchor" href="#_part_4_prove_the_value_observability"></a>Part 4: Prove the Value (Observability)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is the most important step. We will run a load test and use the OpenShift Monitoring dashboard to visually prove the difference between the "basic" and "smart" deployments.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get the Inference URLs</p>
+<div class="paragraph">
+<p>The "smart" service is exposed via the main OpenShift AI Ingress Gateway. We&#8217;ll expose the "basic" one with a simple Route.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">1. Get the "SMART" URL (llm-d)</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>export SMART_URL=$( \
+oc -n openshift-ingress get gateway openshift-ai-inference \
+-o jsonpath='{.status.addresses[0].value}' \
+)
+export SMART_ENDPOINT="http://${SMART_URL}/demo-llm/gpt-oss-20b/v1/completions"</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Expose the "BASIC" service and get its URL</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>oc expose service llm-basic-service -n demo-llm
+export BASIC_URL=$(oc get route llm-basic-service -n demo-llm -o jsonpath='{.spec.host}')
+export BASIC_ENDPOINT="http://${BASIC_URL}/v1/completions"</p>
+</div>
+<div class="paragraph">
+<p>echo "SMART (llm-d) URL: $SMART_ENDPOINT"
+echo "BASIC (K8s) URL: $BASIC_ENDPOINT"</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to the GPU Dashboard</p>
+<div class="paragraph">
+<p>In the OpenShift Console, navigate to Observe &gt; Dashboards.</p>
+</div>
+<div class="paragraph">
+<p>In the "Dashboards" search bar, type "NVIDIA" and select the "NVIDIA DCGM Exporter" dashboard. This dashboard shows you the real-time metrics from your GPUs.</p>
+</div>
+</li>
+<li>
+<p>Run a Load Test (and Watch the Dashboard)</p>
+<div class="paragraph">
+<p>We will use a simple for loop to send 20 requests to our "basic" service. While this runs, keep your eye on the "DCGM" dashboard.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Set the prompt</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>export LLM="openai/gpt-oss-20b"
+export PROMPT="Explain the difference between supervised and unsupervised learning in machine learning."</p>
+</div>
+<div class="paragraph">
+<p>Run 20 requests against the "BASIC" endpoint</p>
+</div>
+<div class="paragraph">
+<p>for i in {1..20}; do</p>
+</div>
+<div class="paragraph">
+<p>curl -s -X POST $BASIC_ENDPOINT \
+-H "Content-Type: application/json" \
+-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 50 }'</p>
+</div>
+<div class="paragraph">
+<p>-o /dev/null &amp;</p>
+</div>
+<div class="paragraph">
+<p>done</p>
+</div>
+<div class="paragraph">
+<p>What to Observe (The "Hotspot"): On the dashboard, look at the "GPU Utilization" panel. You will see one GPU pod spike to 100% utilization, while the other pod sits idle. This is the "basic" scheduler&#8217;s round-robin failing. It sends all requests to one pod until it&#8217;s full, creating a hotspot.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the Same Load Test on the "Smart" Scheduler</p>
+<div class="paragraph">
+<p>Now, run the exact same test against the llm-d endpoint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Run 20 requests against the "SMART" (llm-d) endpoint</code></pre>
+</div>
+</div>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -298,158 +502,177 @@ This guide assumes you are running these commands from a terminal within the clo
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">What did this Helm chart do?</div>
-This single command automatically:
+This endpoint requires authentication. We&#8217;ll create a token.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Installed the llm-d-controller-manager.</p>
+<p>export SA_NAME=llm-user
+export TEST_NS=demo-llm
+oc create sa ${SA_NAME} -n ${TEST_NS}</p>
 </div>
 <div class="paragraph">
-<p>Defined the ModelService Custom Resource Definition (CRD).</p>
+<p>(We&#8217;ll create the full RBAC in the next step, for now just get the token)</p>
 </div>
 <div class="paragraph">
-<p>Created a ModelService resource for llama-3-8b-chat-hf.</p>
+<p>export TEST_TOKEN=$(oc create token ${SA_NAME} -n ${TEST_NS})</p>
 </div>
 <div class="paragraph">
-<p>Deployed two separate sets of pods: one for Prefill and one for Decode.</p>
+<p>for i in {1..20}; do</p>
 </div>
 <div class="paragraph">
-<p>Configured the Gateway to route traffic to them.</p>
+<p>curl -s -X POST $SMART_ENDPOINT \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer ${TEST_TOKEN}" \
+-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 50 }'</p>
 </div>
+<div class="paragraph">
+<p>-o /dev/null &amp;</p>
 </div>
+<div class="paragraph">
+<p>done</p>
+</div>
+<div class="paragraph">
+<p>What to Observe (The Value): Look at the "GPU Utilization" panel again. You will see the llm-d scheduler distribute the load evenly across both pods. Both pods will show ~50% utilization instead of one at 100% and one at 0%.</p>
+</div>
+<div class="paragraph">
+<p>+
+You have just proven the TCO value. You are eliminating idle, expensive hardware and maximizing your utilization.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Find the "Golden TCO Signal"</p>
+<div class="paragraph">
+<p>In the Observe &gt; Metrics tab, run this query:</p>
+</div>
+<div class="paragraph">
+<p>vllm_llmd_kv_cache_hit_rate</p>
+</div>
+<div class="paragraph">
+<p>You will see a metric for your llm-d service. This is your #1 TCO METRIC. A high hit rate means llm-d is reusing the KV Cache, skipping the expensive "Prefill" step entirely. This is a direct measure of your cost savings and ROI.</p>
+</div>
+</li>
+</ol>
+</div>
+<hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_3_validation"><a class="anchor" href="#_part_3_validation"></a>Part 3: Validation</h2>
+<h2 id="_part_5_optional_secure_the_endpoint"><a class="anchor" href="#_part_5_optional_secure_the_endpoint"></a>Part 5: (Optional) Secure the Endpoint</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s verify that all components are running.</p>
+<p>In a real environment, you need secure, authenticated access. llm-d on RHOAI is secure by default. This step shows you how to grant a ServiceAccount the minimum required permissions to call the model.</p>
 </div>
-<div class="sect2">
-<h3 id="_1_check_your_helm_releases"><a class="anchor" href="#_1_check_your_helm_releases"></a>1. Check your Helm releases</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the RBAC (Role and RoleBinding)</p>
 <div class="paragraph">
-<p>You should see both charts listed as "deployed".</p>
+<p>This is the key step. We create a Role that can only get the llminferenceservices resource, and a RoleBinding to give that permission to our llm-user ServiceAccount.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm list -n $NAMESPACE</code></pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">cat &lt;&lt;EOF | oc apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+name: llm-inferenceservice-reader
+namespace: $TEST_NS
+rules:</code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="title">Expected Output</div>
-<div class="content">
-<pre>NAME                    NAMESPACE   REVISION    UPDATED                                 STATUS      CHART                       APP VERSION
-llm-d-gateway llm-d-lab   1           2025-10-25 12:00:00.000 -0500 CDT    deployed kgateway-0.1.0              0.1.0
-llm-d-vllm-deployment llm-d-lab   1           2025-10-25 12:05:00.000 -0500 CDT    deployed llm-d-vllm-deployment-0.1.0 0.1.0</pre>
+</li>
+</ol>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_check_your_pods"><a class="anchor" href="#_2_check_your_pods"></a>2. Check your pods</h3>
 <div class="paragraph">
-<p>You should see pods for the controller, the gateway, and the separate prefill/decode model services.</p>
+<p>apiGroups: ["serving.kserve.io"]
+resources: ["llminferenceservices"]
+verbs: ["get"]</p>
+</div>
+<div class="paragraph">
+<p>resourceNames: ["gpt-oss-20b"] # Optional: Uncomment to restrict to one service</p>
+</div>
+<div class="paragraph">
+<p>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+name: llm-inferenceservice-reader-binding
+namespace: $TEST_NS
+subjects:</p>
+</div>
+<div class="paragraph">
+<p>kind: ServiceAccount
+name: $SA_NAME
+namespace: $TEST_NS
+roleRef:
+kind: Role
+name: llm-inferenceservice-reader
+apiGroup: rbac.authorization.k8s.io
+EOF</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Send a Fully Authenticated Request</p>
+<div class="paragraph">
+<p>Now, we send the same request as before. It will work, and you&#8217;ll get a real response.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n $NAMESPACE</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -s -X POST $SMART_ENDPOINT \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer ${TEST_TOKEN}" \
+-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 200, "temperature": 0.7 }' | jq .choices[0].text</code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="title">Expected Output (Pod names will vary)</div>
-<div class="content">
-<pre>NAME                                          READY   STATUS    RESTARTS   AGE
-llm-d-controller-manager-f7f5c6f8f-abcde 2/2     Running 0          5m
-llm-d-gateway-69f8c8d8b-fghij 1/1     Running 0          7m
-llama-3-8b-chat-hf-decode-7d7c9f8b8-klmno 1/1     Running 0          5m
-llama-3-8b-chat-hf-decode-7d7c9f8b8-pqrst 1/1     Running 0          5m
-llama-3-8b-chat-hf-prefill-6b6c8d8b8-uvwxyz 1/1     Running 0          5m</pre>
+</li>
+</ol>
 </div>
+<div class="admonitionblock tip icon-check-circle">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Success!</div>
+You should now see a 200 OK response and the JSON output from the model. You have successfully deployed, validated, and secured an enterprise-grade AI service that is proven to be more cost-effective than a basic deployment.
+</td>
+</tr>
+</table>
 </div>
-<div class="paragraph">
-<p>If you see all these pods in a "Running" state, your deployment is successful!</p>
-</div>
-</div>
+<hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_4_next_steps"><a class="anchor" href="#_part_4_next_steps"></a>Part 4: Next Steps</h2>
+<h2 id="_part_6_cleanup"><a class="anchor" href="#_part_6_cleanup"></a>Part 6: Cleanup</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Your AI factory is running. Now it&#8217;s time to use it.</p>
-</div>
-<div class="sect2">
-<h3 id="_1_make_your_first_inference_request"><a class="anchor" href="#_1_make_your_first_inference_request"></a>1. Make Your First Inference Request</h3>
-<div class="paragraph">
-<p>Your service is running and exposed via the Gateway. To learn how to format your request and send it to your new model, proceed to the next guide:</p>
-</div>
-<div class="paragraph">
-<p><a href="#llm-d_inference_guide.adoc" class="xref unresolved button">Next Lab: Running Your First Inference Request</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_optional_proving_the_value_observability"><a class="anchor" href="#_2_optional_proving_the_value_observability"></a>2. (Optional) Proving the Value: Observability</h3>
-<div class="paragraph">
-<p>The "Why Buy?" of this stack is its efficiency. The Helm charts automatically create PodMonitor resources to scrape metrics for Prometheus.</p>
-</div>
-<div class="paragraph">
-<p>In the OpenShift Console, you can go to Observe &gt; Dashboards and use the built-in "user workload monitoring" to query metrics like:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>vllm_llmd_time_to_first_token_seconds (TTFT)</p>
-</li>
-<li>
-<p>vllm_llmd_time_per_output_token_seconds (TPOT)</p>
-</li>
-<li>
-<p>vllm_llmd_kv_cache_hit_rate (Your most important TCO metric!)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_5_lab_cleanup"><a class="anchor" href="#_part_5_lab_cleanup"></a>Part 5: Lab Cleanup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>When you are finished, use Helm to remove all components and then delete the project.</p>
+<p>To remove the resources from this lab:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Uninstall the llm-d deployment</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Delete the "smart" (llm-d) deployment</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>helm uninstall llm-d-vllm-deployment -n $NAMESPACE</p>
-</li>
-<li>
-<p>Uninstall the gateway</p>
-</li>
-<li>
-<p>helm uninstall llm-d-gateway -n $NAMESPACE</p>
-</li>
-<li>
-<p>Delete the project</p>
-</li>
-<li>
-<p>oc delete project $NAMESPACE</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_lab_complete"><a class="anchor" href="#_lab_complete"></a>Lab Complete</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Congratulations! You have successfully deployed, validated, and tested a distributed, scalable AI inference stack on OpenShift AI.</p>
+<p>oc delete -k demo/llm-d</p>
+</div>
+<div class="paragraph">
+<p>Delete the "basic" deployment</p>
+</div>
+<div class="paragraph">
+<p>oc delete -k demo/llm-basic</p>
+</div>
+<div class="paragraph">
+<p>Delete the ServiceAccount and RBAC</p>
+</div>
+<div class="paragraph">
+<p>oc delete sa ${SA_NAME} -n ${TEST_NS}
+oc delete role llm-inferenceservice-reader -n ${TEST_NS}
+oc delete rolebinding llm-inferenceservice-reader-binding -n ${TEST_NS}</p>
 </div>
 </div>
 </div>

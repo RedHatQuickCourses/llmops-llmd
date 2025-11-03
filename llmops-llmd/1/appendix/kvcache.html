@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deep Dive on KV Cache Management :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="lws.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">vLLM to AI Factory Scaling with LLM-D</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section5.html">Hands-on Lab: Proving the Value of llm-d</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appendix.html">Taxonomy to Know</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">RDHP Lab: Environment Setup</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="appendix.html">Taxonomy to Know</a></li>
+    <li><a href="kvcache.html">Deep Dive on KV Cache Management</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Deep Dive on KV Cache Management</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock tip tada">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">The KV Cache "Litmus Test"</div>
+The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to these points, this deep dive is for you.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> 📈 You run high-concurrency services with many simultaneous users.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🗣️ Your application is a chatbot or RAG system that requires long conversation histories (context).</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🐢 You are suffering from high Time-To-First-Token (TTFT) as your request queues get backed up.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 💸 Your expensive GPU VRAM is constantly full, limiting the total number of users you can serve.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.</p>
+</li>
+</ul>
+</div>
+<hr>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deep-dive"><a class="anchor" href="#deep-dive"></a>Deep Dive: Understanding the KV Cache</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you understand why the cache is so important, let&#8217;s explore what it is and the strategies to manage it.</p>
+</div>
+<div class="sect2">
+<h3 id="_what_is_the_kv_cache"><a class="anchor" href="#_what_is_the_kv_cache"></a>What is the KV Cache?</h3>
+<div class="paragraph">
+<p>The KV Cache is the model&#8217;s "short-term memory."</p>
+</div>
+<div class="paragraph">
+<p>When you send a prompt (like "What is the capital of France?"), the model performs two phases:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Prefill Phase: It processes your prompt all at once. As it does, it generates intermediate data (the Keys and Values, or "KV") that represent the meaning and context of your prompt. This data is the KV Cache. This phase is compute-heavy and slow.</p>
+</li>
+<li>
+<p>Decode Phase: To generate an answer ("The", "capital", "is", "Paris"), the model looks at the KV Cache and generates one new token at a time. This phase is memory-bandwidth-heavy but very fast.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The KV Cache lives in the most expensive, limited resource you have: GPU VRAM.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_is_the_cache_a_performance_bottleneck"><a class="anchor" href="#_why_is_the_cache_a_performance_bottleneck"></a>Why is the Cache a Performance Bottleneck?</h3>
+<div class="paragraph">
+<p>The KV Cache is the root of two major performance problems:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem 1: VRAM Exhaustion</th>
+<th class="tableblock halign-left valign-top">Problem 2: The "Prefill" Bottleneck</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The KV Cache is huge. A single user with a long conversation history (like a RAG chatbot) can consume gigabytes of VRAM. This limits how many users can be served at the same time on one GPU.</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The "Prefill" step (which creates the cache) is slow and compute-intensive. In a traditional system, a new, long Prefill request will get in line and block all the fast Decode requests waiting behind it. This causes a "head-of-line blocking" problem and makes your whole service feel laggy.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>OpenShift AI&#8217;s distributed inference provides two main strategies to defeat both of these problems.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_caching_strategy_1_independent_caching_vram_to_ram_offload"><a class="anchor" href="#_caching_strategy_1_independent_caching_vram_to_ram_offload"></a>Caching Strategy 1: Independent Caching (VRAM to RAM Offload)</h3>
+<div class="paragraph">
+<p>This is a "North-South" caching strategy, meaning the cache data moves within a single pod.</p>
+</div>
+<div class="paragraph">
+<p>What it is: The vLLM engine inside the pod intelligently offloads "cold" (infrequently used) KV Caches from expensive GPU VRAM to more abundant, cheaper CPU RAM.</p>
+</div>
+<div class="paragraph">
+<p>How it works: When a new user request comes in, its "cold" cache is quickly swapped from CPU RAM back into VRAM for the fast Decode phase.</p>
+</div>
+<div class="paragraph">
+<p>When to use it: This is the default and is perfect for most workloads. It&#8217;s an automatic way to fit more users onto a single GPU, maximizing your TCO.</p>
+</div>
+<div class="admonitionblock note info">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Analogy: A Chef&#8217;s Fridge</div>
+Think of GPU VRAM as your small, tableside prep fridge (fast access) and CPU RAM as your main walk-in cooler (large capacity).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This strategy keeps only the active ingredients (hot caches) in the small fridge and stores everything else in the walk-in. This is far more efficient than trying to fit your entire inventory tableside.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_caching_strategy_2_shared_caching_distributed_cache_pool"><a class="anchor" href="#_caching_strategy_2_shared_caching_distributed_cache_pool"></a>Caching Strategy 2: Shared Caching (Distributed Cache Pool)</h3>
+<div class="paragraph">
+<p>This is an "East-West" caching strategy, meaning the cache data moves between pods.</p>
+</div>
+<div class="paragraph">
+<p>What it is: This strategy is used when Prefill and Decode are fully disaggregated (running on different pods). A shared, external cache pool (like Redis) is used as the "single source of truth" for the KV Caches.</p>
+</div>
+<div class="paragraph">
+<p>How it works:
+. A user sends a new prompt.
+. The Gateway routes it to a Prefill pod.
+. The Prefill pod does the heavy compute and writes the resulting KV Cache to the Shared Redis Cache.
+. The Gateway then routes all future Decode requests for that user to any available Decode pod, which reads the cache from Redis.</p>
+</div>
+<div class="paragraph">
+<p>When to use it: This is an advanced strategy for extreme-scale, high-concurrency workloads. It&#8217;s more complex (requires a Redis cluster and high-speed networking) but offers the ultimate in flexibility, as you can scale your Prefill compute and Decode memory resources completely independently.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary_when_to_use_each_strategy"><a class="anchor" href="#_summary_when_to_use_each_strategy"></a>Summary: When to Use Each Strategy</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Strategy</th>
+<th class="tableblock halign-left valign-top">What It Solves</th>
+<th class="tableblock halign-left valign-top">When to Use It (Implementation)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Independent Caching
+(VRAM &#8594; RAM Offload)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Problem: VRAM Exhaustion</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Default / Recommended: This is the standard, high-performance mode. It maximizes the user capacity of your individual GPU nodes.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Shared Caching
+(Distributed Pool)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Problem: "Head-of-Line" Blocking</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Advanced / High-Scale: Use this when you are running a massive, multi-tenant service and need to independently scale your Prefill compute (for long prompts) from your Decode capacity (for high user count).</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">RDHP Lab: Environment Setup</a></span>
+  <span class="next"><a href="lws.html">LeaderWorkerSet (LWS) Operator</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

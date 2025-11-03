@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LeaderWorkerSet (LWS) Operator :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="kvcache.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">vLLM to AI Factory Scaling with LLM-D</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section5.html">Hands-on Lab: Proving the Value of llm-d</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appendix.html">Taxonomy to Know</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">RDHP Lab: Environment Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="appendix.html">Taxonomy to Know</a></li>
+    <li><a href="lws.html">LeaderWorkerSet (LWS) Operator</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">LeaderWorkerSet (LWS) Operator</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_1_the_core_problem_scaling_distributed_ai_workloads">1. The Core Problem: Scaling Distributed AI Workloads</a></li>
+<li><a href="#_2_what_is_the_leaderworkerset_lws">2. What is the LeaderWorkerSet (LWS)?</a>
+<ul class="sectlevel2">
+<li><a href="#_2_1_lws_architecture">2.1. LWS Architecture</a></li>
+<li><a href="#_2_2_key_features">2.2. Key Features</a></li>
+</ul>
+</li>
+<li><a href="#_3_reference_example_how_lws_is_used_with_vllm">3. Reference Example: How LWS is Used with vLLM</a></li>
+<li><a href="#_4_summary_why_we_install_it">4. Summary: Why We Install It</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you are prompted to install the Leader Worker Set (LWS) Operator from the OpenShift Operator Hub. This component is a prerequisite for OpenShift AI&#8217;s advanced distributed inference capabilities.</p>
+</div>
+<div class="paragraph">
+<p>This reference page explains what the LWS Operator is and why it is a critical piece of infrastructure for running modern AI/ML workloads.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_the_core_problem_scaling_distributed_ai_workloads"><a class="anchor" href="#_1_the_core_problem_scaling_distributed_ai_workloads"></a>1. The Core Problem: Scaling Distributed AI Workloads</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using Large Language Models (LLMs) for inference often requires massive compute resources. A single model can be so large that it must be "sharded" (split) across multiple GPUs on multiple different nodes.</p>
+</div>
+<div class="paragraph">
+<p>This creates a significant deployment challenge for standard Kubernetes:</p>
+</div>
+<div class="paragraph">
+<p>How do you manage a "group" of pods that must all work together as a single application?</p>
+</div>
+<div class="paragraph">
+<p>How do you scale them up or down together as a single unit?</p>
+</div>
+<div class="paragraph">
+<p>How do you handle a failure? If one pod in the group fails, the entire sharded model is unusable, so you need to restart the entire group, not just the one failed pod.</p>
+</div>
+<div class="paragraph">
+<p>Standard Kubernetes objects like Deployments or StatefulSets are not designed to manage these tightly-coupled "groups" of pods as a single, atomic unit.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_what_is_the_leaderworkerset_lws"><a class="anchor" href="#_2_what_is_the_leaderworkerset_lws"></a>2. What is the LeaderWorkerSet (LWS)?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The LeaderWorkerSet is a custom Kubernetes API (implemented on OpenShift by the LWS Operator) designed specifically to solve this problem.</p>
+</div>
+<div class="paragraph">
+<p>It gives you the ability to deploy and manage a group of pods as a single, coordinated, and atomic unit, sometimes called a "super pod."</p>
+</div>
+<div class="sect2">
+<h3 id="_2_1_lws_architecture"><a class="anchor" href="#_2_1_lws_architecture"></a>2.1. LWS Architecture</h3>
+<div class="paragraph">
+<p>When you create a LeaderWorkerSet resource, you define a template for a "leader" pod and a "worker" pod, and specify how many workers are in each group (the size).</p>
+</div>
+<div class="paragraph">
+<p>The LWS Operator then creates:</p>
+</div>
+<div class="paragraph">
+<p>A Leader Pod: This is the "leader" of the group (index 0). It is often responsible for coordination or, as you&#8217;ll see later, running the main server process.</p>
+</div>
+<div class="paragraph">
+<p>A Worker StatefulSet: This StatefulSet is owned by the leader pod and manages all the "worker" pods in the group.</p>
+</div>
+<div class="paragraph">
+<p>The entire group (1 leader + N workers) is treated as a single entity for its entire lifecycle.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_2_key_features"><a class="anchor" href="#_2_2_key_features"></a>2.2. Key Features</h3>
+<div class="paragraph">
+<p>LWS provides critical features for distributed AI workloads:</p>
+</div>
+<div class="paragraph">
+<p>Group as a Unit: All pods in the group are created in parallel and share an identical lifecycle.</p>
+</div>
+<div class="paragraph">
+<p>Group-Level Rollouts: When you update the LWS, it performs a rolling update at the group level (e.g., group 0 is terminated and replaced with a new group 0), ensuring the application&#8217;s consistency.</p>
+</div>
+<div class="paragraph">
+<p>All-or-Nothing Failure Handling: You can configure LWS to restart the entire group if even one pod in the group fails. This is essential for sharded models where the failure of one shard (pod) makes the entire group non-functional.</p>
+</div>
+<div class="paragraph">
+<p>Topology-Aware Placement: LWS can ensure that all pods within the same group are co-located in the same topology (e.g., the same node, rack, or availability zone). This is critical for high-speed, low-latency networking (like InfiniBand or NVLink) required by distributed inference.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_reference_example_how_lws_is_used_with_vllm"><a class="anchor" href="#_3_reference_example_how_lws_is_used_with_vllm"></a>3. Reference Example: How LWS is Used with vLLM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While our lab uses the "Well-Lit Paths" provided by llm-d to manage deployments, it&#8217;s useful to see how LWS is used by the open-source community to manage distributed inference engines like vLLM.</p>
+</div>
+<div class="paragraph">
+<p>In this common pattern, LWS is used to deploy a single replica of a vLLM model that is sharded for tensor parallelism across multiple pods.</p>
+</div>
+<div class="paragraph">
+<p>A LeaderWorkerSet is defined with a size of 8 (for 8 GPUs).</p>
+</div>
+<div class="paragraph">
+<p>The Leader Pod (Pod 0): This pod is configured to act as the Ray "head node" and runs the main vLLM server, which receives the API requests.</p>
+</div>
+<div class="paragraph">
+<p>The Worker Pods (Pods 1-7): These pods act as the Ray "worker nodes" and hold the other shards of the model for tensor-parallel execution.</p>
+</div>
+<div class="paragraph">
+<p>When a request comes in, the leader pod coordinates with all 7 worker pods to perform the inference calculation as a single, distributed unit. If any of these 8 pods fail, LWS tears down the entire group and recreates it, ensuring the model replica is always in a consistent state.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_summary_why_we_install_it"><a class="anchor" href="#_4_summary_why_we_install_it"></a>4. Summary: Why We Install It</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You are installing the Leader Worker Set Operator because it provides a foundational Kubernetes-native capability that OpenShift AI builds upon. It is the "engine" that enables the robust deployment, scaling, and lifecycle management of complex, multi-pod AI applications.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="kvcache.html">Deep Dive on KV Cache Management</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
