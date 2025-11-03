@@ -1,0 +1,71 @@
+= RDHP Lab: Environment Setup
+:icons: font
+
+[NOTE.icon-cogs] 
+.Your Starting Point
+
+Welcome to the lab setup guide. This is the crucial Step 0 before you can run the "AI QuickStart" lab.
+
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment on the Red Hat Demo Platform (RHDP). Follow these four steps in order, and you'll be ready to deploy.
+
+'''
+
+=== 1. Lab Setup: Overview and Steps
+
+This first experience covers the entire lab environment overview. It provides links to the Red Hat Demo Platform (RHDP) Catalog item, the steps to configure the environment once it completes provisioning, and finally, it provides a link to the official LLM-D GitHub Repository where you'll continue using the open-source lab to deploy the "well-lit path" for distributed inference.
+
+'''
+++++
+
+<iframe src="https://demo.arcade.software/ol87rAAlnjMqn5udqGRx?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe> 
+
+++++
+
+=== 2. Ordering from the Red Hat Demo Platform
+
+This experience showcases the steps to provision an LLM-D compatible environment using the Red Hat Demo Platform. It starts by selecting the Catalog item and shows an example of the configuration options to select when ordering.
+
+Link: https://catalog.demo.redhat.com/catalog?utm_source=webapp&utm_medium=share-link&search=aws+open&item=babylon-catalog-prod%2Fsandboxes-gpte.sandbox-ocp.prod[AWS with OpenShift Open Environment]
+
+'''
+
+++++
+
+<iframe src="https://demo.arcade.software/7kP2UIb8NS0se6vuGV5Z?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe> 
+
+++++
+
+=== 3. Getting Started in the OpenShift Cluster
+This experience starts with a running RHDP environment and shows the steps to log into the environment and validate the MachineSets and worker nodes available to the cluster.
+
+'''
+
+++++
+
+<iframe src="https://demo.arcade.software/8x2PYzS7BCQJU06Eaycd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe> 
+
+
+++++
+
+=== 4. Configuring the Cluster (Operators and MachineSets)
+
+This experience uses the AI BU Services GitHub repository to clone setup files. It shows how to:
+
+ * Deploy the GPU MachineSet.
+
+ * Scale the MachineSet for the lab.
+
+ * Install the Node Feature Discovery (NFD) and NVIDIA GPU Operators.
+
+ * Deploy the ClusterPolicy to activate the GPUs.
+
+Once this is complete, your cluster is ready for the main lab.
+
+'''
+
+++++
+
+<iframe src="https://demo.arcade.software/x7ffTWS6g8Dy5GBm8mYS?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe> 
+
+
+++++

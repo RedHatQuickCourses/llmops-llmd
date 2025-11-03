@@ -1,112 +1,116 @@
 = LLM-D Benefits
 
-[TIP.moneybag]
+[TIP.moneybag] 
 .Performance, Performance, Performance!
-====
+
 At the end of the day, it's all about results. LLM-D delivers tangible gains that you can show to your boss.
-====
 
 Here's a taste of what public benchmarks have shown:
 
-* **3x LOWER** 📉 average Time-To-First-Token (TTFT). Users perceive your app as being 3x faster!
-* **2x HIGHER** 📈 queries-per-second (QPS). Serve double the users with the same hardware!
-* **Massive TCO Reduction** 💸. Achieve more with less. Stop buying more GPUs and start using the ones you have more efficiently.
+ - 3x LOWER 📉 average Time-To-First-Token (TTFT). Users perceive your app as being 3x faster!
 
+ - 2x HIGHER 📈 queries-per-second (QPS). Serve double the users with the same hardware!
+
+ - Massive TCO Reduction 💸. Achieve more with less. Stop buying more GPUs and start using the ones you have more efficiently.
 
 ****
-🤔 **"But why should I care?"**
+🤔 "But why should I care?"
 
-Simple. LLMs are *expensive*. Every wasted GPU cycle is money down the drain. LLM-D is designed to plug those leaks, letting you serve more users, faster, and for a fraction of the cost. It's not just about tech; it's about making your AI projects economically viable.
+Simple. LLMs are expensive. Every wasted GPU cycle is money down thedrain. LLM-D is designed to plug those leaks, letting you serve more users, faster, and for a fraction of the cost. It's not just about tech; it's about making your AI projects economically viable.
 ****
 
-'''
-== Interative Experience Overview ?
-
-This experience showcases how OpenShift AI streamlines Generative AI inference using three core strategies: intelligent scheduling, prefill/decode disaggregation, and wide expert parallelism.
 
 '''
 
+== Your AI is Powerful, but is it Efficient ?
+
 ++++
-<iframe 
-  src="https://demo.arcade.software/bZ3A3RCHZwGvEEDFQCjQ?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
-  width="100%" 
-  height="600px" 
-  frameborder="0" 
-  allowfullscreen
-  webkitallowfullscreen
-  mozallowfullscreen
-  allow="clipboard-write"
-  muted>
-</iframe>
+
+<iframe src="https://demo.arcade.software/bZ3A3RCHZwGvEEDFQCjQ?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+
 ++++
----
 
 // PAGE 5: THE SUPERPOWERS - LLM-D'S CORE FEATURES
 //======================================================================
+
+
 == LLM-D Features
 
-[IMPORTANT.zap]
+[IMPORTANT.zap] 
 .Unleash the Power!
-====
-This is where the real magic happens. LLM-D gives you a set of powerful, production-ready techniques to supercharge your inference.
-====
 
----
-=== ⚡ **Superpower #1: Intelligent Inference Scheduling**
+This is where LLM-D truly shines. It offers a set of powerful, production-ready techniques, known as "Well-Lit Paths," designed to supercharge your inference. Let's explore them below.
 
-The `llm-d-inference-scheduler` is the heart of the system. It uses a two-step "Filter-and-Score" process to find the perfect home for every single request.
+== ⚡ Superpower #1: Intelligent Inference Scheduling
 
-1.  **FILTER:** "Who is even available for this job?" (Eliminates overloaded or incompatible pods).
-2.  **SCORE:** "Of the ones left, who is the *best* for the job?" (Scores pods based on load, and most importantly, who already has the KV Cache ready to go!).
+This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI.
 
----
-=== 🚀 **Superpower #2: Prefill/Decode (P/D) Disaggregation**
+
+****
+
+*Why Basic Schedulers Fail for LLMs*
+
+Traditional load balancing (like round-robin) is inefficient for AI workloads due to:
+
+ * Stateful Nature: LLM inference is stateful, using KV caches in GPU memory that benefit from request affinity.
+
+ * Variable Request Costs: A long RAG prompt has a totally different cost than a short chat query, making uniform distribution wasteful.
+
+ * Resource Utilization: Basic schedulers create "hotspots" (overloaded GPUs) while others sit idle, wasting expensive hardware.
+
+****
+
+=== LLM-D replaces load balancer with an intelligent, metrics-aware KServe Gateway.
+
+This gateway actively monitors the real-time load, queue depth, and in-flight requests of all your model pods. It then uses a two-step "Filter-and-Score" process to find the perfect home for every single request.
+
+ * FILTER: "Who is available for this job?" (Eliminates overloaded, incompatible, or failing pods).
+
+ * SCORE: "Of the ones left, who is the best for the job?" (Scores remaining pods based on real-time load, shortest queue, and—for LLMs—KV cache affinity).
+
+
+== 🚀 Superpower #2: Prefill/Decode (P/D) Disaggregation
 
 This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!
 
-* **Before:** One big, clunky server trying to do everything.
+Before: One big, clunky server trying to do everything.
 [literal]
 ....
- +-------------------------------------+
- | [ Monolithic GPU Server ]           |
- |  - Juggling compute-heavy Prefill   |
- |  - And memory-heavy Decode          |
- |  - (Struggling to keep up!)         |
- +-------------------------------------+
++-------------------------------------+
+| [ Monolithic GPU Server ]           |
+|  - Juggling compute-heavy Prefill   |
+|  - And memory-heavy Decode          |
+|  - (Struggling to keep up!)         |
++-------------------------------------+
 ....
 
-* **After:** A specialized team working in perfect harmony.
+After: A specialized team working in perfect harmony.
 [literal]
 ....
- +------------------+      +------------------+
- | [ Prefill Team ] |----->| [ Decode Team ]  |
- | - A+ at compute  |      | - Masters of Memory|
- | - Specialized GPUs|      | - Optimized GPUs |
- +------------------+      +------------------+
++-------------------+      +--------------------+
+| [ Prefill Team ]  |----->| [ Decode Team ]    |
+| - A+ at compute   |      | - Masters of Memory|
+| - Specialized GPUs|      | - Optimized GPUs   |
++-------------------+      +--------------------+
 ....
-The result? A massive **25-50% performance boost** for large models!
+The result? A massive 25-50% performance boost for large models!
 
----
-=== 🌌 **Superpower #3: Wide Expert Parallelism**
+== 🌌 Superpower #3: Wide Expert Parallelism
 
 [CAUTION.stars]
-====
-**Boss Level:** This is for serving gargantuan Mixture-of-Experts (MoE) models.
-====
+
+Boss Level: This is for serving gargantuan Mixture-of-Experts (MoE) models.
+
 LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
 
----
-=== 🧠 **Superpower #4: KV Cache Management**
+== 🧠 Superpower #4: KV Cache Management
 
-That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The `llm-d-kv-cache-manager` is a genius at moving that data to cheaper, more abundant storage.
+That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The llm-d-kv-cache-manager is a genius at moving that data to cheaper, more abundant storage.
 
-****
-*Library Analogy*
+Library Analogy
 
-- **Without LLM-D:** Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!
-- **With LLM-D (North-South Caching):** You keep the book on your personal desk (CPU RAM). Faster!
-- **With LLM-D (East-West Caching):** You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!
-****
+ * Without LLM-D: Every time you need a fact, you run to the library, find the book, read it, and put it back. Inefficient!
 
-'''
-'''
+ * With LLM-D (North-South Caching): You keep the book on your personal desk (CPU RAM). Faster!
+
+ * With LLM-D (East-West Caching): You put the book on a shared table where your whole team can access it instantly (Shared Redis/Storage). Blazing fast!
