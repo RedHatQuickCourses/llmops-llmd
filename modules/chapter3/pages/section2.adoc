@@ -62,7 +62,7 @@ This is the consumer of the llm-d service. For them, life gets simpler. They sho
 
  * Be API-Driven: They only need to know the OpenAI-compatible API endpoint provided by the platform team.
 
- U Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.
+ * Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.
 
 '''
 [NOTE.book]
