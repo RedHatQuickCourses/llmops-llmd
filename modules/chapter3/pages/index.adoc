@@ -32,7 +32,46 @@ This course is your "Front Door" to the complete learning path, designed to prov
 
 '''
 
-== How This Course Works
+== The Core Challenge: APIs vs. On-Premise AI
+
+Generative AI is transforming industries, but as you move from experiment to production, you face a critical business decision:
+
+[QUOTE.icon-question-circle, "The 'Why Buy?' Question"]
+"Why should we build, manage, and pay for our own GPU infrastructure when cheap, pay-as-you-go public API tokens exist?"
+
+This is the central question this course is designed to answer.
+
+A public API offers convenience, but at the cost of control. It's a "best-effort" service with unpredictable performance, runaway costs for high-volume tasks, and a critical security blindspot: you must send your most sensitive corporate data to a third party.
+
+This course will show you how to build a true "AI Factory" on OpenShift AI, using the power of distributed inference with llm-d to achieve what public APIs cannot.
+
+== What You Will Learn: The Value of an AI Factory
+
+This course is your guide to mastering the three pillars of enterprise-grade AI inference. You will learn how llm-d gives you the power to:
+
+.Optimize Total Cost of Ownership (TCO)
+
+Stop "Paying for Idle GPUs": Learn how llm-d's Smart Scheduling (Path 1) replaces basic, "AI-unaware" Kubernetes scheduling. You'll see how to eliminate hotspots, balance your cluster, and finally use 100% of the expensive hardware you've already paid for.
+
+Maximize GPU Density: Discover how KV Cache Management (Path 4) offloads the model's "memory" from expensive GPU VRAM to cheaper CPU RAM, allowing you to run more models on the same hardware.
+
+.Guarantee Performance & SLOs
+
+Move from "Best Effort" to "Guaranteed": Public APIs offer no performance guarantees. Learn how llm-d's Disaggregated Inference (Path 2) separates compute-heavy "Prefill" from memory-fast "Decode" to ensure your interactive applications are always responsive.
+
+Master the "Well-Lit Paths": Understand the 4 pre-packaged, Helm-automated deployment patterns that provide optimized, step-by-step solutions for scaling any model, from the simplest to the most complex.
+
+.Ensure Total Security & Control
+
+Achieve "Sovereign AI": The most critical value-add. Learn how this entire, high-performance stack runs inside your own OpenShift cluster. Your proprietary RAG documents, customer data, and sensitive prompts never leave your control.
+
+Own Your Hybrid Cloud Strategy: Deploy a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.
+
+[IMPORTANT]
+.Prerequisite Knowledge
+This course assumes you are already familiar with the basics of Kubernetes and the core concepts of vLLM Inference. We will be building directly on that foundation.
+
+'''
 
 This course is a multi-format learning journey. You will find a mix of videos, technical articles, and resource links, but the core of this course is delivered through Interactive Arcades.
 
@@ -53,5 +92,48 @@ Here are a few tips to get you started:
 *Track Your Progress:* The bar at the bottom of the window shows your progression through the interactive segments.
 
 If you're new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.
+
+Let's begin.
+
+
+This interactive journey answers that question.
+
+Public APIs offer convenience, but they fail to answer the three core challenges of enterprise AI: Cost, Performance, and Security.
+
+This course is a comprehensive guide to solving all three. You will learn how OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
+
+The Best TCO: Learn to eliminate "idle GPU" waste and maximize your hardware investment, drastically lowering your Total Cost of Ownership.
+
+Guaranteed Performance: Move from "best effort" to "guaranteed SLOs." Learn how to solve hotspots and ensure a fast, responsive experience for every user.
+
+True Hybrid Cloud Security: Master the "Sovereign AI" model. Learn to deploy world-class inference inside your own cluster, keeping your proprietary data 100% secure.
+
+== What You Will Learn in This Course
+
+This course provides a complete learning path, designed to provide multiple depths of knowledge.
+
+Master the "Why": Learn to articulate the business value (TCO, ROI, Security) of on-premise, distributed inference versus public APIs.
+
+Explore the "4 Well-Lit Paths": Understand the specific, pre-packaged deployment patterns (llm-d) that solve real-world scaling challenges, from immediate wins to advanced optimization.
+
+Get Hands-On with the "How": Move from theory to practice. You will deploy and manage distributed models using the llm-d framework on OpenShift AI.
+
+== Who Is This Course For?
+
+This journey is designed for technical professionals who need to design, build, or deploy scalable AI solutions on OpenShift:
+
+AI/ML Architects
+
+Solutions Architects
+
+Consultants & Services
+
+Technical Sellers & Pre-Sales
+
+[IMPORTANT]
+.Prerequisite Knowledge
+This course assumes you are already familiar with the basics of Kubernetes and the core concepts of vLLM Inference. We will be building directly on that foundation.
+
+'''
 
 Let's begin.

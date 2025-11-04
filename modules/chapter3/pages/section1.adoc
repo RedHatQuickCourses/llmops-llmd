@@ -35,14 +35,14 @@ Simple. LLMs are expensive. Every wasted GPU cycle is money down the drain. Dist
 //======================================================================
 
 
-== LLM-D Features
+== LLM-D Well-Lit Paths
 
 [IMPORTANT.zap] 
 .Unleash the Power!
 
 This is where distributed inference with llm-d truly shines. It offers a set of powerful, production-ready techniques, known as "Well-Lit Paths," designed to supercharge your inference. Let's explore them below.
 
-== ⚡ Superpower #1: Intelligent Inference Scheduling
+== ⚡ Path #1: Intelligent Inference Scheduling
 
 This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI.
 
@@ -65,12 +65,12 @@ Traditional load balancing (like round-robin) is inefficient for AI workloads du
 
 This gateway actively monitors the real-time load, queue depth, and in-flight requests of all your model pods. It then uses a two-step "Filter-and-Score" process to find the perfect home for every single request.
 
- * FILTER: "Who is available for this job?" (Eliminates overloaded, incompatible, or failing pods).
+ * *FILTER:* "Who is available for this job?" (Eliminates overloaded, incompatible, or failing pods).
 
- * SCORE: "Of the ones left, who is the best for the job?" (Scores remaining pods based on real-time load, shortest queue, and for KV cache affinity).
+ * *SCORE:* "Of the ones left, who is the best for the job?" (Scores remaining pods based on real-time load, shortest queue, and for KV cache affinity).
 
 
-== 🚀 Superpower #2: Prefill/Decode (P/D) Disaggregation
+== 🚀 Path #2: Prefill/Decode (P/D) Disaggregation
 
 This is the "microservices moment" for AI. Instead of one server doing two very different jobs, we split them up!
 
@@ -96,7 +96,7 @@ After: A specialized team working in perfect harmony.
 ....
 The result? A massive 25-50% performance boost for large models!
 
-== 🌌 Superpower #3: Wide Expert Parallelism
+== 🌌 Path #3: Wide Expert Parallelism
 
 [CAUTION.stars]
 
@@ -104,7 +104,7 @@ Boss Level: This is for serving gargantuan Mixture-of-Experts (MoE) models.
 
 LLM-D handles the brain-melting complexity of splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
 
-== 🧠 Superpower #4: KV Cache Management
+== 🧠 Path #4: KV Cache Management
 
 That "short-term memory" we talked about? It lives in super-expensive GPU RAM. The llm-d-kv-cache-manager is a genius at moving that data to cheaper, more abundant storage.
 

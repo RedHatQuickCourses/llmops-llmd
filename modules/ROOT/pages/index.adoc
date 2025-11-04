@@ -1,58 +1,48 @@
-= From vLLM to AI Factory: Scaling with LLM-D
+= vLLM to AI Factory Scaling with LLM-D
 
 
-====
+=== Increase Performance and Reduce Cost with Distributed Inference
 
-[literal]
-....
-     _      _      _       _       ____  
-    | |    | |    |  \___/  |     |  _ \  
-    | |    | |    | |\___/| |     | | | |
-    | |    | |    | |     | |     | | | | 
-    | |___ | |___ | |     | |     | | | | 
-    |_____||_____||_|     |_|     |____/ 
-
-  OPENSHIFTS AI'S SOLUTION FOR DISTRUBUTED INFERENCE
-
-====
-
+==== This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization.
+---
 
 [IMPORTANT]
 .Prerequisite Knowledge
 
 This course assumes you are already familiar with the basics of Kubernetes and vLLM Inference. We will be building on those core concepts.
 
-[QUOTE.icon-question-circle, "The Core Question"]
-Why build an "AI Factory" when cheap API tokens exist?
 
-This interactive journey shows you why.
+== The Core Challenge: APIs vs. On-Premise AI
 
-Discover how OpenShift AI's Distributed Inference (powered by LLM-D) gives you what public APIs can't: guaranteed performance SLOs, a lower TCO by eliminating GPU waste, and true hybrid cloud security.
+Generative AI is transforming industries, but as you move from experiment to production, you face a critical business decision:
 
-This course is your "Front Door" to the complete learning path, designed to provide multiple depths of knowledge—from the high-level "Why" for executives and sales to the hands-on "How" for consultants and services.
+[QUOTE]
+"Why should we build, manage, and pay for our own GPU infrastructure when cheap, pay-as-you-go public API tokens exist?"
 
-'''
 
-== How This Course Works
+ * A public API offers convenience, but at the cost of control. It's a "best-effort" service with unpredictable performance, runaway costs for high-volume tasks, and a critical security blindspot: you must send your most sensitive corporate data to a third party.
 
-This course is a multi-format learning journey. You will find a mix of videos, technical articles, and resource links, but the core of this course is delivered through Interactive Arcades.
+ * This course will show you how to build a true "AI Factory" on OpenShift AI, using the power of distributed inference with llm-d to achieve what public APIs cannot.
 
-[TIP.icon-play-circle]
-.What is an "Arcade"?
+== What You Will Learn: The Value of an AI Factory
 
-An Arcade is an interactive demonstration. You'll read the content on each slide and then click on "hotspots" (like blinking dots or text boxes) to move through the presentation. This format is used for both conceptual guides and some lab exercises.
+This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization. How OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
 
-[NOTE]
-.Pro-Tips for the Best Experience
+=== Optimize Total Cost of Ownership (TCO)
 
-Here are a few tips to get you started:
+ * *Stop "Paying for Idle GPUs":* Learn how llm-d's Smart Scheduling (Path 1) replaces basic, "AI-unaware" Kubernetes scheduling. You'll see how to eliminate hotspots, balance your cluster, and finally use 100% of the expensive hardware you've already paid for.
 
-*Go Full Screen:* This is the highly recommended way to use Arcades. Use the "expand" icon (usually in the top-right corner) to ensure hotspots and text don't overlap.
+ * *Maximize GPU Density:* Discover how KV Cache Management (Path 4) offloads the model's "memory" from expensive GPU VRAM to cheaper CPU RAM, allowing you to run more models on the same hardware.
 
-*Navigate:* Use the arrows in the top-left corner to move forward and back through the presentation.
+=== Guarantee Performance & SLOs
 
-*Track Your Progress:* The bar at the bottom of the window shows your progression through the interactive segments.
+ * *Move from "Best Effort" to "Guaranteed":* Public APIs offer no performance guarantees. Learn how llm-d's Disaggregated Inference (Path 2) separates compute-heavy "Prefill" from memory-fast "Decode" to ensure your interactive applications are always responsive.
 
-If you're new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.
+ * *Master the "Well-Lit Paths":* Understand the 4 pre-packaged, Helm-automated deployment patterns that provide optimized, step-by-step solutions for scaling any model, from the simplest to the most complex.
 
-Let's begin.
+=== Ensure Total Security & Control
+
+ * *Achieve "Sovereign AI"*: The most critical value-add. Learn how this entire, high-performance stack runs inside your own OpenShift cluster. Your proprietary RAG documents, customer data, and sensitive prompts never leave your control.
+
+ * *Own Your Hybrid Cloud Strategy:* Deploy a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.
+
