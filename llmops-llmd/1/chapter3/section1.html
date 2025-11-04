@@ -164,11 +164,11 @@ At the end of the day, it&#8217;s all about results. llm-d delivers tangible gai
 <div class="sect1">
 <h2 id="_llm_d_well_lit_paths"><a class="anchor" href="#_llm_d_well_lit_paths"></a>LLM-D Well-Lit Paths</h2>
 <div class="sectionbody">
-<div class="admonitionblock important zap">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
 <div class="title">Unleash the Power!</div>
@@ -183,7 +183,7 @@ This is where distributed inference with llm-d truly shines. It offers a set of 
 <h2 id="_path_1_intelligent_inference_scheduling"><a class="anchor" href="#_path_1_intelligent_inference_scheduling"></a>⚡ Path #1: Intelligent Inference Scheduling</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI.</p>
+<p>This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI using vLLM.</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -238,7 +238,7 @@ This is where distributed inference with llm-d truly shines. It offers a set of 
 <div class="literalblock">
 <div class="content">
 <pre>+-------------------------------------+
-| [ Monolithic GPU Server ]           |
+| [ One GPU per Inference Server ]    |
 |  - Juggling compute-heavy Prefill   |
 |  - And memory-heavy Decode          |
 |  - (Struggling to keep up!)         |

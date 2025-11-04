@@ -111,26 +111,11 @@
 </aside>
 <article class="doc">
 <h1 class="page">LeaderWorkerSet (LWS) Operator</h1>
-<div id="toc" class="toc">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_overview">Overview</a></li>
-<li><a href="#_1_the_core_problem_scaling_distributed_ai_workloads">1. The Core Problem: Scaling Distributed AI Workloads</a></li>
-<li><a href="#_2_what_is_the_leaderworkerset_lws">2. What is the LeaderWorkerSet (LWS)?</a>
-<ul class="sectlevel2">
-<li><a href="#_2_1_lws_architecture">2.1. LWS Architecture</a></li>
-<li><a href="#_2_2_key_features">2.2. Key Features</a></li>
-</ul>
-</li>
-<li><a href="#_3_reference_example_how_lws_is_used_with_vllm">3. Reference Example: How LWS is Used with vLLM</a></li>
-<li><a href="#_4_summary_why_we_install_it">4. Summary: Why We Install It</a></li>
-</ul>
-</div>
 <div class="sect1">
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you are prompted to install the Leader Worker Set (LWS) Operator from the OpenShift Operator Hub. This component is a prerequisite for OpenShift AI&#8217;s advanced distributed inference capabilities.</p>
+<p>The Leader Worker Set (LWS) Operator from the OpenShift Operator Hub is a prerequisite for OpenShift AI&#8217;s advanced distributed inference capabilities.</p>
 </div>
 <div class="paragraph">
 <p>This reference page explains what the LWS Operator is and why it is a critical piece of infrastructure for running modern AI/ML workloads.</p>
@@ -146,14 +131,18 @@
 <div class="paragraph">
 <p>This creates a significant deployment challenge for standard Kubernetes:</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>How do you manage a "group" of pods that must all work together as a single application?</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>How do you scale them up or down together as a single unit?</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>How do you handle a failure? If one pod in the group fails, the entire sharded model is unusable, so you need to restart the entire group, not just the one failed pod.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Standard Kubernetes objects like Deployments or StatefulSets are not designed to manage these tightly-coupled "groups" of pods as a single, atomic unit.</p>
@@ -177,33 +166,43 @@
 <div class="paragraph">
 <p>The LWS Operator then creates:</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>A Leader Pod: This is the "leader" of the group (index 0). It is often responsible for coordination or, as you&#8217;ll see later, running the main server process.</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>A Worker StatefulSet: This StatefulSet is owned by the leader pod and manages all the "worker" pods in the group.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The entire group (1 leader + N workers) is treated as a single entity for its entire lifecycle.</p>
 </div>
+<hr>
 </div>
 <div class="sect2">
 <h3 id="_2_2_key_features"><a class="anchor" href="#_2_2_key_features"></a>2.2. Key Features</h3>
 <div class="paragraph">
 <p>LWS provides critical features for distributed AI workloads:</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Group as a Unit: All pods in the group are created in parallel and share an identical lifecycle.</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>Group-Level Rollouts: When you update the LWS, it performs a rolling update at the group level (e.g., group 0 is terminated and replaced with a new group 0), ensuring the application&#8217;s consistency.</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>All-or-Nothing Failure Handling: You can configure LWS to restart the entire group if even one pod in the group fails. This is essential for sharded models where the failure of one shard (pod) makes the entire group non-functional.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Topology-Aware Placement: LWS can ensure that all pods within the same group are co-located in the same topology (e.g., the same node, rack, or availability zone). This is critical for high-speed, low-latency networking (like InfiniBand or NVLink) required by distributed inference.</p>
 </div>
+<hr>
 </div>
 </div>
 </div>
@@ -228,6 +227,7 @@
 <div class="paragraph">
 <p>When a request comes in, the leader pod coordinates with all 7 worker pods to perform the inference calculation as a single, distributed unit. If any of these 8 pods fail, LWS tears down the entire group and recreates it, ensuring the model replica is always in a consistent state.</p>
 </div>
+<hr>
 </div>
 </div>
 <div class="sect1">

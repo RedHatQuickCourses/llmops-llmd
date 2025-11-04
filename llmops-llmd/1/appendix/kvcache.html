@@ -147,7 +147,6 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
 </ul>
 </div>
 <hr>
-<hr>
 </div>
 </div>
 <div class="sect1">
@@ -167,16 +166,17 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Prefill Phase: It processes your prompt all at once. As it does, it generates intermediate data (the Keys and Values, or "KV") that represent the meaning and context of your prompt. This data is the KV Cache. This phase is compute-heavy and slow.</p>
+<p><strong>Prefill Phase:</strong> It processes your prompt all at once. As it does, it generates intermediate data (the Keys and Values, or "KV") that represent the meaning and context of your prompt. This data is the KV Cache. This phase is compute-heavy and slow.</p>
 </li>
 <li>
-<p>Decode Phase: To generate an answer ("The", "capital", "is", "Paris"), the model looks at the KV Cache and generates one new token at a time. This phase is memory-bandwidth-heavy but very fast.</p>
+<p><strong>Decode Phase:</strong> To generate an answer ("The", "capital", "is", "Paris"), the model looks at the KV Cache and generates one new token at a time. This phase is memory-bandwidth-heavy but very fast.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
 <p>The KV Cache lives in the most expensive, limited resource you have: GPU VRAM.</p>
 </div>
+<hr>
 </div>
 <div class="sect2">
 <h3 id="_why_is_the_cache_a_performance_bottleneck"><a class="anchor" href="#_why_is_the_cache_a_performance_bottleneck"></a>Why is the Cache a Performance Bottleneck?</h3>
@@ -205,10 +205,12 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>OpenShift AI&#8217;s distributed inference provides two main strategies to defeat both of these problems.</p>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_openshift_ais_distributed_inference_provides_two_main_strategies_to_defeat_both_of_these_problems"><a class="anchor" href="#_openshift_ais_distributed_inference_provides_two_main_strategies_to_defeat_both_of_these_problems"></a>OpenShift AI&#8217;s distributed inference provides two main strategies to defeat both of these problems.</h2>
+<div class="sectionbody">
 <div class="sect2">
 <h3 id="_caching_strategy_1_independent_caching_vram_to_ram_offload"><a class="anchor" href="#_caching_strategy_1_independent_caching_vram_to_ram_offload"></a>Caching Strategy 1: Independent Caching (VRAM to RAM Offload)</h3>
 <div class="paragraph">
@@ -222,22 +224,6 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
 </div>
 <div class="paragraph">
 <p>When to use it: This is the default and is perfect for most workloads. It&#8217;s an automatic way to fit more users onto a single GPU, maximizing your TCO.</p>
-</div>
-<div class="admonitionblock note info">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="title">Analogy: A Chef&#8217;s Fridge</div>
-Think of GPU VRAM as your small, tableside prep fridge (fast access) and CPU RAM as your main walk-in cooler (large capacity).
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>This strategy keeps only the active ingredients (hot caches) in the small fridge and stores everything else in the walk-in. This is far more efficient than trying to fit your entire inventory tableside.</p>
 </div>
 </div>
 <div class="sect2">
