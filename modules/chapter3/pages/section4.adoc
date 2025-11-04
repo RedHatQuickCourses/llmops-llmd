@@ -57,6 +57,8 @@ Before you deploy a single model, you must have the right foundation. Failure he
 Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing.
 A slow network will make your distributed system slower than a single pod. Verify your networking fabric before you deploy.
 
+---
+
 === Part 2: The Core Components (The "Puzzle Pieces")
 
 This architecture, based on the high_level_llmd_diagram.jpg reference, shows how llm-d (lowercase) integrates into OpenShift AI as a set of controllers and routing logic.
@@ -89,6 +91,8 @@ Decode: A pool of pods optimized for the memory-fast task of generating tokens.
 |This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.
 |===
 
+---
+
 === Part 3: The Data Flow (The "Request Lifecycle")
 
 This is how the pieces work together. Understanding this flow is key to troubleshooting.
@@ -108,6 +112,8 @@ This is how the pieces work together. Understanding this flow is key to troubles
  .. Cache Miss (Slower Path): No pod has the cache. It tells the Gateway, "Send it to prefill-pod-2 (which is least busy) first. The prefill-pod-2 will then process the prompt, write the new KV Cache, and hand the request off to a decode-pod."
 
  . Routing & Response: The Gateway forwards the actual request to the chosen pod (e.g., decode-pod-7). That pod generates the response and streams it back to the user through the Gateway.
+
+---
 
 === Part 4: Observability (Proving It Works)
 
@@ -129,4 +135,3 @@ To Prove TCO (Cost Savings):
  * *vllm_llmd_kv_cache_hit_rate:* This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.
 
  * *vllm_llmd_gpu_utilization_seconds:* This proves your GPUs are being used effectively, not sitting idle.
-====

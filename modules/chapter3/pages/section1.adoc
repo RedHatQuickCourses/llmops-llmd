@@ -37,14 +37,14 @@ Simple. LLMs are expensive. Every wasted GPU cycle is money down the drain. Dist
 
 == LLM-D Well-Lit Paths
 
-[IMPORTANT.zap] 
+[TIP] 
 .Unleash the Power!
 
 This is where distributed inference with llm-d truly shines. It offers a set of powerful, production-ready techniques, known as "Well-Lit Paths," designed to supercharge your inference. Let's explore them below.
 
 == ⚡ Path #1: Intelligent Inference Scheduling
 
-This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI.
+This is the flagship feature of LLM-D and the essential "on-ramp" to distributed inference. While critical for large models, it adds intelligent routing to any model served with OpenShift AI using vLLM.
 
 
 ****
@@ -78,7 +78,7 @@ Before: One big, clunky server trying to do everything.
 [literal]
 ....
 +-------------------------------------+
-| [ Monolithic GPU Server ]           |
+| [ One GPU per Inference Server ]    |
 |  - Juggling compute-heavy Prefill   |
 |  - And memory-heavy Decode          |
 |  - (Struggling to keep up!)         |

@@ -3,6 +3,7 @@
 
 === Increase Performance and Reduce Cost with Distributed Inference
 
+---
 ==== This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization.
 ---
 
@@ -16,17 +17,16 @@ This course assumes you are already familiar with the basics of Kubernetes and v
 
 Generative AI is transforming industries, but as you move from experiment to production, you face a critical business decision:
 
-[QUOTE]
+[quote]
 "Why should we build, manage, and pay for our own GPU infrastructure when cheap, pay-as-you-go public API tokens exist?"
 
+A public API offers convenience, but at the cost of control. It's a "best-effort" service with unpredictable performance, runaway costs for high-volume tasks, and a critical security blindspot: you must send your most sensitive corporate data to a third party.
 
- * A public API offers convenience, but at the cost of control. It's a "best-effort" service with unpredictable performance, runaway costs for high-volume tasks, and a critical security blindspot: you must send your most sensitive corporate data to a third party.
+This course will show you how to build a true "AI Factory" on OpenShift AI, using the power of distributed inference with llm-d to achieve what public APIs cannot.
 
- * This course will show you how to build a true "AI Factory" on OpenShift AI, using the power of distributed inference with llm-d to achieve what public APIs cannot.
+== The Value of an AI Factory
 
-== What You Will Learn: The Value of an AI Factory
-
-This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization. How OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
+How OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
 
 === Optimize Total Cost of Ownership (TCO)
 

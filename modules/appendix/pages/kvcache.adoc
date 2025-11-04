@@ -16,7 +16,6 @@ The KV Cache is the #1 bottleneck for LLM performance. If you nod your head to t
  - [x] 🚀 You want to achieve the absolute lowest latency and highest throughput possible from your hardware.
 
 '''
-'''
 
 
 [#deep-dive]
@@ -30,10 +29,12 @@ The KV Cache is the model's "short-term memory."
 
 When you send a prompt (like "What is the capital of France?"), the model performs two phases:
 
-. Prefill Phase: It processes your prompt all at once. As it does, it generates intermediate data (the Keys and Values, or "KV") that represent the meaning and context of your prompt. This data is the KV Cache. This phase is compute-heavy and slow.
-. Decode Phase: To generate an answer ("The", "capital", "is", "Paris"), the model looks at the KV Cache and generates one new token at a time. This phase is memory-bandwidth-heavy but very fast.
+. *Prefill Phase:* It processes your prompt all at once. As it does, it generates intermediate data (the Keys and Values, or "KV") that represent the meaning and context of your prompt. This data is the KV Cache. This phase is compute-heavy and slow.
+. *Decode Phase:* To generate an answer ("The", "capital", "is", "Paris"), the model looks at the KV Cache and generates one new token at a time. This phase is memory-bandwidth-heavy but very fast.
 
 The KV Cache lives in the most expensive, limited resource you have: GPU VRAM.
+
+---
 
 === Why is the Cache a Performance Bottleneck?
 
@@ -47,7 +48,9 @@ The KV Cache is the root of two major performance problems:
 |The "Prefill" step (which creates the cache) is slow and compute-intensive. In a traditional system, a new, long Prefill request will get in line and block all the fast Decode requests waiting behind it. This causes a "head-of-line blocking" problem and makes your whole service feel laggy.
 |===
 
-OpenShift AI's distributed inference provides two main strategies to defeat both of these problems.
+== OpenShift AI's distributed inference provides two main strategies to defeat both of these problems.
+
+
 
 === Caching Strategy 1: Independent Caching (VRAM to RAM Offload)
 
@@ -59,12 +62,6 @@ How it works: When a new user request comes in, its "cold" cache is quickly swap
 
 When to use it: This is the default and is perfect for most workloads. It's an automatic way to fit more users onto a single GPU, maximizing your TCO.
 
-[NOTE.info]
-.Analogy: A Chef's Fridge
-
-Think of GPU VRAM as your small, tableside prep fridge (fast access) and CPU RAM as your main walk-in cooler (large capacity).
-
-This strategy keeps only the active ingredients (hot caches) in the small fridge and stores everything else in the walk-in. This is far more efficient than trying to fit your entire inventory tableside.
 
 === Caching Strategy 2: Shared Caching (Distributed Cache Pool)
 
@@ -79,6 +76,7 @@ How it works:
 . The Gateway then routes all future Decode requests for that user to any available Decode pod, which reads the cache from Redis.
 
 When to use it: This is an advanced strategy for extreme-scale, high-concurrency workloads. It's more complex (requires a Redis cluster and high-speed networking) but offers the ultimate in flexibility, as you can scale your Prefill compute and Decode memory resources completely independently.
+
 
 == Summary: When to Use Each Strategy
 
