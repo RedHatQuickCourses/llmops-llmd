@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Hands-on Lab: Deploying Distributed Inference with OpenShift AI :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>llm-d Deployment Guide :: vLLM to AI Factory Scaling with LLM-D</title>
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -44,16 +44,10 @@
     <a class="nav-link" href="section2.html">Use Case Identification</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
+    <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section6.html">Hands-on Lab: Deploying Distributed Inference</a>
+    <a class="nav-link" href="section6.html">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</a>
   </li>
 </ul>
   </li>
@@ -65,6 +59,15 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">RDHP Lab: Environment Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/apigateway.html">Reference: OpenShift Gateway API for AI Deployments</a>
   </li>
 </ul>
   </li>
@@ -99,7 +102,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section6%20copy.html">Hands-on Lab: Deploying Distributed Inference with OpenShift AI</a></li>
+    <li><a href="section6%20copy.html">llm-d Deployment Guide</a></li>
   </ul>
 </nav>
 </div>
@@ -108,269 +111,18 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Hands-on Lab: Deploying Distributed Inference with OpenShift AI</h1>
+<h1 class="page">llm-d Deployment Guide</h1>
 <div id="preamble">
 <div class="sectionbody">
-<div class="admonitionblock important icon-info-circle">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">Lab Goal &amp; Prerequisites</div>
-This lab guides you through deploying a model using OpenShift AI&#8217;s Distributed Inference feature (Technology Preview), powered by LLM-D. You will create a ModelService custom resource to deploy a pre-configured model stack.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Prerequisites:</p>
-</div>
-<div class="paragraph">
-<p>You have completed the Lab Environment Setup guide. Your OpenShift cluster (4.17+) has GPU nodes and the required operators (NFD, NVIDIA GPU Operator) installed and running.</p>
-</div>
-<div class="paragraph">
-<p>You have oc (OpenShift CLI) access to your cluster with permissions to create resources in a project.</p>
-</div>
-<div class="paragraph">
-<p>You have created a Hugging Face token secret named hf-token in your target project (as detailed in the Lab Setup Guide or official documentation).</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_introduction_the_modelservice_custom_resource"><a class="anchor" href="#_introduction_the_modelservice_custom_resource"></a>Introduction: The ModelService Custom Resource</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>In OpenShift AI, Distributed Inference deployments are managed declaratively using the ModelService Custom Resource Definition (CRD). Instead of manually configuring gateways, controllers, and vLLM deployments, you define the desired state in a single ModelService object, and the system handles the rest.</p>
-</div>
-<div class="paragraph">
-<p>This lab will deploy a sample ModelService configured for the "Inference Scheduling" well-lit path, which includes intelligent routing.</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_1_prepare_your_project"><a class="anchor" href="#_part_1_prepare_your_project"></a>Part 1: Prepare Your Project</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>First, ensure you are in the correct OpenShift project where you created your hf-token secret. If you haven&#8217;t created one, do so now.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a new project (if needed):</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Replace my-llm-d-lab with your preferred project name.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Verify your Hugging Face token secret exists:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret hf-token -n my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>If this command returns "not found," revisit the Lab Environment Setup guide or the official documentation to create the secret.</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_2_define_and_create_the_modelservice"><a class="anchor" href="#_part_2_define_and_create_the_modelservice"></a>Part 2: Define and Create the ModelService</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Now, you will define the ModelService resource in a YAML file. This example uses a small, publicly available model for simplicity.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a YAML file named modelservice-sample.yaml with the following content:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: llm.stack.gov.il/v1alpha1
-kind: ModelService
-metadata:
-name: llama-3-8b-chat-hf-sample # Unique name for this model deployment
-namespace: my-llm-d-lab        # IMPORTANT: Use your project name here
-spec:
-modelId: meta-llama/Meta-Llama-3-8B-Instruct # Model from Hugging Face
-source:
-huggingface:
-secretKeyRef:
-name: hf-token # Name of the secret containing your HF token
-replicas: 1 # Start with one replica set (adjust later for scale)</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>(Optional: Add resource requests/limits, tolerations, etc. here if needed)</p>
-</div>
-<div class="admonitionblock note icon-pencil">
+<div class="admonitionblock note icon-cogs">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Key Fields:
- * metadata.name: Must be unique within the namespace.
- * metadata.namespace: Crucially, set this to your project name.
- * spec.modelId: The Hugging Face model identifier.
- * spec.source.huggingface.secretKeyRef.name: Points to your hf-token secret.
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Apply the ModelService manifest to your cluster:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f modelservice-sample.yaml -n my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_3_validate_the_deployment"><a class="anchor" href="#_part_3_validate_the_deployment"></a>Part 3: Validate the Deployment</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Creating the ModelService triggers the OpenShift AI operator to provision all the necessary backend components. This process takes several minutes as container images are pulled and pods are started.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Monitor the ModelService status:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get modelservice llama-3-8b-chat-hf-sample -n my-llm-d-lab -w</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Wait until the STATUS column shows Ready or Available. Press Ctrl+C to exit the watch.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Check the deployed pods:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>You should see pods related to the ModelService name you chose, likely including:</p>
-</div>
-<div class="paragraph">
-<p>Pods for the inference gateway (e.g., llm-d-gateway-&#8230;&#8203;)</p>
-</div>
-<div class="paragraph">
-<p>Pods for the llm-d controller manager</p>
-</div>
-<div class="paragraph">
-<p>Pods for the vLLM model deployment itself (potentially separate prefill and decode pods, depending on the default configuration)</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Find the Inference Endpoint (Route):</p>
-<div class="paragraph">
-<p>The ModelService automatically creates an OpenShift Route to expose the inference API.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route llama-3-8b-chat-hf-sample -n my-llm-d-lab -o jsonpath='{.spec.host}'</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Copy this hostname. You will need it to send inference requests.</p>
-</div>
-<div class="paragraph">
-<p>If your pods are running and you have a route hostname, the deployment is successful!</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_4_send_an_inference_request_basic_test"><a class="anchor" href="#_part_4_send_an_inference_request_basic_test"></a>Part 4: Send an Inference Request (Basic Test)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Let&#8217;s send a simple request using curl to verify the endpoint is working.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Set the route hostname to an environment variable:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export MODEL_ROUTE="your-route-hostname-here" # Paste the hostname from the previous step</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Send a sample completion request:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k https://${MODEL_ROUTE}/v1/completions</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>-H "Content-Type: application/json"</p>
-</div>
-<div class="paragraph">
-<p>-d '{
-"model": "meta-llama/Meta-Llama-3-8B-Instruct",
-"prompt": "Translate the following English text to French: 'Hello, world!'",
-"max_tokens": 20,
-"temperature": 0.1
-}'</p>
-</div>
-<div class="paragraph">
-<p>You should receive a JSON response containing the model&#8217;s translation.</p>
-</div>
-<div class="admonitionblock tip icon-check-circle">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">Success!</div>
-Receiving a valid JSON response confirms that your distributed inference service is up and running correctly.
+<div class="title">Your Starting Point</div>
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment with components to deploy the llm-d QuickStart using the Red Hat Demo Platform (RHDP). Follow these four steps in order, and you&#8217;ll be ready to deploy.
 </td>
 </tr>
 </table>
@@ -378,54 +130,82 @@ Receiving a valid JSON response confirms that your distributed inference service
 <hr>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_part_5_cleanup"><a class="anchor" href="#_part_5_cleanup"></a>Part 5: Cleanup</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_1_lab_setup_overview_and_steps"><a class="anchor" href="#_1_lab_setup_overview_and_steps"></a>1. Lab Setup: Overview and Steps</h3>
 <div class="paragraph">
-<p>When you are finished with the lab, remove the deployed resources.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Delete the ModelService:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete modelservice llama-3-8b-chat-hf-sample -n my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
+<p>This Arcade experience covers requesting or ordering the Lab Environment item from The Red Hat Demp Platform (RHDP) catalog.</p>
 </div>
 <div class="paragraph">
-<p>This will trigger the deletion of all associated deployments, services, and routes.</p>
+<p>Below is the link to the Red Hat Demo Platform (RHDP) Catalog item, the steps to order the catalog</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>(Optional) Delete the project:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete project my-llm-d-lab</code></pre>
-</div>
-</div>
-</li>
-</ol>
+<div class="paragraph">
+<p><a href="https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod&amp;utm_source=webapp&amp;utm_medium=share-link" target="blank">Red Hat OpenShift Container Platform Cluster (AWS)</a></p>
 </div>
 <hr>
-<div class="admonitionblock important icon-trophy">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">Lab Complete!</div>
-Congratulations! You have successfully deployed, validated, and tested a model using OpenShift AI&#8217;s Distributed Inference feature. You are now ready to explore more advanced configurations
-</td>
-</tr>
-</table>
+<iframe src="https://demo.arcade.software/t8r64IXbTp9k7H4zdlRq?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
+<div class="sect2">
+<h3 id="_2_openshift_container_platform_llm_d_checklist"><a class="anchor" href="#_2_openshift_container_platform_llm_d_checklist"></a>2. Openshift Container Platform llm-d Checklist</h3>
+<div class="paragraph">
+<p>This Arcade reviews the OCP Console steps or checklist to ensure an  LLM-D compatible environment. It with logging into the OpenShift Container Platform Console and validating:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The OCP Version - needs to be 4.19+, which includes new Intelligent Inference Scheduler (API Gateway).</p>
+</li>
+<li>
+<p>Validate the the GPU machineSet needs to be created, and ensure Worker nodes are ready.</p>
+</li>
+<li>
+<p>Validate which Operators are installed in the cluster.</p>
+</li>
+</ul>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/scyKqZfQIPidN6XsPezv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_3_getting_started_in_the_openshift_cluster"><a class="anchor" href="#_3_getting_started_in_the_openshift_cluster"></a>3. Getting Started in the OpenShift Cluster</h3>
+<div class="paragraph">
+<p>This experience starts with a running RHDP environment and shows the steps to log into the environment and validate the MachineSets and worker nodes available to the cluster.</p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/iDl0tHu8c55tzoTZoWe3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_4_configuring_the_cluster_operators"><a class="anchor" href="#_4_configuring_the_cluster_operators"></a>4. Configuring the Cluster (Operators)</h3>
+<div class="paragraph">
+<p>This experience uses the AI BU Services GitHub repository to clone setup files. It shows how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the prerequisite installer for OpenShift 4.19</p>
+</li>
+<li>
+<p>Manually install two Operators that where missing.</p>
+</li>
+</ul>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/PmJgJNoo3ZE09ryfH7Vv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_5_deploying_the_demo"><a class="anchor" href="#_5_deploying_the_demo"></a>5. Deploying the Demo</h3>
+<div class="paragraph">
+<p>We deploy the intelligent inference demo but run into resources constraints.  Wakl through the OpenShift Console to determine where failures might exist.</p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/Lo1Aoc2e04KKMvif55fw?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+<div class="sect2">
+<h3 id="_6_validating_that_its_working"><a class="anchor" href="#_6_validating_that_its_working"></a>6. Validating that it&#8217;s Working</h3>
+<div class="paragraph">
+<p>Let&#8217;s run a query to insure our Inference Server is listening.</p>
+</div>
+<hr>
+<iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
 </article>
   </div>

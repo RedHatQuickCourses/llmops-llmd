@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Hands-on Lab: Deploying Distributed Inference :: vLLM to AI Factory Scaling with LLM-D</title>
-    <link rel="prev" href="section5.html">
+    <title>Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="section4.html">
     <link rel="next" href="../appendix/appendix.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -46,16 +46,10 @@
     <a class="nav-link" href="section2.html">Use Case Identification</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section3.html">Deep Dive on KV Cache Management</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section4.html">Distributed Inference Architecture</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section5.html">Lab: Deploying Your First Distributed Inference Service</a>
+    <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="section6.html">Hands-on Lab: Deploying Distributed Inference</a>
+    <a class="nav-link" href="section6.html">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</a>
   </li>
 </ul>
   </li>
@@ -67,6 +61,15 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">RDHP Lab: Environment Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/apigateway.html">Reference: OpenShift Gateway API for AI Deployments</a>
   </li>
 </ul>
   </li>
@@ -101,7 +104,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section6.html">Hands-on Lab: Deploying Distributed Inference</a></li>
+    <li><a href="section6.html">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</a></li>
   </ul>
 </nav>
 </div>
@@ -110,421 +113,130 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Hands-on Lab: Deploying Distributed Inference</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>This lab guides you through deploying, validating, and securing a scalable, efficient, and enterprise-grade inference stack on your OpenShift cluster.</p>
-</div>
-<div class="admonitionblock important icon-info-circle">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">The "Why Take This Lab</div>
-The answer is Performance, Security, and Cost (TCO).
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Guaranteed Performance: You will deploy a stack that intelligently routes traffic, eliminating "hotspots" and queue-blocking to ensure your SLOs are met.</p>
-</div>
-<div class="paragraph">
-<p>Lowered TCO: You&#8217;ll set the foundation for stopping GPU waste, maximizing your hardware utilization.</p>
-</div>
-<div class="paragraph">
-<p>Runs Securely: You will deploy this stack on your OpenShift cluster and learn to secure it with enterprise-grade authentication, ensuring your proprietary data never leaves your control.</p>
-</div>
-</div>
-</div>
+<h1 class="page">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</h1>
 <div class="sect1">
-<h2 id="_lab_overview"><a class="anchor" href="#_lab_overview"></a>Lab Overview</h2>
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This hands-on lab follows a GitOps-style deployment based on the official llm-d QuickStart. We will deploy the "inference scheduling" well-lit path and then explore how to secure the deployed model endpoints.</p>
+<p>This guide provides the complete, hands-on lab for deploying llm-d on OpenShift.</p>
 </div>
-<div class="paragraph">
-<p>This guide assumes you have already completed the "Lab Environment Setup" and have a cluster ready.</p>
-</div>
-<div class="paragraph">
-<p>Your Starting Point: Lab Prerequisites</p>
-</div>
-<div class="paragraph">
-<p>OpenShift Cluster 4.19.19+ (RHOAI 2.25+).</p>
-</div>
-<div class="paragraph">
-<p>You have cluster-admin permissions.</p>
-</div>
-<div class="paragraph">
-<p>You have at least one GPU-enabled node (e.g., g6.xlarge, L40S, A100).</p>
-</div>
-<div class="paragraph">
-<p>The NVIDIA GPU Operator is installed and running.</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_1_cluster_client_setup"><a class="anchor" href="#_part_1_cluster_client_setup"></a>Part 1: Cluster &amp; Client Setup</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Before deploying the model, we must prepare the cluster to run llm-d dependencies and configure your client tools.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Install the OpenShift Web Terminal + The Web Terminal in the OpenShift console is the easiest way to run these commands. If you have not already, install the "Web Terminal" operator from OperatorHub.</p>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note icon-lightbulb">
+<div class="admonitionblock note icon-cogs">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If the Web Terminal icon (a small &gt;_ in the top-right masthead) doesn&#8217;t appear after installation, reload your browser page.
+<div class="title">Your Starting Point</div>
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>To ensure your web terminal has all necessary tools (like helm and yq), apply the enhanced web terminal configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -k https://github.com/redhat-na-ssa/llm-d-demo/demo/web-terminal</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Clone the Deployment Repository + This demo repository contains all the GitOps manifests needed for the lab.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/redhat-na-ssa/llm-d-demo.git
-cd llm-d-demo</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Scale Your GPU Nodes (If Necessary) T.his lab requires at least one GPU node. If you used the RHDP lab setup, you may have already created a g6.xlarge machineset. Let&#8217;s ensure it&#8217;s scaled to 1.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="title">Check your machinesets</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get machineset -n openshift-machine-api</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Scale your GPU machineset to 1 (if not already)</p>
-</div>
-<div class="paragraph">
-<p>(Replace 'YOUR-GPU-MACHINESET' with the name from the command above)</p>
-</div>
-<div class="paragraph">
-<p>oc scale machineset YOUR-GPU-MACHINESET -n openshift-machine-api --replicas=1</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Install llm-d Cluster Dependencies + This kustomize (-k) command will apply all the necessary prerequisites for llm-d on OCP 4.19+, including CRDs and dependencies.<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="title">Run this from inside the 'llm-d-demo' git repo</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">until oc apply -k gitops/ocp-4.19; do : ; done</code></pre>
-</div>
+<p>Follow these six steps in order to complete the lab.</p>
 </div>
 <hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_2_deploy_the_llm_d_quickstart"><a class="anchor" href="#_part_2_deploy_the_llm_d_quickstart"></a>Part 2: Deploy the llm-d QuickStart</h2>
+<h2 id="_1_requesting_the_lab_environment"><a class="anchor" href="#_1_requesting_the_lab_environment"></a>1. Requesting the Lab Environment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that the cluster is ready, we will deploy the llm-d stack and a sample model using the "inference scheduling" well-lit path.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create the Demo Project</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project demo-llm</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a HuggingFace Token Secret + (If you haven&#8217;t already from the lab setup)<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="title">Replace YOUR_TOKEN_HERE with your actual HF token</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic hf-token
---from-literal=token=YOUR_TOKEN_HERE
---namespace demo-llm</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Deploy the llm-d QuickStart. This single command deploys the LLMInferenceService for the gpt-oss-20b model. It also creates a 40G Persistent Volume Claim (PVC) to cache the model, saving download time on future restarts.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="title">Run this from inside the 'llm-d-demo' git repo</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">until oc apply -k demo/llm-d; do : ; done</code></pre>
-</div>
+<p>This first Arcade experience covers requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.</p>
 </div>
 <div class="paragraph">
-<p>This Helm chart will automatically install the llm-d controller, deploy the ModelService CRD, create the Prefill/Decode pods, and configure the Gateway.</p>
+<p>Below is the direct link to the catalog item you will need to order. The Arcade will walk you through the ordering process.</p>
 </div>
-<hr>
+<div class="paragraph">
+<p><a href="https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod&amp;utm_source=webapp&amp;utm_medium=share-link" target="blank">Red Hat OpenShift Container Platform Cluster (AWS)</a></p>
+</div>
+<iframe src="https://demo.arcade.software/t8r64IXbTp9k7H4zdlRq?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_part_3_validate_the_deployment"><a class="anchor" href="#_part_3_validate_the_deployment"></a>Part 3: Validate the Deployment</h2>
+<h2 id="_2_initial_cluster_login_validation"><a class="anchor" href="#_2_initial_cluster_login_validation"></a>2. Initial Cluster Login &amp; Validation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s check that all components are running and then send a test request.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Wait for the LLMInferenceService to be Available<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="title">Wait for the STATUS to show 'Ready' or 'Available'</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get llminferenceservice -n demo-llm -w</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Get the Inference URL + The service is exposed via the main OpenShift AI Ingress Gateway.<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INFERENCE_URL=$(
-oc -n openshift-ingress get gateway openshift-ai-inference
--o jsonpath='{.status.addresses[0].value}'
-)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>echo $INFERENCE_URL</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Define the Model and Prompt + [source,bash]</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>export LLM=openai/gpt-oss-20b export LLM_SVC=${LLM##*/} export PROMPT="Explain the difference between supervised and unsupervised learning in machine learning."</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Send the Inference Request (as Anonymous) + By default, RHOAI 3.0 enables authentication. This first request is expected to fail with a 401 Unauthorized error.<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -s -X POST http://${INFERENCE\_URL}/demo-llm/${LLM_SVC}/v1/completions
--H "Content-Type: application/json"
--d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 200, "temperature": 0.7 }'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You should see an "Unauthorized" message. This is correct! It means our enterprise security is working.</p>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_4_secure_inference_with_authentication"><a class="anchor" href="#_part_4_secure_inference_with_authentication"></a>Part 4: Secure Inference with Authentication</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This module covers the "enterprise-grade" part of the lab. We will create a ServiceAccount, grant it the minimum required permissions, and then successfully make an authenticated request.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Set the ServiceAccount Name<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export SA_NAME=llm-user export TEST_NS=demo-llm</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create the ServiceAccount</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create sa ${SA_NAME} -n ${TEST_NS}</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create the RBAC (Role and RoleBinding) + This is the key step. We create a Role that can only get the llminferenceservices resource, and a RoleBinding to give that permission to our new ServiceAccount.<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">cat &lt;&lt;EOF | oc apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-name: llm-inferenceservice-reader
-namespace: $TEST_NS
-rules:
-+
-apiGroups: ["serving.kserve.io"]
-resources: ["llminferenceservices"]
-verbs: ["get"]
-+
-resourceNames: ["gpt-oss-20b"] # Optional: Uncomment to restrict to one service
-+
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-name: llm-inferenceservice-reader-binding
-namespace: $TEST_NS
-subjects:
-+
-kind: ServiceAccount
-name: $SA_NAME
-namespace: $TEST_NS
-roleRef:
-kind: Role
-name: llm-inferenceservice-reader
-apiGroup: rbac.authorization.k8s.io
-EOF</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_generate_a_jwt_token_for_the_serviceaccount"><a class="anchor" href="#_generate_a_jwt_token_for_the_serviceaccount"></a>Generate a JWT Token for the ServiceAccount</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TEST_TOKEN=$(oc create token ${SA_NAME} -n ${TEST_NS})</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Send the Authenticated Request + Now, we send the same request as before, but this time we add the Authorization: Bearer header with our new token.<br></p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -s -X POST http://${INFERENCE\_URL}/demo-llm/${LLM_SVC}/v1/completions
--H "Content-Type: application/json"
--H "Authorization: Bearer ${TEST\_TOKEN}"
-\-d '{ "model": "'${LLM}'", "prompt": "'${PROMPT}'", "max_tokens": 200, "temperature": 0.7 }' | jq .choices[0].text</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip icon-check-circle">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">Success!</div>
-You should now see a 200 OK response and the JSON output from the model, successfully explaining supervised vs. unsupervised learning. You have deployed and secured an enterprise-grade AI service.
-</td>
-</tr>
-</table>
-</div>
-<hr>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_part_5_monitoring_cleanup"><a class="anchor" href="#_part_5_monitoring_cleanup"></a>Part 5: Monitoring &amp; Cleanup</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Monitoring (The "Why Buy?")</p>
-<div class="paragraph">
-<p>You can prove the value of this stack using OpenShift&#8217;s built-in monitoring.</p>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Navigate to Observe &gt; Dashboards in the OpenShift console. You can use the built-in "user workload monitoring" to query metrics like</p>
+<p>This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to ensure you have an llm-d compatible environment. Before deploying, you must validate:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>vllm_llmd_time_to_first_token_seconds (TTFT)</p>
+<p>OCP Version: Must be 4.19+ to include the new Intelligent Inference Scheduler (Gateway API).</p>
 </li>
 <li>
-<p>vllm_llmd_kv_cache_hit_rate (the TCO metric!).</p>
+<p>GPU Nodes: A GPU MachineSet must be created, and the resulting worker nodes must be in a "Ready" state.</p>
+</li>
+<li>
+<p>Core Operators: Validate which Operators are already installed in the cluster.</p>
 </li>
 </ul>
 </div>
-<hr>
-<div class="sect2">
-<h3 id="_cleanup_to_remove_the_resources_from_this_lab"><a class="anchor" href="#_cleanup_to_remove_the_resources_from_this_lab"></a>Cleanup + To remove the resources from this lab:<br></h3>
-<div class="listingblock">
-<div class="title">Run this from inside the 'llm-d-demo' git repo</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete -k demo/llm-d</code></pre>
+<iframe src="https://demo.arcade.software/scyKqZfQIPidN6XsPezv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
 </div>
-<div class="listingblock">
-<div class="title">Delete the ServiceAccount and RBAC</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete sa ${SA_NAME} -n ${TEST_NS} oc delete role llm-inferenceservice-reader -n ${TEST_NS} oc delete rolebinding llm-inferenceservice-reader-binding -n ${TEST_NS}</code></pre>
+<div class="sect1">
+<h2 id="_3_enhanced_terminal_operator_installation"><a class="anchor" href="#_3_enhanced_terminal_operator_installation"></a>3. Enhanced Terminal Operator Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This experience begins with your running RHDP environment. It shows the first hands-on steps to log into the OpenShift Console and validate that the MachineSet and GPU worker nodes are available to the cluster.</p>
+</div>
+<iframe src="https://demo.arcade.software/iDl0tHu8c55tzoTZoWe3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_4_configuring_cluster_dependencies_operators"><a class="anchor" href="#_4_configuring_cluster_dependencies_operators"></a>4. Configuring Cluster Dependencies (Operators)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This Arcade shows how to use the AI BU Services GitHub repository to clone setup files and configure your cluster. You will learn how to:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the prerequisite installer for OpenShift 4.19.</p>
+</li>
+<li>
+<p>Manually install two Operators that were missing from the base environment.</p>
+</li>
+</ul>
+</div>
+<iframe src="https://demo.arcade.software/PmJgJNoo3ZE09ryfH7Vv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_deploying_the_demo_troubleshooting"><a class="anchor" href="#_5_deploying_the_demo_troubleshooting"></a>5. Deploying the Demo &amp; Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With the dependencies installed, we will now deploy the intelligent inference demo. In this walkthrough, we intentionally run into resource constraints and walk through the OpenShift Console to determine where the failures are.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This is the one Gotcha that I ran into with the lab. I am not sure we lab environment uses spot instances, but randomly a worker node, or a GPU node would go offline. Additionally, the GPU MachineSet which I set to 2, would switch to 1 on it&#8217;s own.
+Simply changing the machineSet back to 2, or waiting on the worker node to come back online solved any issues.
+</td>
+</tr>
+</table>
+</div>
+<iframe src="https://demo.arcade.software/Lo1Aoc2e04KKMvif55fw?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_validating_the_deployment"><a class="anchor" href="#_6_validating_the_deployment"></a>6. Validating the Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the final step, we run a query to ensure our Inference Server is successfully deployed, responding to requests, and performing as expected.</p>
+</div>
+<iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="section5.html">Lab: Deploying Your First Distributed Inference Service</a></span>
+  <span class="prev"><a href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a></span>
   <span class="next"><a href="../appendix/appendix.html">Taxonomy to Know</a></span>
 </nav>
 </article>
