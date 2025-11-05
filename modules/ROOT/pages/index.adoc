@@ -3,15 +3,16 @@
 
 === Increase Performance and Reduce Cost with Distributed Inference
 
----
-==== This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization.
----
-
+****
 [IMPORTANT]
 .Prerequisite Knowledge
 
 This course assumes you are already familiar with the basics of Kubernetes and vLLM Inference. We will be building on those core concepts.
 
+This course is your guide to understand the specific, pre-packaged deployment patterns provided by *llm-d* that solve real-world scaling challenges, from immediate wins to advanced optimization.
+****
+
+---
 
 == The Core Challenge: APIs vs. On-Premise AI
 
