@@ -1,0 +1,86 @@
+= Lab: llm-d Deployment GuideInitial Cluster Login & Validation
+
+[preface]
+== Overview
+
+This guide provides the complete, hands-on lab for deploying llm-d on OpenShift.
+
+[NOTE.icon-cogs]
+.Your Starting Point
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
+
+Follow these six steps in order to complete the lab.
+
+'''
+
+== 1. Requesting the Lab Environment
+
+This first Arcade experience covers requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.
+
+Below is the direct link to the catalog item you will need to order. The Arcade will walk you through the ordering process.
+
+https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod&utm_source=webapp&utm_medium=share-link[Red Hat OpenShift Container Platform Cluster (AWS), window=blank]
+
+++++
+
+<iframe src="https://demo.arcade.software/t8r64IXbTp9k7H4zdlRq?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+== 2. Initial Cluster Login & Validation
+
+This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to ensure you have an llm-d compatible environment. Before deploying, you must validate:
+
+ * OCP Version: Must be 4.19+ to include the new Intelligent Inference Scheduler (Gateway API).
+
+ * GPU Nodes: A GPU MachineSet must be created, and the resulting worker nodes must be in a "Ready" state.
+
+ * Core Operators: Validate which Operators are already installed in the cluster.
+
+++++
+
+<iframe src="https://demo.arcade.software/scyKqZfQIPidN6XsPezv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+== 3. Enhanced Terminal Operator Installation
+
+This experience begins with your running RHDP environment. It shows the first hands-on steps to log into the OpenShift Console and validate that the MachineSet and GPU worker nodes are available to the cluster.
+
+++++
+
+<iframe src="https://demo.arcade.software/iDl0tHu8c55tzoTZoWe3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+== 4. Configuring Cluster Dependencies (Operators)
+
+This Arcade shows how to use the AI BU Services GitHub repository to clone setup files and configure your cluster. You will learn how to:
+
+ * Deploy the prerequisite installer for OpenShift 4.19.
+
+ * Manually install two Operators that were missing from the base environment.
+
+++++
+
+<iframe src="https://demo.arcade.software/PmJgJNoo3ZE09ryfH7Vv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+== 5. Deploying the Demo & Troubleshooting
+
+With the dependencies installed, we will now deploy the intelligent inference demo. In this walkthrough, we intentionally run into resource constraints and walk through the OpenShift Console to determine where the failures are.
+
+[WARNING]
+This is the one Gotcha that I ran into with the lab. I am not sure we lab environment uses spot instances, but randomly a worker node, or a GPU node would go offline. Additionally, the GPU MachineSet which I set to 2, would switch to 1 on it's own. 
+Simply changing the machineSet back to 2, or waiting on the worker node to come back online solved any issues. 
+
+++++
+
+<iframe src="https://demo.arcade.software/Lo1Aoc2e04KKMvif55fw?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+== 6. Validating the Deployment
+
+In the final step, we run a query to ensure our Inference Server is successfully deployed, responding to requests, and performing as expected.
+
+++++
+
+<iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
