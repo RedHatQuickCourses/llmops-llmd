@@ -1,4 +1,4 @@
-= Reference: OpenShift Gateway API for AI Deployments
+= OpenShift Gateway API for AI Deployments
 
 [preface]
 == Overview

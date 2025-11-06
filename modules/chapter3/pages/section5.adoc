@@ -1,4 +1,4 @@
-= Hands-on Lab: Proving the Value of llm-d
+= Hands-on Lab: llm-d - QuickStart Deployment
 
 This lab guides you through deploying, comparing, and validating a scalable and efficient inference stack on your OpenShift cluster. You will not just deploy llm-d, you will prove its value.
 

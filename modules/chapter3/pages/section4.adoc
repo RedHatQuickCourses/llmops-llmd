@@ -88,7 +88,10 @@ Decode: A pool of pods optimized for the memory-fast task of generating tokens.
 
 |KServe "Next GenAI" Controller
 (RHOAI Operator)
-|This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.
+|This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator v2.25+, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.
+
+|Dependant Operators
+|Cert Manager Operator, Arthorino Operator and the Leader-Worker_set Operator must be installed to deploy resources using the distributed interence with llm-d.
 |===
 
 ---

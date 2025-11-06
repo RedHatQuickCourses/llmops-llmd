@@ -1,21 +1,15 @@
-= Lab: llm-d Deployment GuideInitial Cluster Login & Validation
-
-[preface]
-== Overview
-
-This guide provides the complete, hands-on lab for deploying llm-d on OpenShift.
+= Lab Demo: llm-d Deployment Guide Arcade Experience
 
 [NOTE.icon-cogs]
 .Your Starting Point
-This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift with OpenShift AI environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
 
-Follow these six steps in order to complete the lab.
+== Follow these six steps in order to complete the lab.
 
-'''
 
-== 1. Requesting the Lab Environment
+=== 1. Requesting the Lab Environment
 
-This first Arcade experience covers requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.
+This first Arcade experience showcases requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.
 
 Below is the direct link to the catalog item you will need to order. The Arcade will walk you through the ordering process.
 
@@ -30,9 +24,11 @@ https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte
 
 This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to ensure you have an llm-d compatible environment. Before deploying, you must validate:
 
- * OCP Version: Must be 4.19+ to include the new Intelligent Inference Scheduler (Gateway API).
+ * OCP Version: Must be 4.19+ which includse the new Intelligent Inference Scheduler (KGateway API).
 
  * GPU Nodes: A GPU MachineSet must be created, and the resulting worker nodes must be in a "Ready" state.
+
+ ** These nodes will be created during lab exercise.
 
  * Core Operators: Validate which Operators are already installed in the cluster.
 
@@ -44,6 +40,10 @@ This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to 
 == 3. Enhanced Terminal Operator Installation
 
 This experience begins with your running RHDP environment. It shows the first hands-on steps to log into the OpenShift Console and validate that the MachineSet and GPU worker nodes are available to the cluster.
+
+Below is the direct link to Github repository hosting our Lab code and instructions. This Arcade will walk you through the first steps of the lab.
+
+https://github.com/redhat-na-ssa/demo-ocp-llm-d.git[llm-d Deployment Guide repository link, window=blank]
 
 ++++
 
@@ -68,8 +68,7 @@ This Arcade shows how to use the AI BU Services GitHub repository to clone setup
 With the dependencies installed, we will now deploy the intelligent inference demo. In this walkthrough, we intentionally run into resource constraints and walk through the OpenShift Console to determine where the failures are.
 
 [WARNING]
-This is the one Gotcha that I ran into with the lab. I am not sure we lab environment uses spot instances, but randomly a worker node, or a GPU node would go offline. Additionally, the GPU MachineSet which I set to 2, would switch to 1 on it's own. 
-Simply changing the machineSet back to 2, or waiting on the worker node to come back online solved any issues. 
+One notable issue we encountered in the lab environment was intermittent node instability. Periodically, a worker or GPU node would go offline, potentially due to the environment's use of spot instances. We also observed the GPU MachineSet, which was configured for 2 replicas, unexpectedly scaling down to 1. The fix was straightforward: in all cases, manually resetting the MachineSet back to 2 replicas resolved the issue.
 
 ++++
 
@@ -84,3 +83,17 @@ In the final step, we run a query to ensure our Inference Server is successfully
 
 <iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
+
+== 7. Exploring the Lab Guide Code
+
+[TIP.icon-code] 
+.Optional: Understanding the Automation
+This section is not a formal lab step, but it is highly recommended. It provides a review of the repository code blocks that automate the llm-d deployment for this lab.
+
+We've included this so you can reverse engineer the process and adapt the automation to fit your own unique deployment and solution needs
+
+++++
+
+<iframe src="https://demo.arcade.software/WEGLJwtnv2ZAO70slxlA?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
