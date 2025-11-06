@@ -49,7 +49,7 @@
     <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI  Architecture</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section6.html">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</a>
+    <a class="nav-link" href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
   </li>
 </ul>
   </li>
@@ -57,19 +57,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../appendix/appendix.html">Taxonomy to Know</a>
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../appendix/index.html">RDHP Lab: Environment Setup</a>
+    <a class="nav-link" href="../appendix/index.html">Taxonomy to Know</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/kvcache.html">Deep Dive on KV Cache Management</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../appendix/apigateway.html">Reference: OpenShift Gateway API for AI Deployments</a>
   </li>
 </ul>
   </li>
@@ -304,7 +301,15 @@ A slow network will make your distributed system slower than a single pod. Verif
 (RHOAI Operator)</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.</p>
+<p>This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator v2.25+, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Dependant Operators</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Cert Manager Operator, Arthorino Operator and the Leader-Worker_set Operator must be installed to deploy resources using the distributed interence with llm-d.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -409,7 +414,7 @@ Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) 
 </div>
 <nav class="pagination">
   <span class="prev"><a href="section2.html">Use Case Identification</a></span>
-  <span class="next"><a href="section6.html">Lab: llm-d Deployment GuideInitial Cluster Login &amp; Validation</a></span>
+  <span class="next"><a href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a></span>
 </nav>
 </article>
   </div>
