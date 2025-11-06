@@ -1,215 +1,61 @@
-= Lab: Deploying Your First Distributed Inference Service
-:toc: left
-:icons: font
+From vLLM to AI Factory: Scaling with llm-d
 
-[preface]
-Welcome to the hands-on lab for OpenShift AI's Distributed Inference.
+Increase Performance & Reduce Cost with Distributed Inference
 
-In this guide, you will deploy your first distributed AI inference service on OpenShift AI. You will follow the "well-lit path" for Inference Scheduling (powered by LLM-D) to deploy a highly efficient, scalable, and enterprise-grade service.
+The Value of This Course
 
-== Lab Goal
+Public APIs offer convenience, but they fail to answer the three core challenges of enterprise AI: Cost, Performance, and Security.
 
-By the end of this lab, you will have:
+This course is a comprehensive, value-driven guide to solving all three. You will learn how OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
 
-Installed the OpenShift AI Gateway (kgateway).
+- The Best TCO: Learn to eliminate "idle GPU" waste and maximize your hardware investment, drastically lowering your Total Cost of Ownership.
 
-Deployed a vLLM model service with disaggregated (separate) Prefill and Decode pods.
+- Guaranteed Performance: Move from "best effort" to "guaranteed SLOs." Learn how to solve hotspots and ensure a fast, responsive experience for every user.
 
-Validated that your deployment is running and ready for inference.
+- True Hybrid Cloud Security: Master the "Sovereign AI" model. Learn to deploy world-class inference inside your own cluster, keeping your proprietary data 100% secure.
 
-== The "Why Buy?" This Lab
+What You Will Learn
 
-This lab proves the core value of OpenShift AI's distributed inference:
+This repository contains a complete learning path, from high-level value to hands-on deployment.
 
-Performance: You will deploy a stack that intelligently separates large "Prefill" jobs from small "Decode" jobs. This eliminates queue-blocking and is the key to guaranteeing your performance SLOs.
+- Master the "Why": Articulate the business value (TCO, ROI, Security) of on-premise, distributed inference.
 
-Lower TCO: You stop wasting expensive GPU cycles. This architecture is designed to maximize GPU utilization, so you get the full value from your hardware.
+- Identify Key Use Cases: Learn to identify which AI workloads are prime candidates for llm-d and how to scope their deployment.
 
-Security: The entire stack runs on your private OpenShift cluster, in your hybrid cloud environment, ensuring your proprietary data never leaves your control.
+- Explore the "Well-Lit Paths": Get a deep dive into the four pre-packaged llm-d deployment patterns that solve real-world scaling challenges.
 
-== Before You Begin: Prerequisites
+- Understand the Architecture: Get a clear overview of the components, from the intelligent KServe Gateway and scheduler to the vLLM worker pods.
 
-This lab guide assumes you have ALREADY COMPLETED the "OpenShift AI: Lab Environment Setup" guide.
+- Get Hands-On: Move from theory to practice by deploying a fully functional, auto-scaling inference service on OpenShift.
 
-[IMPORTANT]
-.Lab Environment Check
+Course Structure
 
-Your OpenShift environment must have the following components running:
+This course is broken down into the following key modules:
 
-An OpenShift 4.17+ cluster.
+- llm-d Benefits & Value: The core business case for llm-d vs. public APIs.
 
-At least two GPU-enabled nodes (e.g., L40S or A100).
+- Use-Case Identification: A framework for identifying high-impact AI workloads.
 
-The Node Feature Discovery (NFD) Operator.
+- The "Well-Lit Paths": A deep dive into the four llm-d deployment patterns.
 
-The NVIDIA GPU Operator.
-====
+- Architecture Overview: How the components (Gateway, Scheduler, vLLM) work together.
 
-If your environment is ready, let's begin.
+- Hands-On Lab: Deploying llm-d on OpenShift AI. "Coming Soon"
 
-== Part 1: Client and Namespace Setup
+- Hands-On Interactive Lab
 
-First, we need to prepare your client (your local machine or bastion) and the OpenShift project where we'll work.
+The centerpiece of this course is a fully interactive, Arcade-based lab. This walkthrough guides you through the entire llm-d deployment on OpenShift / OpenShift AI.
 
-=== 1. Set Namespace Variable
+You will see and build a live deployment that demonstrates:
 
-To make commands easier to copy/paste, let's set a namespace variable and create that project.
+- The Intelligent Inference Scheduler
 
-[source,bash]
+- Smart Routing based on real-time pod load
 
-export NAMESPACE="llm-d-lab"
-oc new-project $NAMESPACE
+- Auto-scaling LLM workers to meet demand
 
-=== 2. Get the Required Client Tools
+- Troubleshooting common resource constraints
 
-This lab requires kubectl, helm, yq, and git. This repository contains a helper script to install them.
+Prerequisites
 
-[NOTE]
-This guide assumes you are running these commands from a terminal within the cloned course repository.
-
-[source,bash]
-
-From the root of this repository
-
-./prereq/client-setup/install-deps.sh
-
-=== 3. Create Your HuggingFace Token Secret
-
-To download models like Llama 3, the service needs a HuggingFace (HF) token.
-
-. If you don't have one, go to your HuggingFace Profile, navigate to Settings -> Access Tokens, and create a new token with "read" permissions.
-. Create the Kubernetes secret in your project (replace YOUR_TOKEN_HERE with your new token).
-
-[source,bash]
-
-oc create secret generic hf-token 
-
---from-literal=token=YOUR_TOKEN_HERE 
-
---namespace $NAMESPACE
-
-== Part 2: Deploy the OpenShift AI Inference Stack
-
-Now we will deploy the two main components using the Helm charts included in this repository.
-
-=== 1. Install the Gateway Provider
-
-First, we deploy the kgateway, which will act as our smart router.
-
-[source,bash]
-
-helm install llm-d-gateway ./charts/kgateway 
-
--n $NAMESPACE 
-
---wait
-
-=== 2. Deploy the "Inference Scheduling" Service
-
-Next, we deploy the core of the lab: the LLM-D controller and the vLLM model service. This "Inference Scheduling" path is the recommended "well-lit path" for a production-ready deployment.
-
-[source,bash]
-
-helm install llm-d-vllm-deployment ./charts/llm-d-vllm-deployment 
-
--n $NAMESPACE 
-
--f ./charts/llm-d-vllm-deployment/values.yaml 
-
---wait
-
-[NOTE]
-.What did this Helm chart do?
-
-This single command automatically:
-
-Installed the llm-d-controller-manager.
-
-Defined the ModelService Custom Resource Definition (CRD).
-
-Created a ModelService resource for llama-3-8b-chat-hf.
-
-Deployed two separate sets of pods: one for Prefill and one for Decode.
-
-Configured the Gateway to route traffic to them.
-====
-
-== Part 3: Validation
-
-Let's verify that all components are running.
-
-=== 1. Check your Helm releases
-You should see both charts listed as "deployed".
-
-[source,bash]
-
-helm list -n $NAMESPACE
-
-.Expected Output
-[literal,subs="quotes"]
-....
-NAME                    NAMESPACE   REVISION    UPDATED                                 STATUS      CHART                       APP VERSION
-llm-d-gateway llm-d-lab   1           2025-10-25 12:00:00.000 -0500 CDT    deployed kgateway-0.1.0              0.1.0
-llm-d-vllm-deployment llm-d-lab   1           2025-10-25 12:05:00.000 -0500 CDT    deployed llm-d-vllm-deployment-0.1.0 0.1.0
-....
-
-=== 2. Check your pods
-You should see pods for the controller, the gateway, and the separate prefill/decode model services.
-
-[source,bash]
-
-oc get pods -n $NAMESPACE
-
-.Expected Output (Pod names will vary)
-[literal,subs="quotes"]
-....
-NAME                                          READY   STATUS    RESTARTS   AGE
-llm-d-controller-manager-f7f5c6f8f-abcde 2/2     Running 0          5m
-llm-d-gateway-69f8c8d8b-fghij 1/1     Running 0          7m
-llama-3-8b-chat-hf-decode-7d7c9f8b8-klmno 1/1     Running 0          5m
-llama-3-8b-chat-hf-decode-7d7c9f8b8-pqrst 1/1     Running 0          5m
-llama-3-8b-chat-hf-prefill-6b6c8d8b8-uvwxyz 1/1     Running 0          5m
-....
-
-If you see all these pods in a "Running" state, your deployment is successful!
-
-== Part 4: Next Steps
-
-Your AI factory is running. Now it's time to use it.
-
-=== 1. Make Your First Inference Request
-Your service is running and exposed via the Gateway. To learn how to format your request and send it to your new model, proceed to the next guide:
-
-xref:llm-d_inference_guide.adoc[Next Lab: Running Your First Inference Request, role="button"]
-
-=== 2. (Optional) Proving the Value: Observability
-The "Why Buy?" of this stack is its efficiency. The Helm charts automatically create PodMonitor resources to scrape metrics for Prometheus.
-
-In the OpenShift Console, you can go to Observe > Dashboards and use the built-in "user workload monitoring" to query metrics like:
-
-vllm_llmd_time_to_first_token_seconds (TTFT)
-
-vllm_llmd_time_per_output_token_seconds (TPOT)
-
-vllm_llmd_kv_cache_hit_rate (Your most important TCO metric!)
-
-== Part 5: Lab Cleanup
-
-When you are finished, use Helm to remove all components and then delete the project.
-
-[source,bash]
-
-Uninstall the llm-d deployment
-
-helm uninstall llm-d-vllm-deployment -n $NAMESPACE
-
-Uninstall the gateway
-
-helm uninstall llm-d-gateway -n $NAMESPACE
-
-Delete the project
-
-oc delete project $NAMESPACE
-
-== Lab Complete
-Congratulations! You have successfully deployed, validated, and tested a distributed, scalable AI inference stack on OpenShift AI.
+This course is designed for technical professionals, including Solutions Architects, Consultants, and Technical Sellers. It assumes a foundational understanding of OpenShift Container Platform Cluster (Kubernetes) and the core concepts of vLLM Inference.
