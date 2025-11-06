@@ -1,4 +1,4 @@
-= Distributed Inference with llm-d OpenShift AI  Architecture
+= Distributed Inference with llm-d OpenShift AI Architecture
 
 
 [TIP.tada] 
