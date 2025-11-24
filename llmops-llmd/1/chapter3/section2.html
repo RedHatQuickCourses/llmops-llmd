@@ -57,7 +57,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../appendix/appendix.html">Troubleshooting</a>
+    <a class="nav-link" href="../appendix/appendix.html">appendix</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">Taxonomy to Know</a>
@@ -67,6 +67,9 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/trbleshoot.html">Troubleshooting</a>
   </li>
 </ul>
   </li>
@@ -147,6 +150,11 @@
 <div class="paragraph">
 <p>Before you deploy a single model, the right foundation must be in place. Failure to meet these component requirements is the number one cause of implementation issues.</p>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="_images/llm-dstack.png" alt="llm-d framework on OpenShift AI" width="700">
+</div>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Component Requirements for Distributed Inference</caption>
 <colgroup>
@@ -205,7 +213,7 @@ Do not underestimate the networking requirement. A standard 10GbE TCP/IP network
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_core_components_the_puzzle_pieces"><a class="anchor" href="#_the_core_components_the_puzzle_pieces"></a>The Core Components (The "Puzzle Pieces")</h2>
+<h2 id="_the_core_components"><a class="anchor" href="#_the_core_components"></a>The Core Components</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The architecture integrates <code>llm-d</code> into OpenShift AI as a set of controllers and routing logic.</p>
@@ -233,8 +241,8 @@ Do not underestimate the networking requirement. A standard 10GbE TCP/IP network
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Smart Router"</strong> and single entry point for all users, living in the <code>openshift-ingress</code> namespace. It intercepts the user&#8217;s HTTPROUTE request and uses the inference extension to ask the "brain" (the scheduler) where to send it.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inference Scheduler (EPP)</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Brain"</strong> of <code>llm-d</code>. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Intelligent Inference Scheduler (EPP)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Intelligence"</strong> of <code>llm-d</code>. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>vLLM Pods (Prefill/Decode)</strong></p></td>
@@ -252,7 +260,7 @@ Do not underestimate the networking requirement. A standard 10GbE TCP/IP network
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Dependant Operators</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Supporting Infrastructure</strong>. The Cert Manager Operator, Arthorino Operator, and the <strong>Leader-Worker\_set Operator</strong> must be installed to deploy resources using distributed inference with <code>llm-d</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Supporting Infrastructure</strong>. The Cert Manager Operator, Arthorino Operator, and the <strong>Leader-Worker-Set Operator</strong> must be installed to deploy resources using distributed inference with <code>llm-d</code>.</p></td>
 </tr>
 </tbody>
 </table>

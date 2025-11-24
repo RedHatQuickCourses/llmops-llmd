@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Appendix: Troubleshooting &amp; FAQ :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="lws.html">
+    <meta name="description" content="Common errors and solutions for llm-d deployments on Red Hat OpenShift AI.">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">vLLM to AI Factory Scaling with LLM-D</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/redhatai.html">AI Factory on Red Hat AI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Use Cases and Core Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="appendix.html">appendix</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Taxonomy to Know</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="trbleshoot.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="appendix.html">appendix</a></li>
+    <li><a href="trbleshoot.html">Troubleshooting</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Appendix: Troubleshooting &amp; FAQ</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="quoteblock abstract">
+<blockquote>
+Distributed systems can be fragile during setup. This appendix documents the most common "Gotchas" encountered during the lab and their fixes.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_issue_1_pods_stuck_in_pending_state"><a class="anchor" href="#_issue_1_pods_stuck_in_pending_state"></a>Issue 1: Pods Stuck in "Pending" State</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Symptom:</strong>
+[cite_start]You deploy the model, but the pods (specifically <code>ms-kv-events-llm-d-modelservice-decode</code>) remain in <code>Pending</code> status indefinitely[cite: 81].</p>
+</div>
+<div class="paragraph">
+<p><strong>Cause:</strong>
+[cite_start]This often happens when using specific GPU nodes (like <code>NVIDIA-L40S-PRIVATE</code>) that have <strong>Taints</strong> applied to reserve them for specific workloads[cite: 82]. The standard deployment does not have the matching "Toleration."</p>
+</div>
+<div class="paragraph">
+<p><strong>Fix:</strong>
+You must patch the deployment to add the toleration for the GPU node.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch deployment ms-kv-events-llm-d-modelservice-decode \
+-p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu","operator":"Equal","value":"NVIDIA-L40S-PRIVATE","effect":"NoSchedule"}]}}}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em class="cite_start">[cite: 84, 85]</em></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_issue_2_machinesets_scaling_unexpectedly"><a class="anchor" href="#_issue_2_machinesets_scaling_unexpectedly"></a>Issue 2: MachineSets Scaling Unexpectedly</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Symptom:</strong>
+[cite_start]Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently[cite: 25].</p>
+</div>
+<div class="paragraph">
+<p><strong>Cause:</strong>
+In lab environments using Spot Instances, nodes may be reclaimed, or the autoscaler may aggressively scale down if it detects idle periods during your setup phase.</p>
+</div>
+<div class="paragraph">
+<p><strong>Fix:</strong>
+Manually enforce the replica count back to the required number (2 for Disaggregated labs).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Replace with your specific machineset name
+oc scale machineset &lt;gpu-machineset-name&gt; -n openshift-machine-api --replicas=2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em class="cite_start">[cite: 25]</em></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_issue_3_gateway_address_pending"><a class="anchor" href="#_issue_3_gateway_address_pending"></a>Issue 3: "Gateway Address Pending"</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Symptom:</strong>
+When running <code>oc get gateways</code>, the <code>ADDRESS</code> column remains empty.</p>
+</div>
+<div class="paragraph">
+<p><strong>Cause:</strong>
+The underlying Service Mesh (Istio) LoadBalancer service has not been assigned an IP address by the cloud provider (AWS/Azure).</p>
+</div>
+<div class="paragraph">
+<p><strong>Fix:</strong>
+Check the status of the Istio Ingress Gateway service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get svc -n istio-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If it shows <code>&lt;pending&gt;</code>, check your Cloud Controller Manager logs or ensure you haven&#8217;t exceeded your cloud account&#8217;s Load Balancer quota.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_issue_4_403_forbidden_on_inference_requests"><a class="anchor" href="#_issue_4_403_forbidden_on_inference_requests"></a>Issue 4: 403 Forbidden on Inference Requests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Symptom:</strong>
+You receive a <code>403 Forbidden</code> error when <code>curl</code>-ing the endpoint, even though the pod is running.</p>
+</div>
+<div class="paragraph">
+<p><strong>Cause:</strong>
+<strong>Authorino</strong> is active and blocking the request because the Authorization header is missing or invalid.</p>
+</div>
+<div class="paragraph">
+<p><strong>Fix:</strong>
+Ensure you are passing a valid ServiceAccount token.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TOKEN=$(oc create token default -n &lt;namespace&gt;)
+curl -H "Authorization: Bearer $TOKEN" ...</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lws.html">LeaderWorkerSet (LWS) Operator</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
