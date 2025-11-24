@@ -38,13 +38,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+    <a class="nav-link" href="../chapter3/redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Use Cases and Core Benefits</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a>
+    <a class="nav-link" href="../chapter3/section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
@@ -55,7 +55,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+    <a class="nav-link" href="../appendix/appendix.html">Troubleshooting</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">Taxonomy to Know</a>
@@ -104,7 +104,37 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-
+<div class="paragraph">
+<p>INFERENCE_URL=$(
+  oc -n openshift-ingress get gateway openshift-ai-inference \
+    -o jsonpath='{.status.addresses[0].value}'
+)</p>
+</div>
+<div class="paragraph">
+<p>LLM=openai/gpt-oss-20b
+LLM_SVC=${LLM##*/}</p>
+</div>
+<div class="paragraph">
+<p>PROMPT="Give me a one page explaination of why people would think the earth is flat"</p>
+</div>
+<div class="paragraph">
+<p>llm_post_data(){
+cat &lt;&lt;JSON
+{
+  "model": "${LLM}",
+  "prompt": "${PROMPT}",
+  "max_tokens": 20000,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
+JSON
+}</p>
+</div>
+<div class="paragraph">
+<p>curl -s -X POST <a href="http://${INFERENCE_URL}/demo-llm/${LLM_SVC}/v1/completions" class="bare">http://${INFERENCE_URL}/demo-llm/${LLM_SVC}/v1/completions</a> \
+  -H "Content-Type: application/json" \
+  -d "$(llm_post_data)" | jq .choices[0].text</p>
+</div>
 </article>
   </div>
 </main>

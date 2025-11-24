@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Use Case Identification :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>LLM-D Architecture Deep Dive: Building the Foundation :: vLLM to AI Factory Scaling with LLM-D</title>
     <link rel="prev" href="section1.html">
-    <link rel="next" href="section4.html">
+    <link rel="next" href="section6.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -40,13 +40,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section1.html">LLM-D Benefits</a>
-  </li>
-  <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="section2.html">Use Case Identification</a>
+    <a class="nav-link" href="redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a>
+    <a class="nav-link" href="section1.html">LLM-D Use Cases and Core Benefits</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
@@ -57,7 +57,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+    <a class="nav-link" href="../appendix/appendix.html">Troubleshooting</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../appendix/index.html">Taxonomy to Know</a>
@@ -101,7 +101,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section2.html">Use Case Identification</a></li>
+    <li><a href="section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a></li>
   </ul>
 </nav>
 </div>
@@ -110,53 +110,45 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Use Case Identification</h1>
-<div id="preamble">
+<h1 class="page">LLM-D Architecture Deep Dive: Building the Foundation</h1>
+<div class="sect1">
+<h2 id="_architecture_deep_dive_for_implementers"><a class="anchor" href="#_architecture_deep_dive_for_implementers"></a>Architecture Deep Dive: For Implementers</h2>
 <div class="sectionbody">
-<div class="admonitionblock tip tada">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">The LLM-D Litmus Test</div>
 <div class="paragraph">
-<p>Wondering if LLM-D is your new best friend? If you nod your head to most of these, the answer is a resounding YES!</p>
+<p>Now that you understand the "why," let’s explore the "how". As an implementer, your job is to assemble the puzzle that allows for distributed, high-performance LLM inference. This architecture is deeply integrated with OpenShift AI and cloud-native principles.</p>
 </div>
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The <code>llm-d</code> architecture is the right solution if you are an Operator, Consultant, or Services member responsible for:</p>
 </div>
-<div class="ulist checklist">
-<ul class="checklist">
+<div class="ulist">
+<ul>
 <li>
-<p><i class="fa fa-check-square-o"></i> 🏢 You run a <strong>large-scale, high-throughput</strong> AI service for many users.</p>
+<p>Managing <strong>multi-tenant clusters</strong> and needing to serve models to different teams <strong>securely and efficiently</strong>.</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> 💰 You are constantly worried about the <strong>Total Cost of Ownership (TCO)</strong> of your GPU farm.</p>
+<p>Working within a <strong>Kubernetes and OpenShift</strong> environment and requiring a cloud-native solution.</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> 🤖 Your applications involve <strong>complex conversations</strong>, RAG, or AI agents.</p>
+<p>Having a <strong>Hybrid Cloud</strong> mandate, needing to support consistent deployments from on-prem data centers to public clouds.</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> ☸️ You live and breathe <strong>Kubernetes</strong> and want a cloud-native solution.</p>
+<p>Having a primary goal to <strong>lower TCO</strong> by maximizing the utilization of expensive, shared GPU resources.</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> 📈 You have a crack <strong>Platform or SRE team</strong> ready to level up their infrastructure.</p>
+<p>Facing user demands for <strong>guaranteed performance SLOs</strong> (like low Time-To-First-Token, or TTFT), where the current "first-come, first-served" model is failing.</p>
 </li>
 </ul>
 </div>
-<hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_identifying_the_right_business_problem"><a class="anchor" href="#_identifying_the_right_business_problem"></a>Identifying the Right Business Problem</h2>
+<h2 id="_the_foundation_the_prerequisites"><a class="anchor" href="#_the_foundation_the_prerequisites"></a>The Foundation (The Prerequisites)</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>LLM-D is not just a technical tool; it&#8217;s a solution to specific, expensive business problems. See if you recognize any of these common scenarios.</p>
+<p>Before you deploy a single model, the right foundation must be in place. Failure to meet these component requirements is the number one cause of implementation issues.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Component Requirements for Distributed Inference</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -164,145 +156,224 @@
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Business Problem</th>
-<th class="tableblock halign-left valign-top">Symptom (What You&#8217;re Seeing)</th>
-<th class="tableblock halign-left valign-top">How llm-d Solves It</th>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Requirement</th>
+<th class="tableblock halign-left valign-top">The "Why"</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Skyrocketing AI OpEx &amp; Poor ROI</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"Our GPU budget is out of control. We keep buying more hardware, but our user capacity doesn&#8217;t double. We can&#8217;t make this project economically viable."</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>llm-d&#8217;s Intelligent Scheduling and KV Cache Management stop waste. They pack more users and more models onto the same hardware, directly lowering TCO and improving your cost-per-query.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Kubernetes / OpenShift</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift 4.19.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is a modern stack that relies on up-to-date Kubernetes features and the <strong>Gateway API</strong>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inconsistent or Slow AI Applications</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"Our users complain the chatbot is 'slow to start' (High $TTFT$) or 'stutters' during a long answer (High $TPOT$). Our RAG app times out under load."</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>llm-d&#8217;s P/D Disaggregation and Smart Scheduling are built to solve this. They eliminate hotspots and optimize the pipeline for fast, consistent responses, allowing you to meet your SLOs.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway API</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A compliant Gateway API implementation, such as the one provided by OpenShift Service Mesh (Istio) or kGateway.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This component serves as the <strong>"front door"</strong> for all traffic and is the required integration point for the smart scheduler.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Sovereignty &amp; Security Mandates</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"Our legal and compliance teams have blocked the use of third-party APIs. We have to build this in-house, but we can&#8217;t sacrifice performance."</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>llm-d runs inside your OpenShift cluster. Your proprietary data never leaves your secure, private, or hybrid cloud environment. It delivers public-cloud performance with private-cloud security.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GPU Hardware</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NVIDIA Data Center GPUs (e.g., H100, A100, L40S).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This stack is built for high-performance, and the underlying <strong>vLLM</strong> engine is optimized for these specific architectures, not consumer cards.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inability to Run Next-Gen Models</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"We&#8217;re stuck on 7B models. We want to use a new 8x7B (MoE) model to stay competitive, but we have no way to serve it efficiently."</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>llm-d&#8217;s Wide Expert Parallelism is specifically designed to serve massive Mixture-of-Experts (MoE) models, giving you a clear path to run next-generation AI.</p>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GPU Operators</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NVIDIA GPU Operator &amp; Node Feature Discovery (NFD) Operator.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Networking (CRITICAL)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">High-Speed, Low-Latency Fabric, such as <strong>InfiniBand or RoCE (RDMA)</strong>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required for <strong>"East-West" traffic</strong> between nodes, which is essential for advanced features like P/D Disaggregation and Mixture-of-Experts (MoE). A standard 10GbE TCP/IP network will be a major bottleneck and is not supported for high-performance paths.</p></td>
 </tr>
 </tbody>
 </table>
-<hr>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="title">A Note on Networking</div>
+Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing. A slow network will make your distributed system slower than a single pod.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_who_is_this_for_the_skills_you_need"><a class="anchor" href="#_who_is_this_for_the_skills_you_need"></a>Who is This For? The Skills You Need</h2>
+<h2 id="_the_core_components_the_puzzle_pieces"><a class="anchor" href="#_the_core_components_the_puzzle_pieces"></a>The Core Components (The "Puzzle Pieces")</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>LLM-D is incredibly powerful, but it is not a "magic button." It is a solution designed for a specific set of users.</p>
+<p>The architecture integrates <code>llm-d</code> into OpenShift AI as a set of controllers and routing logic.</p>
 </div>
-<div class="sect2">
-<h3 id="_persona_1_the_operator_your_platformsre_team"><a class="anchor" href="#_persona_1_the_operator_your_platformsre_team"></a>Persona 1: The Operator (Your Platform/SRE Team)</h3>
+<div class="imageblock text-center">
+<div class="content">
+<img src="_images/high_level_llmd_diagram.jpg" alt="llm-d OpenShift AI Architecture Diagram showing Gateway" width="Scheduler" height="and vLLM Pods">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Core LLM-D Components and Roles</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Role in the System (What It Does)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway API + Inference Extension</strong> (e.g., Envoy Proxy)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Smart Router"</strong> and single entry point for all users, living in the <code>openshift-ingress</code> namespace. It intercepts the user&#8217;s HTTPROUTE request and uses the inference extension to ask the "brain" (the scheduler) where to send it.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inference Scheduler (EPP)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Brain"</strong> of <code>llm-d</code>. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>vLLM Pods (Prefill/Decode)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Workers"</strong>. These are vLLM engines running in the user namespace, deployed by the ModelService CRD. In advanced "Well-Lit Paths," they are split into two separate pools:
+*   <strong>Prefill:</strong> Optimized for the compute-heavy task of processing the prompt.
+*   <strong>Decode:</strong> Optimized for the memory-fast task of generating tokens.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>New ModelService CRD</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Workload Definition"</strong>. This is the simple YAML file you, the user, create to declare what model you want to serve (e.g., "I want to serve Llama-3-8B").</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>KServe "Next GenAI" Controller (RHOAI Operator)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The "Orchestrator"</strong>. Part of the Red Hat OpenShift AI Operator v2.25+, it watches for a ModelService CRD creation. When it sees one, it builds all the complex underlying pieces, including the Prefill Deployment, the Decode Deployment, Kubernetes Services, and the HTTPROUTE rules for the Gateway.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Dependant Operators</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Supporting Infrastructure</strong>. The Cert Manager Operator, Arthorino Operator, and the <strong>Leader-Worker\_set Operator</strong> must be installed to deploy resources using distributed inference with <code>llm-d</code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_data_flow_the_request_lifecycle"><a class="anchor" href="#_the_data_flow_the_request_lifecycle"></a>The Data Flow (The "Request Lifecycle")</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>This is the primary user who installs, configures, and manages llm-d. This team should have:</p>
+<p>Understanding this six-step flow, detailing how the core components interact, is critical for successful deployment and troubleshooting.</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Request In:</strong> A user sends an <strong>OpenAI-compatible request</strong> (e.g., <code>/v1/chat/completions</code>) to the HTTPROUTE defined for the model.</p>
+</li>
+<li>
+<p><strong>Gateway Intercepts:</strong> The Gateway API (Envoy), located in the <code>openshift-ingress</code> namespace, receives the request.</p>
+</li>
+<li>
+<p><strong>The "Brain" is Called:</strong> The Gateway API inference extension forwards the request metadata to the Inference Scheduler (EPP), essentially asking: "Where should this new request go?".</p>
+</li>
+<li>
+<p><strong>Scheduler Decides (Filter &amp; Score):</strong> The Scheduler runs its logic:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Strong Kubernetes/OpenShift Expertise: Deep understanding of Operators, networking (Gateway API), and security contexts.</p>
+<p><strong>Filter:</strong> It gathers a list of all vLLM pods for the requested model and filters out any that are unhealthy, overloaded, or incompatible.</p>
 </li>
 <li>
-<p>Helm &amp; GitOps Fluency: Deployments are managed via Helm charts, ideally in a GitOps workflow.</p>
-</li>
-<li>
-<p>Observability Skills: Comfortable with Prometheus and Grafana for monitoring GPU, network, and scheduler-level metrics.</p>
-</li>
-<li>
-<p>Hardware Awareness: Understands GPU hardware, NVIDIA drivers, and node configurations.</p>
+<p><strong>Score:</strong> It scores the remaining, healthy pods based on telemetry. It checks which pod has the shortest queue and, most importantly, <strong>if any pod already holds the KV Cache for the conversation (KV Cache Affinity)</strong>.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_persona_2_the_user_your_data_scientists_app_developers"><a class="anchor" href="#_persona_2_the_user_your_data_scientists_app_developers"></a>Persona 2: The User (Your Data Scientists &amp; App Developers)</h3>
-<div class="paragraph">
-<p>This is the consumer of the llm-d service. For them, life gets simpler. They should:</p>
-</div>
+</li>
+<li>
+<p><strong>Optimal Pod Selected:</strong> The Scheduler determines the best pod and routes accordingly:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Be API-Driven: They only need to know the OpenAI-compatible API endpoint provided by the platform team.</p>
+<p><strong>Cache Hit (Fast Path):</strong> If it finds a Decode pod with the KV Cache and a short queue (e.g., <code>decode-pod-7</code>), it tells the Gateway, "Send it there".</p>
 </li>
 <li>
-<p>Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.</p>
+<p><strong>Cache Miss (Slower Path):</strong> If no pod has the required cache, it tells the Gateway, "Send it to a Prefill pod first (the least busy one). That Prefill pod will then process the prompt, write the new KV Cache, and internally hand the request off to a Decode pod for generation".</p>
 </li>
 </ul>
 </div>
-<hr>
-<div class="admonitionblock note book">
+</li>
+<li>
+<p><strong>Routing &amp; Response:</strong> The Gateway forwards the actual request to the chosen pod. The pod generates the response and streams it back to the user through the Gateway.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_observability_proving_it_works"><a class="anchor" href="#_observability_proving_it_works"></a>Observability (Proving It Works)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As an implementer, you must prove the platform&#8217;s value and economic viability. The <code>llm-d</code> stack is built for detailed observability, providing the "Golden Signals" necessary to connect metrics to business value.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Golden Signals for LLM-D Observability</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Business Goal</th>
+<th class="tableblock halign-left valign-top">Metric</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>To Prove Performance (SLOs)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vllm_llmd_time_to_first_token_seconds</code> (TTFT)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is the <strong>"responsiveness" metric</strong>. Your goal is to keep this value low and stable to meet user expectations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>To Prove Performance (SLOs)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vllm_llmd_time_per_output_token_seconds</code> (TPOT)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is the <strong>"generation speed"</strong> metric.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>To Prove TCO (Cost Savings)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vllm_llmd_kv_cache_hit_rate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Your #1 TCO METRIC</strong>. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time, representing a direct measure of your return on investment (ROI).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>To Prove TCO (Cost Savings)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vllm_llmd_gpu_utilization_seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proves that your expensive GPUs are being used effectively, rather than sitting idle.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">llm-d at a Glance: The Technical Deep Dive</div>
-For architects and platform leads, here is a summary of llm-d&#8217;s core technical advantages.
+<div class="title">Monitoring Setup</div>
+These metrics are scraped by Prometheus and should be viewed in Grafana, allowing implementers to connect the technical performance directly to the "Why Buy?" value propositions.
 </td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_architectural_advantage"><a class="anchor" href="#_architectural_advantage"></a>Architectural Advantage</h3>
-<div class="paragraph">
-<p>llm-d&#8217;s primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>An intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension, which makes dynamic, telemetry-driven scheduling decisions;</p>
-</li>
-<li>
-<p>A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and</p>
-</li>
-<li>
-<p>A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_performance_drivers"><a class="anchor" href="#_performance_drivers"></a>Performance Drivers</h3>
-<div class="paragraph">
-<p>The framework&#8217;s significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques.</p>
-</div>
-<div class="paragraph">
-<p>Key among these are Prefill/Decode (P/D) disaggregation, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA&#8217;s Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_competitive_positioning"><a class="anchor" href="#_competitive_positioning"></a>Competitive Positioning</h3>
-<div class="paragraph">
-<p>Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes.</p>
-</div>
-<div class="paragraph">
-<p>This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"></code></pre>
 </div>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="section1.html">LLM-D Benefits</a></span>
-  <span class="next"><a href="section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a></span>
+  <span class="prev"><a href="section1.html">LLM-D Use Cases and Core Benefits</a></span>
+  <span class="next"><a href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a></span>
 </nav>
 </article>
   </div>

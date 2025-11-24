@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>vLLM to AI Factory Scaling with LLM-D :: vLLM to AI Factory Scaling with LLM-D</title>
-    <link rel="next" href="chapter3/section1.html">
+    <link rel="next" href="chapter3/redhatai.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../_/css/site.css">
     <script>var uiRootPath = '../../_'</script>
@@ -39,13 +39,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="chapter3/section1.html">LLM-D Benefits</a>
+    <a class="nav-link" href="chapter3/redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="chapter3/section2.html">Use Case Identification</a>
+    <a class="nav-link" href="chapter3/section1.html">LLM-D Use Cases and Core Benefits</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="chapter3/section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a>
+    <a class="nav-link" href="chapter3/section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="chapter3/section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
@@ -56,7 +56,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="appendix/appendix.html">Appendix</a>
+    <a class="nav-link" href="appendix/appendix.html">Troubleshooting</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appendix/index.html">Taxonomy to Know</a>
@@ -109,98 +109,200 @@
 </aside>
 <article class="doc">
 <h1 class="page">vLLM to AI Factory Scaling with LLM-D</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploying scalable and secure Large Language Model (LLM) inference workloads for those who are moving Generative AI from experimentation to enterprise production.</p>
+</div>
+<div class="paragraph">
+<p><strong>Distributed Inference with llm-d</strong> is now generally available (GA) with OpenShift AI 3.0.  Distributed Inference with llm-d supports intelligent inference scheduling, multi-model serving, and disaggregated serving for improved GPU utilization on generative AI models.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What You’ll Learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>How distributed inference, powered by <strong>llm-d</strong>, delivers a superior value proposition across three critical areas:</p>
+</div>
 <div class="sect2">
-<h3 id="_increase_performance_and_reduce_cost_with_distributed_inference"><a class="anchor" href="#_increase_performance_and_reduce_cost_with_distributed_inference"></a>Increase Performance and Reduce Cost with Distributed Inference</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="admonitionblock important">
+<h3 id="_optimize_total_cost_of_ownership_tco"><a class="anchor" href="#_optimize_total_cost_of_ownership_tco"></a>Optimize Total Cost of Ownership (TCO):</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Eliminate "Paying for Idle GPUs" by implementing <strong>llm-d’s Intelligent Inference Scheduling</strong>, which replaces basic, AI-unaware Kubernetes scheduling to balance the cluster and maximize the usage of expensive hardware.</p>
+</li>
+<li>
+<p>Additionally, discover how <strong>KV Cache Management</strong> offloads the model’s "memory" from expensive GPU VRAM to cheaper CPU RAM to maximize GPU density and allow running more models on the same hardware.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_guarantee_performance_service_level_objectives_slos"><a class="anchor" href="#_guarantee_performance_service_level_objectives_slos"></a>Guarantee Performance &amp; Service Level Objectives (SLOs):</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Move beyond the "Best Effort" performance of public APIs. Learn how <strong>llm-d’s Disaggregated Inference</strong> ensures interactive applications remain responsive by separating the compute-heavy "Prefill" phase from the memory-fast "Decode" phase .</p>
+</li>
+<li>
+<p>LLM-D handles Mixture of Expert (MOE) models complexity by splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ensure_total_security_control_sovereign_ai"><a class="anchor" href="#_ensure_total_security_control_sovereign_ai"></a>Ensure Total Security &amp; Control (Sovereign AI):</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Achieve <strong>"Sovereign AI"</strong> by deploying the entire high-performance inference stack inside your own OpenShift cluster, ensuring proprietary RAG documents, customer data, and sensitive prompts never leave your control.</p>
+</li>
+<li>
+<p>This approach empowers you to <strong>Own Your Hybrid Cloud Strategy</strong>, deploying a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use this guide effectively, you should have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift AI 3.x cluster deployed.</p>
+</li>
+<li>
+<p>CLI tools: <code>oc</code> and <code>helm</code> (optional depending on approach).</p>
+</li>
+<li>
+<p>Basic understanding of Kubernetes/OpenShift concepts.</p>
+</li>
+<li>
+<p>Familiarity with the basics of <strong>vLLM Inference</strong>.</p>
+</li>
+<li>
+<p>Basic understanding of YAML and command-line tools.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_additional_resources"><a class="anchor" href="#_additional_resources"></a>Additional Resources</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Appendix: Taxonomy to Know</p>
+</li>
+<li>
+<p>Deep Dive on KV Cache Management</p>
+</li>
+<li>
+<p>LeaderWorkerSet (LWS) Operator</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">Prerequisite Knowledge</div>
-This course assumes you are already familiar with the basics of Kubernetes and vLLM Inference. We will be building on those core concepts.
+<div class="title">OpenShift AI 3.0 Summarized Release Notes for this course</div>
+<div class="paragraph">
+<p><strong>Supported Features in Red Hat OpenShift AI 3.0 and llm-d:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>User Interface (UI) for Deployment:</strong> OpenShift AI now includes a user interface for configuring and deploying Large Language Models (LLMs) on the <code>llm-d</code> Serving Runtime. This streamlined interface simplifies common deployment scenarios by offering essential configuration options with sensible defaults, while still allowing explicit selection of the <code>llm-d</code> runtime.</p>
+</li>
+<li>
+<p><strong>Observability and Grafana Integration:</strong> Platform administrators can now connect observability components to Distributed Inference with <code>llm-d</code> deployments. This allows integration with self-hosted Grafana instances for monitoring inference workloads. Teams can collect and visualize Prometheus metrics from <code>llm-d</code> for performance analysis and custom dashboard creation.</p>
+</li>
+<li>
+<p><strong>Model-as-a-Service (MaaS) Support:</strong> MaaS is currently supported only for models deployed using the Distributed Inference Server with <code>llm-d</code> runtime.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>The following capabilities are not fully supported in OpenShift AI 3.0:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wide Expert-Parallelism multi-node: Developer Preview.</p>
+</li>
+<li>
+<p>Wide Expert-Parallelism on Blackwell B200: Not available but can be provided as a Technology Preview.</p>
+</li>
+<li>
+<p>Multi-node on GB200: Not supported.</p>
+</li>
+<li>
+<p>Gateway discovery and association are not supported in the UI during model deployment in this release. Users must associate models with Gateways by applying the resource manifests directly through the API or CLI.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>llm-d Known Issues in OpenShift AI 3.0:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>While Distributed Inference Server with llm-d appears as an available option for deployment, it is not currently listed on the Serving Runtimes page under the Settings section.</p>
+</li>
+<li>
+<p>Models deployed using llm-d initially display a <strong>Failed</strong> status on the Deployments page in the OpenShift AI dashboard, even if associated pod logs report no errors or failures; the status automatically updates to <strong>Started</strong> when the model is ready.</p>
+</li>
+</ul>
+</div>
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>This course is your guide to understand the specific, pre-packaged deployment patterns provided by <strong>llm-d</strong> that solve real-world scaling challenges, from immediate wins to advanced optimization.</p>
-</div>
-</div>
-</div>
-<hr>
-</div>
-<div class="sect1">
-<h2 id="_the_core_challenge_apis_vs_on_premise_ai"><a class="anchor" href="#_the_core_challenge_apis_vs_on_premise_ai"></a>The Core Challenge: APIs vs. On-Premise AI</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Generative AI is transforming industries, but as you move from experiment to production, you face a critical business decision:</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-"Why should we build, manage, and pay for our own GPU infrastructure when cheap, pay-as-you-go public API tokens exist?"
-</blockquote>
-</div>
-<div class="paragraph">
-<p>A public API offers convenience, but at the cost of control. It&#8217;s a "best-effort" service with unpredictable performance, runaway costs for high-volume tasks, and a critical security blindspot: you must send your most sensitive corporate data to a third party.</p>
-</div>
-<div class="paragraph">
-<p>This course will show you how to build a true "AI Factory" on OpenShift AI, using the power of distributed inference with llm-d to achieve what public APIs cannot.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_value_of_an_ai_factory"><a class="anchor" href="#_the_value_of_an_ai_factory"></a>The Value of an AI Factory</h2>
+<h2 id="_interactive_experiences"><a class="anchor" href="#_interactive_experiences"></a>Interactive Experiences</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>How OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:</p>
+<p>This course is a multi-format learning journey. You will find a mix of videos, technical articles, and resource links, but the core of this course is delivered through Interactive Arcades.</p>
 </div>
 <div class="sect2">
-<h3 id="_optimize_total_cost_of_ownership_tco"><a class="anchor" href="#_optimize_total_cost_of_ownership_tco"></a>Optimize Total Cost of Ownership (TCO)</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Stop "Paying for Idle GPUs":</strong> Learn how llm-d&#8217;s Smart Scheduling (Path 1) replaces basic, "AI-unaware" Kubernetes scheduling. You&#8217;ll see how to eliminate hotspots, balance your cluster, and finally use 100% of the expensive hardware you&#8217;ve already paid for.</p>
-</li>
-<li>
-<p><strong>Maximize GPU Density:</strong> Discover how KV Cache Management (Path 4) offloads the model&#8217;s "memory" from expensive GPU VRAM to cheaper CPU RAM, allowing you to run more models on the same hardware.</p>
-</li>
-</ul>
+<h3 id="_what_is_an_arcade"><a class="anchor" href="#_what_is_an_arcade"></a>What is an "Arcade"?</h3>
+<div class="paragraph">
+<p>An Arcade is an interactive demonstration. You&#8217;ll read the content on each slide and then click on "hotspots" (like blinking dots or text boxes) to move through the presentation. This format is used for both conceptual guides and some lab exercises.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_guarantee_performance_slos"><a class="anchor" href="#_guarantee_performance_slos"></a>Guarantee Performance &amp; SLOs</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Move from "Best Effort" to "Guaranteed":</strong> Public APIs offer no performance guarantees. Learn how llm-d&#8217;s Disaggregated Inference (Path 2) separates compute-heavy "Prefill" from memory-fast "Decode" to ensure your interactive applications are always responsive.</p>
-</li>
-<li>
-<p><strong>Master the "Well-Lit Paths":</strong> Understand the 4 pre-packaged, Helm-automated deployment patterns that provide optimized, step-by-step solutions for scaling any model, from the simplest to the most complex.</p>
-</li>
-</ul>
+<h3 id="_pro_tips_for_the_best_experience"><a class="anchor" href="#_pro_tips_for_the_best_experience"></a>Pro-Tips for the Best Experience</h3>
+<div class="paragraph">
+<p>Here are a few tips to get you started:</p>
 </div>
+<div class="paragraph">
+<p><strong>Go Full Screen:</strong> This is the highly recommended way to use Arcades. Use the "expand" icon (usually in the top-right corner) to ensure hotspots and text don&#8217;t overlap.</p>
 </div>
-<div class="sect2">
-<h3 id="_ensure_total_security_control"><a class="anchor" href="#_ensure_total_security_control"></a>Ensure Total Security &amp; Control</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Achieve "Sovereign AI"</strong>: The most critical value-add. Learn how this entire, high-performance stack runs inside your own OpenShift cluster. Your proprietary RAG documents, customer data, and sensitive prompts never leave your control.</p>
-</li>
-<li>
-<p><strong>Own Your Hybrid Cloud Strategy:</strong> Deploy a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><strong>Navigate:</strong> Use the arrows in the top-left corner to move forward and back through the presentation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Track Your Progress:</strong> The bar at the bottom of the window shows your progression through the interactive segments.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.</p>
 </div>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="next"><a href="chapter3/section1.html">LLM-D Benefits</a></span>
+  <span class="next"><a href="chapter3/redhatai.html">AI Factory on Red Hat AI</a></span>
 </nav>
 </article>
   </div>

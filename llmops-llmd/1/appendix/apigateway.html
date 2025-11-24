@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>OpenShift Gateway API for AI Deployments :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>HTML Content Block :: vLLM to AI Factory Scaling with LLM-D</title>
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -38,13 +38,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section1.html">LLM-D Benefits</a>
+    <a class="nav-link" href="../chapter3/redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section2.html">Use Case Identification</a>
+    <a class="nav-link" href="../chapter3/section1.html">LLM-D Use Cases and Core Benefits</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a>
+    <a class="nav-link" href="../chapter3/section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../chapter3/section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
@@ -55,7 +55,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="appendix.html">Appendix</a>
+    <a class="nav-link" href="appendix.html">Troubleshooting</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="index.html">Taxonomy to Know</a>
@@ -99,7 +99,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="apigateway.html">OpenShift Gateway API for AI Deployments</a></li>
+    <li><a href="apigateway.html">HTML Content Block</a></li>
   </ul>
 </nav>
 </div>
@@ -108,347 +108,385 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">OpenShift Gateway API for AI Deployments</h1>
-<div class="sect1">
-<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
-<div class="sectionbody">
+<h1 class="page">HTML Content Block</h1>
 <div class="paragraph">
-<p>This guide provides the procedures for setting up and configuring the Kubernetes Gateway API on OpenShift Container Platform. The Gateway API is a prerequisite for many advanced routing features used by OpenShift AI, including the llm-d smart scheduler.</p>
-</div>
-<div class="paragraph">
-<p>The Gateway API is an open-source, community-managed networking mechanism that extends the Ingress Operator to handle more granular cluster traffic and routing configurations.</p>
-</div>
-<div class="sect2">
-<h3 id="_1_benefits_of_gateway_api"><a class="anchor" href="#_1_benefits_of_gateway_api"></a>1. Benefits of Gateway API</h3>
-<div class="paragraph">
-<p>The Gateway API provides several key benefits:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Portability: It does not rely on vendor-specific annotations.</p>
-</li>
-<li>
-<p>Separation of Concerns: It uses a role-based approach. Platform engineers can manage the GatewayClass, cluster admins can manage Gateway resources, and application developers can focus on HTTPRoute resources.</p>
-</li>
-<li>
-<p>Extensibility: New functionality is added as standardized CRDs.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_limitations_of_gateway_api"><a class="anchor" href="#_2_limitations_of_gateway_api"></a>2. Limitations of Gateway API</h3>
-<div class="paragraph">
-<p>Be aware of the following limitations:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Version Incompatibilities: The Gateway API ecosystem changes rapidly. You must use the versions supported and managed by the OpenShift Ingress Operator.</p>
-</li>
-<li>
-<p>Resource Overhead: Gateway API uses multiple resource types. For very simple applications, traditional Ingress might be a better fit.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Gateway API does not support user-defined networks (UDN).
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_2_getting_started_procedure_for_ingress_operator"><a class="anchor" href="#_2_getting_started_procedure_for_ingress_operator"></a>2. Getting Started: Procedure for Ingress Operator</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>When you create a GatewayClass as shown in the first step, it configures Gateway API for use on your cluster.</p>
-</div>
-<div class="sect2">
-<h3 id="_step_1_create_a_gatewayclass_object"><a class="anchor" href="#_step_1_create_a_gatewayclass_object"></a>Step 1. Create a GatewayClass Object</h3>
-<div class="paragraph">
-<p>First, you must create a GatewayClass that points to the OpenShift-managed controller.</p>
-</div>
-<div class="paragraph">
-<p>Create a YAML file named openshift-default.yaml:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: gateway.networking.k8s.io/v1
-kind: GatewayClass
-metadata:
-name: openshift-default
-spec:
-controllerName: openshift.io/gateway-controller/v1 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>&lt;1&gt; The controller name must be exactly as shown. This is the only controller name the OpenShift Ingress Operator will manage.</strong></p>
-</div>
-<div class="paragraph">
-<p>Run the following command to create the resource:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc create -f openshift-default.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Example Output:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">gatewayclass.gateway.networking.k8s.io/openshift-default created</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>(Optional) Verify that the new deployment, istiod-openshift-gateway, is ready:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc get deployment -n openshift-ingress</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Example Output:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
-istiod-openshift-gateway   1/1     1            1           55s
-router-default             2/2     2            2           6h4m</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_2_create_a_tls_secret"><a class="anchor" href="#_step_2_create_a_tls_secret"></a>Step 2. Create a TLS Secret</h3>
-<div class="paragraph">
-<p>Create a secret containing your wildcard certificate and key.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc -n openshift-ingress create secret tls gwapi-wildcard</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>--cert=wildcard.crt --key=wildcard.key</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_3_get_the_ingress_domain"><a class="anchor" href="#_step_3_get_the_ingress_domain"></a>Step 3. Get the Ingress Domain</h3>
-<div class="paragraph">
-<p>Get the domain of the Ingress Operator, which you will use in the Gateway object.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ DOMAIN=$(oc get ingresses.config/cluster -o jsonpath={.spec.domain})</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>(This command saves your cluster&#8217;s domain to the $DOMAIN shell variable.)</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_4_create_a_gateway_object"><a class="anchor" href="#_step_4_create_a_gateway_object"></a>Step 4. Create a Gateway Object</h3>
-<div class="paragraph">
-<p>Now, create the Gateway resource itself.</p>
-</div>
-<div class="paragraph">
-<p>Create a YAML file named example-gateway.yaml:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-name: example-gateway
-namespace: openshift-ingress <i class="conum" data-value="1"></i><b>(1)</b>
-spec:
-gatewayClassName: openshift-default <i class="conum" data-value="2"></i><b>(2)</b>
-listeners:</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>name: https &lt;3&gt;
-hostname: "*.gwapi.${DOMAIN}" &lt;4&gt;
-port: 443
-protocol: HTTPS
-tls:
-mode: Terminate
-certificateRefs:</p>
-</div>
-<div class="paragraph">
-<p>name: gwapi-wildcard &lt;5&gt;
-allowedRoutes:
-namespaces:
-from: All</p>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The Gateway object must be created in the openshift-ingress namespace.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This must reference the GatewayClass you created in Step 1.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>This listener listens for HTTPS requests.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The hostname must be a subdomain of the Ingress Operator domain ($DOMAIN).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>This must be the name of the secret you created in Step 2.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Apply the resource:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc apply -f example-gateway.yaml</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_5_create_an_httproute_resource"><a class="anchor" href="#_step_5_create_an_httproute_resource"></a>Step 5. Create an HTTPRoute Resource</h3>
-<div class="paragraph">
-<p>Finally, create an HTTPRoute to direct requests to your application (e.g., your AI model&#8217;s endpoint).</p>
-</div>
-<div class="paragraph">
-<p>Assume you have an application named example-app in the example-app-ns namespace.</p>
-</div>
-<div class="paragraph">
-<p>Create a YAML file named example-route.yaml:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-name: example-route
-namespace: example-app-ns <i class="conum" data-value="1"></i><b>(1)</b>
-spec:
-parentRefs: <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>name: example-gateway
-namespace: openshift-ingress
-hostnames: ["example.gwapi.${DOMAIN}"] &lt;3&gt;
-rules:</p>
-</div>
-<div class="paragraph">
-<p>backendRefs: &lt;4&gt;</p>
-</div>
-<div class="paragraph">
-<p>name: example-app &lt;5&gt;
-port: 8443</p>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The namespace where your application is deployed.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This field must point to the Gateway object you created in Step 4.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The hostname must match one specified in the Gateway object.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Specifies the backend references that point to your service.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The name of the Service for your application.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Apply the resource:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc apply -f example-route.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Example Output:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">httproute.gateway.networking.k8s.io/example-route created</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_3_verification"><a class="anchor" href="#_3_verification"></a>3. Verification</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Verify that the Gateway object is deployed and has the condition Programmed:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ oc wait -n openshift-ingress --for=condition=Programmed</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>gateways.gateway.networking.k8s.io example-gateway</p>
-</div>
-<div class="paragraph">
-<p>Example Output:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">gateway.gateway.networking.k8s.io/example-gateway condition met</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Send a request to the configured HTTPRoute object hostname:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl -I --cacert  https://example.gwapi.${DOMAIN}:443</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_4_deployment_topologies"><a class="anchor" href="#_4_deployment_topologies"></a>4. Deployment Topologies</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Gateway API is designed to accommodate two topologies:</p>
-</div>
-<div class="paragraph">
-<p>Dedicated Gateway: (Default) Routes and load balancers are served from the same namespace. The Gateway object restricts routes to a particular application namespace.</p>
-</div>
-<div class="paragraph">
-<p>Shared Gateway: Routes are served from multiple namespaces. The Gateway object uses the spec.listeners.allowedRoutes.namespaces field to filter which namespaces are allowed to attach routes.</p>
-</div>
-</div>
-</div>
+<p>Sometimes, you need to include content that AsciiDoc doesn&#8217;t support directly. You can use a 'pass' block (using <code></code>) to embed raw HTML that will be passed through to the final output.</p>
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon: The RH AI 3 Quickstart Factory</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Bangers (headings) and Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles for the comic book theme */
+
+        body {
+            /* A subtle dot-grid background */
+            background-image: radial-gradient(circle, #444 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Custom font classes */
+        .font-comic-heading {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 0.05em;
+            /* Text stroke effect */
+            -webkit-text-stroke: 1.5px black;
+            text-shadow: 3px 3px 0px black;
+        }
+
+        .font-comic-body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* The main "comic panel" style */
+        .comic-panel {
+            background-color: white;
+            border: 4px solid #1f2937; /* Dark gray border */
+            border-radius: 8px;
+            box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.75); /* Thick, hard shadow */
+            transition: all 0.2s ease-in-out;
+            transform: rotate(-1deg);
+        }
+
+        .comic-panel:nth-child(even) {
+            transform: rotate(1deg);
+        }
+
+        .comic-panel:hover {
+            transform: rotate(0deg) scale(1.02); /* Straighten and pop on hover */
+            z-index: 10;
+        }
+
+        /* Special panel for the title */
+         .title-panel {
+            border: 4px solid #1f2937;
+            border-radius: 8px;
+            box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.75);
+            transform: rotate(0deg);
+         }
+
+
+        /* A "speech bubble" style */
+        .speech-bubble {
+            position: relative;
+            background: #f3f4f6; /* Light gray */
+            border-radius: .4em;
+            border: 2px solid #1f2937;
+        }
+
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #f3f4f6;
+            border-bottom: 0;
+            border-left: 0;
+            margin-left: -10px;
+            margin-bottom: -20px;
+        }
+
+        /* A "POW!" style starburst for the icons */
+        .starburst {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            background: #fde047; /* Yellow */
+            border-radius: 50%;
+            border: 3px solid black;
+        }
+        .starburst:before {
+            content: "";
+            position: absolute;
+            top: -20px; left: -20px;
+            width: 160px; height: 160px;
+            background: #fde047;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            z-index: -1;
+        }
+        .starburst-icon {
+            font-size: 3.5rem; /* 56px */
+            transform: rotate(15deg);
+        }
+
+        .pillar-grid {
+             display: grid;
+             grid-template-columns: 1fr 1fr;
+             gap: 1.5rem;
+             border: 4px solid #1f2937;
+             padding: 1.5rem;
+             border-radius: 8px;
+             background-color: #f9fafb;
+        }
+
+        .pillar-box {
+            background-color: white;
+            border: 2px solid #6b7280;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px #d1d5db;
+        }
+
+        .pillar-box h4 {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 0.05em;
+            font-size: 1.75rem; /* 28px */
+            color: #cc0000;
+             -webkit-text-stroke: 0.5px black;
+            text-shadow: 1px 1px 0px black;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            background-color: #f3f4f6;
+            border: 2px solid #1f2937;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 4px 4px 0px #1f2937;
+        }
+
+        .timeline-label {
+             font-family: 'Bangers', cursive;
+             font-size: 2rem;
+             color: #cc0000;
+             -webkit-text-stroke: 0.5px black;
+             text-shadow: 1px 1px 0px black;
+             margin-right: 1.5rem;
+             min-width: 100px;
+             text-align: right;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-800 font-comic-body text-gray-900 py-16 px-4">
+
+    <main class="max-w-4xl mx-auto">
+
+        <!-- Title Panel -->
+        <div class="title-panel bg-red-600 text-white p-8 mb-16 text-center">
+            <h1 class="font-comic-heading text-6xl md:text-8xl">The Red Hat AI 3</h1>
+            <h2 class="font-comic-heading text-5xl md:text-7xl">Quickstart Factory!</h2>
+        </div>
+
+        <!-- Section 1: The "North Star" -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-blue-600 mb-6 text-center">1. Our Mission: Join the 5%!</h2>
+
+            <!-- The Problem -->
+            <div class="bg-red-100 border-4 border-red-600 border-dashed p-6 rounded-lg mb-8">
+                <h3 class="font-comic-heading text-4xl text-red-700">The 95% Problem!</h3>
+                <p class="text-lg font-semibold">"95% of AI projects fail." They get stuck in the lab, can't scale, and never deliver real business value.</p>
+            </div>
+
+            <!-- The Solution -->
+            <div class="speech-bubble p-6 mb-12">
+                <h3 class="font-comic-heading text-4xl text-green-700">Our 5% Plan!</h3>
+                <p class="text-lg font-semibold">This hackathon is our plan to be the 5%. We will create the official "AI QuickStarts" for the Red Hat AI 3 launch. We will prove *how* our 'AI Factory' assembly line delivers real, deployable value to customers.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Your Opportunity -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-red-600 mb-6 text-center">2. Your Opportunity!</h2>
+            <p class="text-xl font-semibold text-center mb-8">This is your chance to pioneer the next generation of content. We're aligning with the official AI Business Unit strategy to build customer-ready, scalable **AI QuickStarts**!</p>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-100 p-4 border-2 border-blue-500 rounded-lg shadow-inner">
+                    <h5 class="font-comic-heading text-3xl text-blue-700">Showcase Your Ideas</h5>
+                    <p class="font-semibold">You get creative control! Pitch your narrative *first* and build the projects you are passionate about.</p>
+                </div>
+                <div class="bg-yellow-100 p-4 border-2 border-yellow-500 rounded-lg shadow-inner">
+                    <h5 class="font-comic-heading text-3xl text-yellow-700">Make a Launch Impact</h5>
+                    <p class="font-semibold">These are high-visibility, customer-facing assets for a major product launch. Your work will be seen!</p>
+                </div>
+                <div class="bg-green-100 p-4 border-2 border-green-500 rounded-lg shadow-inner">
+                    <h5 class="font-comic-heading text-3xl text-green-700">Collaborate with PMs</h5>
+                    <p class="font-semibold">Use your narrative as the "talking point" to connect directly with Product Management and validate your architecture.</p>
+                </div>
+                <div class="bg-purple-100 p-4 border-2 border-purple-500 rounded-lg shadow-inner">
+                    <h5 class="font-comic-heading text-3xl text-purple-700">Reach a Global Audience</h5>
+                    <p class="font-semibold">This isn't just an internal demo. You'll be building official, scalable QuickStarts for all our customers and associates.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Deliverable -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-purple-600 mb-8 text-center">3. The Deliverable: The "AI Quickstart" Kit</h2>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                <!-- The Narrative -->
+                <div class="bg-gray-100 p-6 border-4 border-gray-900 rounded-lg shadow-lg text-center w-full md:w-2/5">
+                    <div class="font-comic-heading text-8xl mb-2">🎬</div>
+                    <h3 class="font-comic-heading text-4xl text-teal-800">The Narrative</h3>
+                    <p class="text-lg font-semibold">A compelling Video, Arcade Module, or Presentation that frames the business problem.</p>
+                </div>
+
+                <!-- Plus Icon -->
+                <div class="font-comic-heading text-8xl text-white text-center">+</div>
+
+                <!-- The Solution -->
+                <div class="bg-gray-900 text-white p-6 border-4 border-red-600 rounded-lg shadow-lg text-center w-full md:w-2/5">
+                    <div class="font-comic-heading text-8xl mb-2">💻</div>
+                    <h3 class="font-comic-heading text-4xl text-white">The Solution</h3>
+                    <p class="text-lg font-semibold">A functional, GitOps-ready code repository that deploys the lab on OpenShift AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: The Framework -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-blue-600 mb-6 text-center">4. The Framework: The 4 AI Pillars</h2>
+            <p class="text-xl font-semibold text-center mb-8">All your ideas and projects must align with one of the four official Red Hat AI strategy pillars!</p>
+
+            <div class="pillar-grid">
+                <div class="pillar-box">
+                    <h4>Fast, flexible & efficient inferencing</h4>
+                    <p class="font-semibold">Increase efficiency and lower TCO for serving models.</p>
+                </div>
+                <div class="pillar-box">
+                    <h4>Connecting models to data</h4>
+                    <p class="font-semibold">A simplified and consistent experience for RAG and data integration.</p>
+                </div>
+                <div class="pillar-box">
+                    <h4>Accelerate Agentic AI</h4>
+                    <p class="font-semibold">Quickly build and deploy next-generation AI agents and applications.</p>
+                </div>
+                 <div class="pillar-box">
+                    <h4>Scaling AI on Hybrid Cloud</h4>
+                    <p class="font-semibold">Flexibility and consistency when scaling AI across any environment.</p>
+                </div>
+            </div>
+            <p class="text-sm text-center mt-4 font-semibold">(Based on the official RH AI Strategy [cite: Screenshot 2025-11-06 at 4.07.35 PM.jpg])</p>
+        </section>
+
+        <!-- Section 5: The Schedule -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-red-600 mb-8 text-center">5. The 7-Week Schedule</h2>
+
+            <div class="timeline">
+                <!-- Week 1: Kick-Off -->
+                <div class="timeline-item">
+                    <div class="timeline-label">Week 1</div>
+                    <div>
+                        <h3 class="font-comic-heading text-3xl text-teal-800">"Ignition" Kick-Off!</h3>
+                        <p class="text-lg font-semibold">A virtual week of daily 1-hour live calls. We'll have guest speakers from PM, deep-dive into AI 3.0, and build our master project backlog on Miro.</p>
+                    </div>
+                </div>
+
+                <!-- Week 2-3: Sprint 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-label">Week 2-3 </div>
+                    <div>
+                        <h3 class="font-comic-heading text-3xl text-teal-800">Sprint 1</h3>
+                        <p class="text-lg font-semibold">Form teams, pull a project from the backlog, and build! (Asynchronous work + live demo on the final day).</p>
+                    </div>
+                </div>
+
+                <!-- Week 4-5: Sprint 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-label">Week 4-5 </div>
+                    <div>
+                        <h3 class="font-comic-heading text-3xl text-teal-800">Sprint 2</h3>
+                        <p class="text-lg font-semibold">New sprint, new project! We'll prioritize the backlog with SMEs and build again.</p>
+                    </div>
+                </div>
+
+                <!-- Week 6-7: Sprint 3 -->
+                 <div class="timeline-item">
+                    <div class="timeline-label">Week 6-7 </div>
+                    <div>
+                        <h3 class="font-comic-heading text-3xl text-teal-800">Sprint 3</h3>
+                        <p class="text-lg font-semibold">Final sprint! Build, demo, and celebrate our new "QuickStart Factory"!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: The "Win" -->
+        <section class="comic-panel mb-16 p-6 md:p-10">
+            <h2 class="font-comic-heading text-5xl text-green-600 mb-8 text-center">6. How to Win: The Judging</h2>
+            <p class="text-xl font-semibold text-center mb-10">At each Sprint Showcase, your "AI QuickStart" Kit will be judged on four key criteria:</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+
+                <div class="flex items-center gap-6">
+                    <div class="flex-shrink-0 starburst" style="background-color: #fde047;"> <!-- Yellow -->
+                        <div class="starburst-icon">💡</div>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="font-comic-heading text-3xl text-yellow-800">Innovation & Creativity</h3>
+                        <p class="text-lg font-semibold">How original, creative, and novel is the core idea?</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="flex-shrink-0 starburst" style="background-color: #6ee7b7;"> <!-- Green -->
+                        <div class="starburst-icon">📈</div>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="font-comic-heading text-3xl text-green-800">Narrative: Business Impact</h3>
+                        <p class="text-lg font-semibold">Does the narrative solve a real, meaningful problem for a customer?</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="flex-shrink-0 starburst" style="background-color: #93c5fd;"> <!-- Blue -->
+                        <div class="starburst-icon">⚙️</div>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="font-comic-heading text-3xl text-blue-800">Solution: Technical Execution</h3>
+                        <p class="text-lg font-semibold">How well is the GitOps lab built? Is the AI used effectively?</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="flex-shrink-0 starburst" style="background-color: #fca5a5;"> <!-- Red -->
+                        <div class="starburst-icon">⭐</div>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="font-comic-heading text-3xl text-red-800">North Star Alignment</h3>
+                        <p class="text-lg font-semibold">How well does the kit prove that Red Hat AI 3 is the 5% plan?</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Final Panel -->
+        <div class="title-panel bg-gray-900 text-white p-12 text-center">
+            <h2 class="font-comic-heading text-6xl md:text-7xl mb-4">Ready to build the 5%?</h2>
+            <p class="font-semibold text-2xl md:text-3xl">Let's build the factory!</p>
+        </div>
+
+    </main>
+
+</body>
+</html>
+****
 </article>
   </div>
 </main>
