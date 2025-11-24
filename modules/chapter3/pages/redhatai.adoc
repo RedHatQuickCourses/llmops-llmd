@@ -1,0 +1,35 @@
+= AI Factory on Red Hat AI
+
+image::aifactoryadvan001.png[llm-d OpenShift AI Benefits Diagram,700,align="center"]
+
+
+== Introduction to the AI Factory on Red Hat AI
+
+This segment centers on transforming ad-hoc AI experiments into an enterprise-ready operation, often referred to as the "AI Factory". The need for this shift arises because 95% of AI projects are failing to deliver ROI by remaining manual, ad-hoc, and disconnected from necessary enterprise-ready capabilities.
+
+The AI Factory is not a product but an operational framework that industrializes the production of intelligence. It requires the convergence of three pillars: People (new roles), Process (DataOps, MLOps, ModelOps), and Platform. Red Hat AI 3 acts as that platform—the unifying environment that makes the factory possible.
+
+=== The structure of the AI Factory built on Red Hat AI includes:
+
+==== The Control Plane (The Front Office): 
+This is the primary user interface where teams interact with the platform. Components include the AI Hub (for Platform Admins to govern the factory) and the Gen AI Studio (for developers to build and experiment with Agentic AI solutions).
+
+==== The Assembly Line (The Core Process): 
+This standardized workflow moves raw models and data through five key stages to build intelligent applications: Selection, adding Context (via RAG), Aligning models with business skills, Developing autonomous agents (using Llama Stack), and finally Serving it at scale.
+
+==== The Platform Engineering Layer (Factory Operations):
+This layer provides the cross-cutting services necessary for security and cost efficiency. Key tools here include Guardrails (to ensure interactions are safe and compliant) and llm-d.
+
+==== The Foundation (Open Source & Pluggable):
+This layer ensures that the platform is not locked into a single supplier. Red Hat AI provides the abstraction layer, allowing users to plug in their models, their enterprise data, and their existing tools. This supports the promise of "Any Model, Any Hardware, Any Cloud".
+
+---
+++++
+
+<iframe src="https://demo.arcade.software/0mMZIG9NEbtjuprfGija?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+
+++++
+
+== The Role of llm-d in the AI Factory
+Within the Platform Engineering layer, llm-d is positioned as the industry's first Kubernetes-native inference scheduler. It acts as the "traffic cop" for compute, intelligently routing requests to maximize GPU usage, which solves the "cost of inference" problem and turns a cost center into a streamlined, efficient Enterprise Service.
+

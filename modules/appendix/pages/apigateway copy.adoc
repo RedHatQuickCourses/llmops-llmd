@@ -1,0 +1,207 @@
+= OpenShift Gateway API for AI Deployments
+
+[preface]
+== Overview
+
+This guide provides the procedures for setting up and configuring the Kubernetes Gateway API on OpenShift Container Platform. The Gateway API is a prerequisite for many advanced routing features used by OpenShift AI, including the llm-d smart scheduler.
+
+The Gateway API is an open-source, community-managed networking mechanism that extends the Ingress Operator to handle more granular cluster traffic and routing configurations.
+
+=== 1. Benefits of Gateway API
+
+The Gateway API provides several key benefits:
+
+ * Portability: It does not rely on vendor-specific annotations.
+
+ * Separation of Concerns: It uses a role-based approach. Platform engineers can manage the GatewayClass, cluster admins can manage Gateway resources, and application developers can focus on HTTPRoute resources.
+
+ * Extensibility: New functionality is added as standardized CRDs.
+
+=== 2. Limitations of Gateway API
+
+Be aware of the following limitations:
+
+ * Version Incompatibilities: The Gateway API ecosystem changes rapidly. You must use the versions supported and managed by the OpenShift Ingress Operator.
+
+ * Resource Overhead: Gateway API uses multiple resource types. For very simple applications, traditional Ingress might be a better fit.
+
+[IMPORTANT]
+
+Gateway API does not support user-defined networks (UDN).
+
+== 2. Getting Started: Procedure for Ingress Operator
+
+When you create a GatewayClass as shown in the first step, it configures Gateway API for use on your cluster.
+
+=== Step 1. Create a GatewayClass Object
+
+First, you must create a GatewayClass that points to the OpenShift-managed controller.
+
+Create a YAML file named openshift-default.yaml:
+
+[source,yaml]
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+name: openshift-default
+spec:
+controllerName: openshift.io/gateway-controller/v1 <1>
+
+*<1> The controller name must be exactly as shown. This is the only controller name the OpenShift Ingress Operator will manage.*
+
+Run the following command to create the resource:
+
+[source,bash]
+
+$ oc create -f openshift-default.yaml
+
+Example Output:
+[source,text]
+
+gatewayclass.gateway.networking.k8s.io/openshift-default created
+
+(Optional) Verify that the new deployment, istiod-openshift-gateway, is ready:
+
+[source,bash]
+
+$ oc get deployment -n openshift-ingress
+
+Example Output:
+[source,text]
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+istiod-openshift-gateway   1/1     1            1           55s
+router-default             2/2     2            2           6h4m
+
+=== Step 2. Create a TLS Secret
+
+Create a secret containing your wildcard certificate and key.
+
+[source,bash]
+
+$ oc -n openshift-ingress create secret tls gwapi-wildcard 
+
+--cert=wildcard.crt --key=wildcard.key
+
+=== Step 3. Get the Ingress Domain
+
+Get the domain of the Ingress Operator, which you will use in the Gateway object.
+
+[source,bash]
+
+$ DOMAIN=$(oc get ingresses.config/cluster -o jsonpath={.spec.domain})
+
+(This command saves your cluster's domain to the $DOMAIN shell variable.)
+
+=== Step 4. Create a Gateway Object
+
+Now, create the Gateway resource itself.
+
+Create a YAML file named example-gateway.yaml:
+
+[source,yaml]
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+name: example-gateway
+namespace: openshift-ingress <1>
+spec:
+gatewayClassName: openshift-default <2>
+listeners:
+
+name: https <3>
+hostname: "*.gwapi.${DOMAIN}" <4>
+port: 443
+protocol: HTTPS
+tls:
+mode: Terminate
+certificateRefs:
+
+name: gwapi-wildcard <5>
+allowedRoutes:
+namespaces:
+from: All
+
+<1> The Gateway object must be created in the openshift-ingress namespace.
+<2> This must reference the GatewayClass you created in Step 1.
+<3> This listener listens for HTTPS requests.
+<4> The hostname must be a subdomain of the Ingress Operator domain ($DOMAIN).
+<5> This must be the name of the secret you created in Step 2.
+
+Apply the resource:
+[source,bash]
+
+$ oc apply -f example-gateway.yaml
+
+=== Step 5. Create an HTTPRoute Resource
+
+Finally, create an HTTPRoute to direct requests to your application (e.g., your AI model's endpoint).
+
+Assume you have an application named example-app in the example-app-ns namespace.
+
+Create a YAML file named example-route.yaml:
+
+[source,yaml]
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+name: example-route
+namespace: example-app-ns <1>
+spec:
+parentRefs: <2>
+
+name: example-gateway
+namespace: openshift-ingress
+hostnames: ["example.gwapi.${DOMAIN}"] <3>
+rules:
+
+backendRefs: <4>
+
+name: example-app <5>
+port: 8443
+
+<1> The namespace where your application is deployed.
+<2> This field must point to the Gateway object you created in Step 4.
+<3> The hostname must match one specified in the Gateway object.
+<4> Specifies the backend references that point to your service.
+<5> The name of the Service for your application.
+
+Apply the resource:
+[source,bash]
+
+$ oc apply -f example-route.yaml
+
+Example Output:
+[source,text]
+
+httproute.gateway.networking.k8s.io/example-route created
+
+== 3. Verification
+
+Verify that the Gateway object is deployed and has the condition Programmed:
+[source,bash]
+
+$ oc wait -n openshift-ingress --for=condition=Programmed 
+
+gateways.gateway.networking.k8s.io example-gateway
+
+Example Output:
+[source,text]
+
+gateway.gateway.networking.k8s.io/example-gateway condition met
+
+Send a request to the configured HTTPRoute object hostname:
+[source,bash]
+
+$ curl -I --cacert  https://example.gwapi.${DOMAIN}:443
+
+== 4. Deployment Topologies
+
+The Gateway API is designed to accommodate two topologies:
+
+Dedicated Gateway: (Default) Routes and load balancers are served from the same namespace. The Gateway object restricts routes to a particular application namespace.
+
+Shared Gateway: Routes are served from multiple namespaces. The Gateway object uses the spec.listeners.allowedRoutes.namespaces field to filter which namespaces are allowed to attach routes.

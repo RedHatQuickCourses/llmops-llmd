@@ -1,88 +1,123 @@
-= Use Case Identification
+= LLM-D Architecture Deep Dive: Building the Foundation
 
-[TIP.tada]
-.The LLM-D Litmus Test
-====
-Wondering if LLM-D is your new best friend? If you nod your head to most of these, the answer is a resounding YES!
-====
 
-- [x] 🏢 You run a **large-scale, high-throughput** AI service for many users.
-- [x] 💰 You are constantly worried about the **Total Cost of Ownership (TCO)** of your GPU farm.
-- [x] 🤖 Your applications involve **complex conversations**, RAG, or AI agents.
-- [x] ☸️ You live and breathe **Kubernetes** and want a cloud-native solution.
-- [x] 📈 You have a crack **Platform or SRE team** ready to level up their infrastructure.
+== Architecture Deep Dive: For Implementers
 
-'''
+Now that you understand the "why," let’s explore the "how". As an implementer, your job is to assemble the puzzle that allows for distributed, high-performance LLM inference. This architecture is deeply integrated with OpenShift AI and cloud-native principles.
 
-== Identifying the Right Business Problem
+The `llm-d` architecture is the right solution if you are an Operator, Consultant, or Services member responsible for:
 
-LLM-D is not just a technical tool; it's a solution to specific, expensive business problems. See if you recognize any of these common scenarios.
+ *   Managing **multi-tenant clusters** and needing to serve models to different teams **securely and efficiently**.
+ * Working within a **Kubernetes and OpenShift** environment and requiring a cloud-native solution.
+ *  Having a **Hybrid Cloud** mandate, needing to support consistent deployments from on-prem data centers to public clouds.
+ *  Having a primary goal to **lower TCO** by maximizing the utilization of expensive, shared GPU resources.
+ *  Facing user demands for **guaranteed performance SLOs** (like low Time-To-First-Token, or TTFT), where the current "first-come, first-served" model is failing.
 
-[cols="1,1,1a",options="header"]
+== The Foundation (The Prerequisites)
+
+Before you deploy a single model, the right foundation must be in place. Failure to meet these component requirements is the number one cause of implementation issues.
+
+.Component Requirements for Distributed Inference
 |===
-| Business Problem
-| Symptom (What You're Seeing)
-| How llm-d Solves It
+| Component | Requirement | The "Why"
 
-| Skyrocketing AI OpEx & Poor ROI
-| "Our GPU budget is out of control. We keep buying more hardware, but our user capacity doesn't double. We can't make this project economically viable."
-| llm-d's Intelligent Scheduling and KV Cache Management stop waste. They pack more users and more models onto the same hardware, directly lowering TCO and improving your cost-per-query.
+| **Kubernetes / OpenShift**
+| OpenShift 4.19.
+| This is a modern stack that relies on up-to-date Kubernetes features and the **Gateway API**.
 
-| Inconsistent or Slow AI Applications
-| "Our users complain the chatbot is 'slow to start' (High $TTFT$) or 'stutters' during a long answer (High $TPOT$). Our RAG app times out under load."
-| llm-d's P/D Disaggregation and Smart Scheduling are built to solve this. They eliminate hotspots and optimize the pipeline for fast, consistent responses, allowing you to meet your SLOs.
+| **Gateway API**
+| A compliant Gateway API implementation, such as the one provided by OpenShift Service Mesh (Istio) or kGateway.
+| This component serves as the **"front door"** for all traffic and is the required integration point for the smart scheduler.
 
-| Data Sovereignty & Security Mandates
-| "Our legal and compliance teams have blocked the use of third-party APIs. We have to build this in-house, but we can't sacrifice performance."
-| llm-d runs inside your OpenShift cluster. Your proprietary data never leaves your secure, private, or hybrid cloud environment. It delivers public-cloud performance with private-cloud security.
+| **GPU Hardware**
+| NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
+| This stack is built for high-performance, and the underlying **vLLM** engine is optimized for these specific architectures, not consumer cards.
 
-| Inability to Run Next-Gen Models
-| "We're stuck on 7B models. We want to use a new 8x7B (MoE) model to stay competitive, but we have no way to serve it efficiently."
-| llm-d's Wide Expert Parallelism is specifically designed to serve massive Mixture-of-Experts (MoE) models, giving you a clear path to run next-generation AI.
+| **GPU Operators**
+| NVIDIA GPU Operator & Node Feature Discovery (NFD) Operator.
+| The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler.
+
+| **Networking (CRITICAL)**
+| High-Speed, Low-Latency Fabric, such as **InfiniBand or RoCE (RDMA)**.
+| Required for **"East-West" traffic** between nodes, which is essential for advanced features like P/D Disaggregation and Mixture-of-Experts (MoE). A standard 10GbE TCP/IP network will be a major bottleneck and is not supported for high-performance paths.
 |===
 
-'''
-== Who is This For? The Skills You Need
+[WARNING]
+.A Note on Networking
+Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing. A slow network will make your distributed system slower than a single pod.
 
-LLM-D is incredibly powerful, but it is not a "magic button." It is a solution designed for a specific set of users.
+== The Core Components (The "Puzzle Pieces")
 
-=== Persona 1: The Operator (Your Platform/SRE Team)
-This is the primary user who installs, configures, and manages llm-d. This team should have:
+The architecture integrates `llm-d` into OpenShift AI as a set of controllers and routing logic.
 
- * Strong Kubernetes/OpenShift Expertise: Deep understanding of Operators, networking (Gateway API), and security contexts.
+image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram showing Gateway, Scheduler, and vLLM Pods, 700, align="center"]
 
- * Helm & GitOps Fluency: Deployments are managed via Helm charts, ideally in a GitOps workflow.
+.Core LLM-D Components and Roles
+|===
+| Component | Role in the System (What It Does)
 
- * Observability Skills: Comfortable with Prometheus and Grafana for monitoring GPU, network, and scheduler-level metrics.
+| **Gateway API + Inference Extension** (e.g., Envoy Proxy)
+| **The "Smart Router"** and single entry point for all users, living in the `openshift-ingress` namespace. It intercepts the user's HTTPROUTE request and uses the inference extension to ask the "brain" (the scheduler) where to send it.
 
- * Hardware Awareness: Understands GPU hardware, NVIDIA drivers, and node configurations.
+| **Inference Scheduler (EPP)**
+| **The "Brain"** of `llm-d`. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.
 
-=== Persona 2: The User (Your Data Scientists & App Developers)
-This is the consumer of the llm-d service. For them, life gets simpler. They should:
+| **vLLM Pods (Prefill/Decode)**
+| **The "Workers"**. These are vLLM engines running in the user namespace, deployed by the ModelService CRD. In advanced "Well-Lit Paths," they are split into two separate pools:
+*   **Prefill:** Optimized for the compute-heavy task of processing the prompt.
+*   **Decode:** Optimized for the memory-fast task of generating tokens.
 
- * Be API-Driven: They only need to know the OpenAI-compatible API endpoint provided by the platform team.
+| **New ModelService CRD**
+| **The "Workload Definition"**. This is the simple YAML file you, the user, create to declare what model you want to serve (e.g., "I want to serve Llama-3-8B").
 
- * Focus on the Application: They no longer need to be Kubernetes experts. llm-d abstracts the deep infrastructure complexity away from them.
+| **KServe "Next GenAI" Controller (RHOAI Operator)**
+| **The "Orchestrator"**. Part of the Red Hat OpenShift AI Operator v2.25+, it watches for a ModelService CRD creation. When it sees one, it builds all the complex underlying pieces, including the Prefill Deployment, the Decode Deployment, Kubernetes Services, and the HTTPROUTE rules for the Gateway.
 
-'''
-[NOTE.book]
-.llm-d at a Glance: The Technical Deep Dive
+| **Dependant Operators**
+| **Supporting Infrastructure**. The Cert Manager Operator, Arthorino Operator, and the **Leader-Worker\_set Operator** must be installed to deploy resources using distributed inference with `llm-d`.
+|===
 
-For architects and platform leads, here is a summary of llm-d's core technical advantages.
+== The Data Flow (The "Request Lifecycle")
 
-=== Architectural Advantage
-llm-d's primary strength is its clean, three-layered architecture, which is deeply integrated with cloud-native principles. This architecture consists of:
+Understanding this six-step flow, detailing how the core components interact, is critical for successful deployment and troubleshooting.
 
-. An intelligent routing layer built on the Kubernetes Gateway API and its new Inference Extension, which makes dynamic, telemetry-driven scheduling decisions;
-. A distributed model serving layer utilizing the high-performance vLLM engine for core inference operations; and
-. A sophisticated, pluggable KV cache hierarchy that manages the critical state of inference requests across the cluster. This modular design allows for independent optimization and scaling of each component.
+1.  **Request In:** A user sends an **OpenAI-compatible request** (e.g., `/v1/chat/completions`) to the HTTPROUTE defined for the model.
+2.  **Gateway Intercepts:** The Gateway API (Envoy), located in the `openshift-ingress` namespace, receives the request.
+3.  **The "Brain" is Called:** The Gateway API inference extension forwards the request metadata to the Inference Scheduler (EPP), essentially asking: "Where should this new request go?".
+4.  **Scheduler Decides (Filter & Score):** The Scheduler runs its logic:
+    *   **Filter:** It gathers a list of all vLLM pods for the requested model and filters out any that are unhealthy, overloaded, or incompatible.
+    *   **Score:** It scores the remaining, healthy pods based on telemetry. It checks which pod has the shortest queue and, most importantly, **if any pod already holds the KV Cache for the conversation (KV Cache Affinity)**.
+5.  **Optimal Pod Selected:** The Scheduler determines the best pod and routes accordingly:
+    *   **Cache Hit (Fast Path):** If it finds a Decode pod with the KV Cache and a short queue (e.g., `decode-pod-7`), it tells the Gateway, "Send it there".
+    *   **Cache Miss (Slower Path):** If no pod has the required cache, it tells the Gateway, "Send it to a Prefill pod first (the least busy one). That Prefill pod will then process the prompt, write the new KV Cache, and internally hand the request off to a Decode pod for generation".
+6.  **Routing & Response:** The Gateway forwards the actual request to the chosen pod. The pod generates the response and streams it back to the user through the Gateway.
 
-=== Performance Drivers
-The framework's significant performance improvements are not incidental but are the direct result of implementing advanced distributed systems techniques.
+== Observability (Proving It Works)
 
-Key among these are Prefill/Decode (P/D) disaggregation, which separates the distinct phases of inference onto specialized workers, and KV-cache-aware routing, which intelligently directs requests to nodes that have already computed parts of the prompt. These features, amplified by a strategic collaboration with NVIDIA's Dynamo ecosystem for accelerated data transfer and resource planning, result in empirically demonstrated gains, including up to a 3x lower Time-To-First-Token (TTFT) and a 2x increase in throughput under SLO constraints compared to baseline deployments.
+As an implementer, you must prove the platform's value and economic viability. The `llm-d` stack is built for detailed observability, providing the "Golden Signals" necessary to connect metrics to business value.
 
-=== Competitive Positioning
-Llm-d occupies a specific and strategic niche in the MLOps ecosystem. It is best understood as a specialist solution for platform and SRE teams responsible for managing large, multi-tenant GPU clusters on Kubernetes.
+.Golden Signals for LLM-D Observability
+|===
+| Business Goal | Metric | Description
 
-This focus differentiates it from: general-purpose, multi-framework inference servers like NVIDIA Triton; application-centric, developer-focused frameworks like Ray Serve; and broader, more functionally diverse MLOps platforms like KServe. llm-d prioritizes infrastructure efficiency and TCO for LLM-specific workloads above all else.
+| **To Prove Performance (SLOs)**
+| `vllm_llmd_time_to_first_token_seconds` (TTFT)
+| This is the **"responsiveness" metric**. Your goal is to keep this value low and stable to meet user expectations.
+
+| **To Prove Performance (SLOs)**
+| `vllm_llmd_time_per_output_token_seconds` (TPOT)
+| This is the **"generation speed"** metric.
+
+| **To Prove TCO (Cost Savings)**
+| `vllm_llmd_kv_cache_hit_rate`
+| **Your #1 TCO METRIC**. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time, representing a direct measure of your return on investment (ROI).
+
+| **To Prove TCO (Cost Savings)**
+| `vllm_llmd_gpu_utilization_seconds`
+| Proves that your expensive GPUs are being used effectively, rather than sitting idle.
+|===
+
+[NOTE]
+.Monitoring Setup
+These metrics are scraped by Prometheus and should be viewed in Grafana, allowing implementers to connect the technical performance directly to the "Why Buy?" value propositions.
+```
