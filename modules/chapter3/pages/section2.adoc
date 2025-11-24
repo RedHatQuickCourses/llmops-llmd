@@ -17,6 +17,8 @@ The `llm-d` architecture is the right solution if you are an Operator, Consultan
 
 Before you deploy a single model, the right foundation must be in place. Failure to meet these component requirements is the number one cause of implementation issues.
 
+image::llm-dstack.png[llm-d framework on OpenShift AI, 700, align="center"]
+
 .Component Requirements for Distributed Inference
 |===
 | Component | Requirement | The "Why"
@@ -46,7 +48,7 @@ Before you deploy a single model, the right foundation must be in place. Failure
 .A Note on Networking
 Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing. A slow network will make your distributed system slower than a single pod.
 
-== The Core Components (The "Puzzle Pieces")
+== The Core Components
 
 The architecture integrates `llm-d` into OpenShift AI as a set of controllers and routing logic.
 
@@ -59,8 +61,8 @@ image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram showi
 | **Gateway API + Inference Extension** (e.g., Envoy Proxy)
 | **The "Smart Router"** and single entry point for all users, living in the `openshift-ingress` namespace. It intercepts the user's HTTPROUTE request and uses the inference extension to ask the "brain" (the scheduler) where to send it.
 
-| **Inference Scheduler (EPP)**
-| **The "Brain"** of `llm-d`. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.
+| **Intelligent Inference Scheduler (EPP)**
+| **The "Intelligence"** of `llm-d`. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.
 
 | **vLLM Pods (Prefill/Decode)**
 | **The "Workers"**. These are vLLM engines running in the user namespace, deployed by the ModelService CRD. In advanced "Well-Lit Paths," they are split into two separate pools:
@@ -74,7 +76,7 @@ image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram showi
 | **The "Orchestrator"**. Part of the Red Hat OpenShift AI Operator v2.25+, it watches for a ModelService CRD creation. When it sees one, it builds all the complex underlying pieces, including the Prefill Deployment, the Decode Deployment, Kubernetes Services, and the HTTPROUTE rules for the Gateway.
 
 | **Dependant Operators**
-| **Supporting Infrastructure**. The Cert Manager Operator, Arthorino Operator, and the **Leader-Worker\_set Operator** must be installed to deploy resources using distributed inference with `llm-d`.
+| **Supporting Infrastructure**. The Cert Manager Operator, Arthorino Operator, and the **Leader-Worker-Set Operator** must be installed to deploy resources using distributed inference with `llm-d`.
 |===
 
 == The Data Flow (The "Request Lifecycle")

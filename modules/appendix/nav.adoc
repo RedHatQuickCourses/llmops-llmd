@@ -2,4 +2,5 @@
 ** xref:index.adoc[]
 ** xref:kvcache.adoc[]
 ** xref:lws.adoc[]
+** xref:trbleshoot.adoc[]
 // ** xref:apigateway.adoc[]
