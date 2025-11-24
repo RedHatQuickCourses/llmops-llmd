@@ -1,0 +1,58 @@
+
+= The Scalable LLM Inference Stack: vLLM & llm-d
+
+== Industrializing Generative AI
+
+For enterprises seeking to industrialize Generative AI, scalable inference requires combining two critical layers of optimization: a **high-performance inference engine** to manage speed at the node level, and an **intelligent orchestration framework** to manage resource efficiency across the entire cluster.
+
+This document outlines how Red Hat AI combines the industry-standard open-source **vLLM engine** with the Kubernetes-native **llm-d framework** to create a unified, production-grade inference stack.
+
+
+
+=== The Stacked Architecture
+
+The following infographic illustrates the functional separation of the LLM inference stack. It visualizes **llm-d** as the external control plane managing the cluster, **vLLM** as the internal high-throughput execution engine, and the underlying hardware resources.
+
+
+.The Scalable LLM Inference Stack: vLLM & llm-d
+image::vllmllm-d.png[Aligning vLLM and llm-d Layers, 700, align="center"]
+
+
+---
+
+=== The Cluster Layer (Orchestration & Routing with llm-d)
+
+At the top of the stack is **llm-d**, an open-source, Kubernetes-native framework designed to orchestrate distributed AI workloads. It transforms monolithic model deployments into intelligent, modular microservices.
+
+While vLLM handles *execution*, llm-d handles *routing and strategy*. It provides the necessary control plane to manage complex, multi-node deployments on Red Hat AI.
+
+ * *Key Control Plane Functions:*
+
+ ** **Intelligent Scheduling (KV Cache Aware):** Unlike standard Kubernetes round-robin routing, llm-d utilizes live metadata to route requests to the "warmest" nodes, maximizing KV cache reuse and reducing latency.
+ ** **Prefill/Decode Disaggregation:** llm-d can split the compute-heavy "prefill" phase from the latency-sensitive "decode" phase into separate services, optimizing hardware utilization for distinct workload profiles.
+ ** **MoE/Expert Parallelism (Multi-Node):** It manages the distribution of massive Mixture of Expert (MoE) models across multiple nodes, handling the complex inter-node communication required for models that exceed single-node capacity.
+ ** **Observability and TCO Optimization:** As an inference gateway, llm-d provides integrated metrics for SLO tracking and enables GPU pooling strategies to maximize tokens-per-dollar.
+
+---
+
+=== The Service Layer (High-Throughput Execution with vLLM)
+
+The middle layer is powered by **vLLM**, the state-of-the-art open-source engine for serving LLMs. In this stack, vLLM acts as the foundational **model backend** running within the pods managed by llm-d.
+
+Assuming knowledge of vLLM's core architecture, this layer is responsible for maximizing the throughput of every allocated GPU.
+
+ * *Key Engine Functions:*
+
+ ** **Efficient Memory Management:** Utilizes **PagedAttention** to manage KV cache memory in fixed-size pages, eliminating fragmentation and enabling large context windows.
+ ** **Dynamic Request Aggregation:** Applies **Continuous Batching** to process incoming requests as soon as compute is available, rather than waiting for static batches to fill.
+ ** **Latency Reduction:** Leverages **Speculative Decoding** to predict multiple future tokens in parallel, significantly speeding up the generation phase.
+ ** **Intra-Node Parallelism:** Native support for **Tensor, Pipeline, and Data Parallelism** to shard models across multiple GPUs within a single compute node.
+** **Standard Interface:** Exposes an **OpenAI-compatible API endpoint**, ensuring easy integration with existing applications and easy management by llm-d.
+
+---
+
+=== The Hardware Layer (Base Compute Resources)
+
+At the foundation are the physical compute resources, specifically data-center grade GPUs (e.g., NVIDIA H100, A100, L40S).
+
+The combined software stack ensures these expensive resources are utilized efficiently: vLLM ensures the GPUs are not idle during execution cycles, and llm-d ensures that requests are routed to the right GPUs at the right time.

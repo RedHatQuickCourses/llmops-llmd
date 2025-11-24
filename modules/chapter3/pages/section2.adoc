@@ -83,6 +83,9 @@ image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram showi
 
 Understanding this six-step flow, detailing how the core components interact, is critical for successful deployment and troubleshooting.
 
+.The Request Data flow Distributed Inference with llm-d
+image::dataflow.png[The Request Data flow Distributed Inference with llm-d, 700, align="center"]
+
 1.  **Request In:** A user sends an **OpenAI-compatible request** (e.g., `/v1/chat/completions`) to the HTTPROUTE defined for the model.
 2.  **Gateway Intercepts:** The Gateway API (Envoy), located in the `openshift-ingress` namespace, receives the request.
 3.  **The "Brain" is Called:** The Gateway API inference extension forwards the request metadata to the Inference Scheduler (EPP), essentially asking: "Where should this new request go?".

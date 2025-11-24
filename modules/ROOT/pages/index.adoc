@@ -30,19 +30,13 @@ How distributed inference, powered by **llm-d**, delivers a superior value propo
 
 ==  Prerequisites
 
-To use this guide effectively, you should have:
+This course provide an Interactive Lab Experience 
 
 *   OpenShift AI 3.x cluster deployed.
 *   CLI tools: `oc` and `helm` (optional depending on approach).
 *   Basic understanding of Kubernetes/OpenShift concepts.
 *   Familiarity with the basics of **vLLM Inference**.
 *   Basic understanding of YAML and command-line tools.
-
-
-#### Additional Resources
-*   Appendix: Taxonomy to Know
-*   Deep Dive on KV Cache Management
-*   LeaderWorkerSet (LWS) Operator
 
 
 
@@ -91,3 +85,13 @@ Here are a few tips to get you started:
 *Track Your Progress:* The bar at the bottom of the window shows your progression through the interactive segments.
 
 If you're new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.
+
+---
+
+NOTE: This cookbook was created with assistance from AI tools to accelerate content development and improve documentation quality. However, all content is built, edited, tested, and reviewed by experienced human engineers to ensure technical accuracy and real-world applicability. We believe in transparency about our tools while maintaining human expertise and oversight at every step.
+
+#### Additional Resources
+*   Appendix: Taxonomy to Know
+*   Deep Dive on KV Cache Management
+*   LeaderWorkerSet (LWS) Operator
+*  Step by Step Hands on Lab
