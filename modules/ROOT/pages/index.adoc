@@ -1,48 +1,30 @@
-= vLLM to AI Factory Scaling with LLM-D
-
-Deploying scalable and secure Large Language Model (LLM) inference workloads for those who are moving Generative AI from experimentation to enterprise production.
-
-*Distributed Inference with llm-d* is now generally available (GA) with OpenShift AI 3.0.  Distributed Inference with llm-d supports intelligent inference scheduling, multi-model serving, and disaggregated serving for improved GPU utilization on generative AI models.
+= Maximize Your GPU ROI: Scaling LLM Inference llm-d
 
 
-== What You’ll Learn
+== Welcome
 
+Welcome to Maximize Your GPU ROI: Scaling LLM Inference llm-d with OpenShift AI!
 
-How distributed inference, powered by **llm-d**, delivers a superior value proposition across three critical areas:
+This course is a practical Technical Level 2 (TL2) immersion designed for implementers, architects, consultants, and operators who are responsible for running Generative AI workloads in production. 
 
-=== Optimize Total Cost of Ownership (TCO):
+We begin by tackling the core market challenge: the reality that ad-hoc AI experiments often fail to deliver ROI due due to skyrocketing OpEx and relying on monolithic, hard-to-scale architectures. This course provides the knowledge to transform those experiments into a repeatable, scalable, and economically viable Intelligence Factory on Red Hat OpenShift AI.
 
- * Eliminate "Paying for Idle GPUs" by implementing **llm-d’s Intelligent Inference Scheduling**, which replaces basic, AI-unaware Kubernetes scheduling to balance the cluster and maximize the usage of expensive hardware. 
- * Additionally, discover how **KV Cache Management** offloads the model’s "memory" from expensive GPU VRAM to cheaper CPU RAM to maximize GPU density and allow running more models on the same hardware.
+OpenShift AI abstracts the difficulting of mastering the llm-d Kubernetes-native framework, by providing the operational control plane and extends the high-performance vLLM inference engine.
 
-=== Guarantee Performance & Service Level Objectives (SLOs):
-
- * Move beyond the "Best Effort" performance of public APIs. Learn how **llm-d’s Disaggregated Inference** ensures interactive applications remain responsive by separating the compute-heavy "Prefill" phase from the memory-fast "Decode" phase . 
- * LLM-D handles Mixture of Expert (MOE) models complexity by splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
-
-
-
-=== Ensure Total Security & Control (Sovereign AI):
-
- * Achieve **"Sovereign AI"** by deploying the entire high-performance inference stack inside your own OpenShift cluster, ensuring proprietary RAG documents, customer data, and sensitive prompts never leave your control. 
-
- * This approach empowers you to **Own Your Hybrid Cloud Strategy**, deploying a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.
-
-==  Prerequisites
-
-This course provide an Interactive Lab Experience 
-
-*   OpenShift AI 3.x cluster deployed.
-*   CLI tools: `oc` and `helm` (optional depending on approach).
-*   Basic understanding of Kubernetes/OpenShift concepts.
-*   Familiarity with the basics of **vLLM Inference**.
-*   Basic understanding of YAML and command-line tools.
-
-
+Upon completion, you will understand when distributed inference with llm-d is the correct solution to deliver production-grade Generative AI workloads using OpenShift AI. That are faster, cheaper, and more manageable across a hybrid cloud environment, ensuring your platform is the right solution for managing multi-tenant clusters securely and efficiently.
 
 
 [NOTE]
-.OpenShift AI 3.0 Summarized Release Notes for this course
+====
+*Distributed Inference with llm-d* is now generally available (GA) with OpenShift AI 3.0 release.  
+
+In this release, distributed inference with llm-d on OpenShift AI supports intelligent inference scheduling, multi-model serving, and disaggregated serving for improved GPU utilization on generative AI models.
+
+For the latest updates, vist the https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html/release_notes/new-features-and-enhancements_relnotes#enhancements[Red Hat OpenShift AI 3.0 Release Notes, new features, section 3.2 enhancements., window=blank]
+====
+
+[%collapsible]
+.OpenShift AI 3.0 Summarized Release Notes
 ====
 
 *Supported Features in Red Hat OpenShift AI 3.0 and llm-d:*
@@ -63,35 +45,49 @@ This course provide an Interactive Lab Experience
 
  *   While Distributed Inference Server with llm-d appears as an available option for deployment, it is not currently listed on the Serving Runtimes page under the Settings section.
  *   Models deployed using llm-d initially display a *Failed* status on the Deployments page in the OpenShift AI dashboard, even if associated pod logs report no errors or failures; the status automatically updates to *Started* when the model is ready.
+
 ====
 
-== Interactive Experiences
 
-This course is a multi-format learning journey. You will find a mix of videos, technical articles, and resource links, but the core of this course is delivered through Interactive Arcades.
+== What You’ll Learn
 
 
-=== What is an "Arcade"?
+How distributed inference with **llm-d** on Red Hat OpenShift AI, delivers a superior value proposition across three critical areas:
 
-An Arcade is an interactive demonstration. You'll read the content on each slide and then click on "hotspots" (like blinking dots or text boxes) to move through the presentation. This format is used for both conceptual guides and some lab exercises.
+image::llm-d_advantage.png[llm-d OpenShift AI Advantage, 500, align="center"]
 
-=== Pro-Tips for the Best Experience
+=== Optimize Total Cost of Ownership (TCO):
 
-Here are a few tips to get you started:
+ * Eliminate "Paying for Idle GPUs" by implementing **llm-d’s Intelligent Inference Scheduling**, which replaces basic, AI-unaware Kubernetes scheduling to balance the cluster and maximize the usage of expensive hardware. 
+ * Additionally, discover how **KV Cache Management** offloads the model’s "memory" from expensive GPU VRAM to cheaper CPU RAM to maximize GPU density and allow running more models on the same hardware.
 
-*Go Full Screen:* This is the highly recommended way to use Arcades. Use the "expand" icon (usually in the top-right corner) to ensure hotspots and text don't overlap.
+=== Guarantee Performance & Service Level Objectives (SLOs):
 
-*Navigate:* Use the arrows in the top-left corner to move forward and back through the presentation.
+ * Move beyond the "Best Effort" performance of public APIs. Learn how **llm-d’s Disaggregated Inference** ensures interactive applications remain responsive by separating the compute-heavy "Prefill" phase from the memory-fast "Decode" phase . 
+ * LLM-D handles Mixture of Expert (MOE) models complexity by splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
 
-*Track Your Progress:* The bar at the bottom of the window shows your progression through the interactive segments.
+=== Ensure Total Security & Control (Sovereign AI):
 
-If you're new to Arcades and would like a visual walkthrough, you can find a helpful video in the appendix.
+ * Achieve **"Sovereign AI"** by deploying the entire high-performance inference stack inside your own OpenShift cluster, ensuring proprietary RAG documents, customer data, and sensitive prompts never leave your control. 
+
+ * This approach empowers you to **Own Your Hybrid Cloud Strategy**, deploying a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.
+
+==  Lab Walkthrough Experience
+
+This course provide an Interactive Lab Experience 
+
+*   Using Red Hat Demo Platform Catalog item: OpenShift AI 3.0.
+*   Adding depandant operators for Distributed Inference with llm-d.
+*   Deploy a model using OpenShift AI's vLLM serving runtime.
+*   Use a Workbench to insure inference is working.
+*   Deploy a model using OpenShift AI's distributed inference component.
 
 ---
 
-NOTE: This cookbook was created with assistance from AI tools to accelerate content development and improve documentation quality. However, all content is built, edited, tested, and reviewed by experienced human engineers to ensure technical accuracy and real-world applicability. We believe in transparency about our tools while maintaining human expertise and oversight at every step.
+NOTE: This course was created with assistance from AI tools to accelerate content development and improve quality. However, all content is built, edited, tested, and reviewed by experienced human engineers to ensure technical accuracy and real-world applicability. We believe in transparency about our tools while maintaining human expertise and oversight at every step.
 
-#### Additional Resources
-*   Appendix: Taxonomy to Know
-*   Deep Dive on KV Cache Management
-*   LeaderWorkerSet (LWS) Operator
+== Additional Resources
+*  Appendix: Taxonomy to Know
+*  Deep Dive on KV Cache Management
+*  LeaderWorkerSet (LWS) Operator
 *  Step by Step Hands on Lab

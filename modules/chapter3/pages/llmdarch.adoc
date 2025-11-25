@@ -1,0 +1,116 @@
+= llm-d Architecture Deep Dive: Building the Foundation
+
+
+== The Foundation (The Prerequisites)
+
+Before you deploy a single model, the right foundation must be in place. Failure to meet these component requirements is the number one cause of implementation issues.
+
+image::llm-dstack.png[llm-d framework on OpenShift AI, 700, align="center"]
+
+.Component Requirements for Distributed Inference
+|===
+| Component | Requirement | The "Why"
+
+| **Kubernetes / OpenShift**
+| OpenShift 4.19.
+| This is a modern stack that relies on up-to-date Kubernetes features and includes the **Gateway API**.
+
+| **Gateway API**
+| A compliant Gateway API implementation, such as the one provided by OpenShift Service Mesh (Istio) or kGateway.
+| This component serves as the **"front door"** for all traffic and is the required integration point for the smart scheduler.
+
+| **GPU Hardware**
+| NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
+| This stack is built for high-performance, and the underlying **vLLM** engine is optimized for these specific architectures, not consumer cards.
+
+| **GPU Operators**
+| NVIDIA GPU Operator & Node Feature Discovery (NFD) Operator.
+| The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler.
+
+| **Networking (CRITICAL)**
+| High-Speed, Low-Latency Fabric, such as **InfiniBand or RoCE (RDMA)**.
+| Required for **"East-West" traffic** between nodes, which is essential for advanced features like P/D Disaggregation and Mixture-of-Experts (MoE). A standard 10GbE TCP/IP network will be a major bottleneck and is not supported for high-performance paths.
+|===
+
+[WARNING]
+.A Note on Networking
+Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing. A slow network will make your distributed system slower than a single pod.
+
+== The Core Components
+
+This architecture diagram demonstrates the required operators, and the routing logic that takes place when deploying `llm-d` powered Generative AI Models into OpenShift AI as a set of controllers and routing logic.
+
+image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram showing Gateway, Scheduler, and vLLM Pods, 700, align="center"]
+
+.Core llm-d Components and Roles
+|===
+| Component | Role in the System (What It Does)
+
+| **Gateway API + Inference Extension** (e.g., Envoy Proxy)
+| **The "Smart Router"** and single entry point for all users, living in the `openshift-ingress` namespace. It intercepts the user's HTTPROUTE request and uses the inference extension to ask the "brain" (the scheduler) where to send it.
+
+| **Intelligent Inference Scheduler (EPP)**
+| **The "Intelligence"** of `llm-d`. It is a plug-in to the Gateway that uses the Endpoint Picker Protocol (EPP). It only makes decisions—it does not move data. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best destination.
+
+| **vLLM Pods (Prefill/Decode)**
+| **The "Workers"**. These are vLLM engines running in the user namespace, deployed by the ModelService CRD. In advanced "Well-Lit Paths," they are split into two separate pools:
+*   **Prefill:** Optimized for the compute-heavy task of processing the prompt.
+*   **Decode:** Optimized for the memory-fast task of generating tokens.
+
+| **New ModelService CRD**
+| **The "Workload Definition"**. This is the simple YAML file you, the user, create to declare what model you want to serve (e.g., "I want to serve Llama-3-8B").
+
+| **KServe "Next GenAI" Controller (RHOAI Operator)**
+| **The "Orchestrator"**. Part of the Red Hat OpenShift AI Operator v2.25+, it watches for a ModelService CRD creation. When it sees one, it builds all the complex underlying pieces, including the Prefill Deployment, the Decode Deployment, Kubernetes Services, and the HTTPROUTE rules for the Gateway.
+
+| **Dependant Operators**
+| **Supporting Infrastructure**. The Cert Manager Operator, Arthorino Operator, and the **Leader-Worker-Set Operator** must be installed to deploy resources using distributed inference with `llm-d`.
+|===
+
+== The Data Flow (The "Request Lifecycle")
+
+Understanding this six-step flow, detailing how the core components interact, is critical for successful deployment and troubleshooting.
+
+.The Request Data flow Distributed Inference with llm-d
+image::dataflow.png[The Request Data flow Distributed Inference with llm-d, 700, align="center"]
+
+1.  **Request In:** A user sends an **OpenAI-compatible request** (e.g., `/v1/chat/completions`) to the HTTPROUTE defined for the model.
+2.  **Gateway Intercepts:** The Gateway API (Envoy), located in the `openshift-ingress` namespace, receives the request.
+3.  **The "Brain" is Called:** The Gateway API inference extension forwards the request metadata to the Inference Scheduler (EPP), essentially asking: "Where should this new request go?".
+4.  **Scheduler Decides (Filter & Score):** The Scheduler runs its logic:
+    *   **Filter:** It gathers a list of all vLLM pods for the requested model and filters out any that are unhealthy, overloaded, or incompatible.
+    *   **Score:** It scores the remaining, healthy pods based on telemetry. It checks which pod has the shortest queue and, most importantly, **if any pod already holds the KV Cache for the conversation (KV Cache Affinity)**.
+5.  **Optimal Pod Selected:** The Scheduler determines the best pod and routes accordingly:
+    *   **Cache Hit (Fast Path):** If it finds a Decode pod with the KV Cache and a short queue (e.g., `decode-pod-7`), it tells the Gateway, "Send it there".
+    *   **Cache Miss (Slower Path):** If no pod has the required cache, it tells the Gateway, "Send it to a Prefill pod first (the least busy one). That Prefill pod will then process the prompt, write the new KV Cache, and internally hand the request off to a Decode pod for generation".
+6.  **Routing & Response:** The Gateway forwards the actual request to the chosen pod. The pod generates the response and streams it back to the user through the Gateway.
+
+== Observability (Proving It Works)
+
+As an implementer, you must prove the platform's value and economic viability. The `llm-d` stack is built for detailed observability, providing the "Golden Signals" necessary to connect metrics to business value.
+
+.Golden Signals for llm-d Observability
+|===
+| Business Goal | Metric | Description
+
+| **To Prove Performance (SLOs)**
+| `vllm_llmd_time_to_first_token_seconds` (TTFT)
+| This is the **"responsiveness" metric**. Your goal is to keep this value low and stable to meet user expectations.
+
+| **To Prove Performance (SLOs)**
+| `vllm_llmd_time_per_output_token_seconds` (TPOT)
+| This is the **"generation speed"** metric.
+
+| **To Prove TCO (Cost Savings)**
+| `vllm_llmd_kv_cache_hit_rate`
+| **Your #1 TCO METRIC**. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time, representing a direct measure of your return on investment (ROI).
+
+| **To Prove TCO (Cost Savings)**
+| `vllm_llmd_gpu_utilization_seconds`
+| Proves that your expensive GPUs are being used effectively, rather than sitting idle.
+|===
+
+[NOTE]
+.Monitoring Setup
+These metrics are scraped by Prometheus and should be viewed in Grafana, allowing implementers to connect the technical performance directly to the "Why Buy?" value propositions.
+```

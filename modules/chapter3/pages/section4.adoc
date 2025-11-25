@@ -1,140 +1,25 @@
-= Distributed Inference with llm-d OpenShift AI Architecture
+= OpenShift AI 3.0 Release Notes
+
+[NOTE]
+.OpenShift AI 3.0 Summarized Release Notes for this course
+====
+
+*Supported Features in Red Hat OpenShift AI 3.0 and llm-d:*
+
+ *   **User Interface (UI) for Deployment:** OpenShift AI now includes a user interface for configuring and deploying Large Language Models (LLMs) on the `llm-d` Serving Runtime. This streamlined interface simplifies common deployment scenarios by offering essential configuration options with sensible defaults, while still allowing explicit selection of the `llm-d` runtime.
+ *   **Observability and Grafana Integration:** Platform administrators can now connect observability components to Distributed Inference with `llm-d` deployments. This allows integration with self-hosted Grafana instances for monitoring inference workloads. Teams can collect and visualize Prometheus metrics from `llm-d` for performance analysis and custom dashboard creation.
+ *   **Model-as-a-Service (MaaS) Support:** MaaS is currently supported only for models deployed using the Distributed Inference Server with `llm-d` runtime.
+
+*The following capabilities are not fully supported in OpenShift AI 3.0:*
+
+ * Wide Expert-Parallelism multi-node: Developer Preview.
+ * Wide Expert-Parallelism on Blackwell B200: Not available but can be provided as a Technology Preview.
+ * Multi-node on GB200: Not supported.
+ * Gateway discovery and association are not supported in the UI during model deployment in this release. Users must associate models with Gateways by applying the resource manifests directly through the API or CLI.
 
 
-[TIP.tada] 
-.The Implementer's "Litmus Test"
+*llm-d Known Issues in OpenShift AI 3.0:*
 
-Wondering if this architecture is the right solution for your project? If you're an Operator, Consultant, or Services member and you nod your head to these points, this guide is for you.
-
- - [x] ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.
-
- - [x]  Hybrid_cloud, you must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.
-
- - [x] 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.
-
- - [x] 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.
-
- - [x] 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn't working.
-
-'''
-
-[#deep-dive]
-== Architecture Deep Dive: For Implementers
-
-Now that you understand the "why," let's explore the "how." As an implementer, your job is to assemble the puzzle. This section details the pieces you'll need, all based on the OpenShift AI-integrated architecture.
-
-=== Part 1: The Foundation (The Prerequisites)
-
-Before you deploy a single model, you must have the right foundation. Failure here is the #1 cause of implementation issues.
-
-[cols="1a,2a"]
-|===
-|Component |Requirement & (The "Why")
-
-|Kubernetes / OpenShift
-|Kubernetes 1.30+ or OpenShift 4.19.19+.
-(This is a modern stack that relies on up-to-date Kubernetes features and the Gateway API).
-
-|Gateway API
-|A compliant Gateway API implementation, such as the one provided by OpenShift Service Mesh (Istio) or kGateway.
-(This is the "front door" for all traffic and the integration point for the smart scheduler).
-
-|GPU Hardware
-|NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
-(This stack is built for high-performance, not consumer cards. vLLM is optimized for these specific architectures).
-
-|GPU Operators
-|NVIDIA GPU Operator & Node Feature Discovery (NFD) Operator.
-(These are non-negotiable. The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler).
-
-|Networking (CRITICAL)
-|High-Speed, Low-Latency Fabric.
-(For "East-West" traffic between nodes—required for P/D Disaggregation and MoE—you need InfiniBand or RoCE (RDMA). A standard 10GbE TCP/IP network will be a major bottleneck and is not supported for high-performance paths).
-|===
-
-[WARNING.fire]
-.A Note on Networking
-Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing.
-A slow network will make your distributed system slower than a single pod. Verify your networking fabric before you deploy.
-
----
-
-=== Part 2: The Core Components (The "Puzzle Pieces")
-
-This architecture, based on the high_level_llmd_diagram.jpg reference, shows how llm-d (lowercase) integrates into OpenShift AI as a set of controllers and routing logic.
-
-image::high_level_llmd_diagram.jpg[llm-d OpenShift AI Architecture Diagram,700,align="center"]
-
-[cols="1a,3a"]
-|===
-|Component |Role in the System (What It Does)
-
-|Gateway API + Gateway API inference extension
-(e.g., Envoy Proxy)
-|This is the "Smart Router" and the single entry point for all users, living in the openshift-ingress namespace. It intercepts the user's HTTPROUTE request and uses the Gateway API inference extension to ask the "brain" (the scheduler) where to send it.
-
-|Inference scheduler (EPP)
-|This is the "Brain" of llm-d. It is a plug-in to the Gateway that communicates via the Endpoint Picker Protocol (EPP). It does not move data; it only makes decisions. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best one.
-
-|vLLM Pods (Prefill/Decode)
-|These are the "Workers". Deployed by the ModelService CRD, they are vLLM engines running in the user namespace. In advanced "Well-Lit Paths," they are split into two separate deployments:
-
-Prefill: A pool of pods optimized for the compute-heavy task of processing the prompt.
-
-Decode: A pool of pods optimized for the memory-fast task of generating tokens.
-
-|new ModelService CRD
-|This is the "Workload Definition". It's the simple YAML file you, the user, create. You declare "I want to serve Llama-3-8B" here. This single resource is managed by the controllers below.
-
-|KServe "Next GenAI" Controller
-(RHOAI Operator)
-|This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator v2.25+, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.
-
-|Dependant Operators
-|Cert Manager Operator, Arthorino Operator and the Leader-Worker_set Operator must be installed to deploy resources using the distributed interence with llm-d.
-|===
-
----
-
-=== Part 3: The Data Flow (The "Request Lifecycle")
-
-This is how the pieces work together. Understanding this flow is key to troubleshooting.
-
- . Request In: A user sends an OpenAI-compatible request (e.g., /v1/chat/completions) to the HTTPROUTE for the model.
- . Gateway Intercepts: The Gateway API (Envoy) in the openshift-ingress namespace receives the request.
- . The "Brain" is Called: The Gateway API inference extension forwards the request metadata to the Inference scheduler (EPP). It essentially asks, "I have a new request for Llama-3-8B. Where should it go?"
- . Scheduler Decides (Filter & Score): The Scheduler runs its logic:
-
- .. Filter: It gets a list of all vLLM pods for Llama-3-8B. It filters out any that are overloaded, unhealthy, or incompatible.
-
- .. Score: It scores the remaining, healthy pods. It checks its telemetry: "Which pod has the shortest queue?" and, most importantly, "Does any pod already have the KV Cache for this conversation?"
-. Optimal Pod Selected: The Scheduler picks the best pod.
-
- .. Cache Hit (Fast Path): It finds decode-pod-7 has the KV Cache and a short queue. It tells the Gateway, "Send it to decode-pod-7."
-
- .. Cache Miss (Slower Path): No pod has the cache. It tells the Gateway, "Send it to prefill-pod-2 (which is least busy) first. The prefill-pod-2 will then process the prompt, write the new KV Cache, and hand the request off to a decode-pod."
-
- . Routing & Response: The Gateway forwards the actual request to the chosen pod (e.g., decode-pod-7). That pod generates the response and streams it back to the user through the Gateway.
-
----
-
-=== Part 4: Observability (Proving It Works)
-
-As an implementer, you must prove the value. This stack is built for observability.
-
-[NOTE.info]
-.The "Golden Signals" for Implementers
-
-Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) to the "Why Buy?" value props.
-
-To Prove Performance (SLOs):
-
- * *vllm_llmd_time_to_first_token_seconds (TTFT):* This is your "responsiveness" metric. Your goal is to keep this low and stable.
-
- * *vllm_llmd_time_per_output_token_seconds (TPOT):* This is your "generation speed."
-
-To Prove TCO (Cost Savings):
-
- * *vllm_llmd_kv_cache_hit_rate:* This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.
-
- * *vllm_llmd_gpu_utilization_seconds:* This proves your GPUs are being used effectively, not sitting idle.
+ *   While Distributed Inference Server with llm-d appears as an available option for deployment, it is not currently listed on the Serving Runtimes page under the Settings section.
+ *   Models deployed using llm-d initially display a *Failed* status on the Deployments page in the OpenShift AI dashboard, even if associated pod logs report no errors or failures; the status automatically updates to *Started* when the model is ready.
+====

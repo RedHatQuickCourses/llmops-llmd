@@ -44,7 +44,7 @@ Assuming knowledge of vLLM's core architecture, this layer is responsible for ma
  * *Key Engine Functions:*
 
  ** **Efficient Memory Management:** Utilizes **PagedAttention** to manage KV cache memory in fixed-size pages, eliminating fragmentation and enabling large context windows.
- ** **Dynamic Request Aggregation:** Applies **Continuous Batching** to process incoming requests as soon as compute is available, rather than waiting for static batches to fill.
+ ** **Continuous Batching:**  Batching requests is to maximize GPU usage by processing multiple queries together rather than sequentially.
  ** **Latency Reduction:** Leverages **Speculative Decoding** to predict multiple future tokens in parallel, significantly speeding up the generation phase.
  ** **Intra-Node Parallelism:** Native support for **Tensor, Pipeline, and Data Parallelism** to shard models across multiple GPUs within a single compute node.
 ** **Standard Interface:** Exposes an **OpenAI-compatible API endpoint**, ensuring easy integration with existing applications and easy management by llm-d.
@@ -55,4 +55,9 @@ Assuming knowledge of vLLM's core architecture, this layer is responsible for ma
 
 At the foundation are the physical compute resources, specifically data-center grade GPUs (e.g., NVIDIA H100, A100, L40S).
 
-The combined software stack ensures these expensive resources are utilized efficiently: vLLM ensures the GPUs are not idle during execution cycles, and llm-d ensures that requests are routed to the right GPUs at the right time.
+---
+
+The combined software stack ensures these expensive resources are utilized efficiently:  
+
+ * *vLLM ensures the GPUs are not idle during execution cycles,* 
+ * *llm-d ensures that requests are routed to the right GPUs at the right time.*
