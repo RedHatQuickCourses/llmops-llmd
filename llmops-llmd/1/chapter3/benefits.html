@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>llm-d Use Cases and Core Benefits :: vLLM to AI Factory Scaling with LLM-D</title>
+    <link rel="prev" href="../index.html">
+    <link rel="next" href="redhatai.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">vLLM to AI Factory Scaling with LLM-D</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="benefits.html">llm-d Use Cases and Core Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="redhatai.html">AI Factory on Red Hat AI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="vllmllmd.html">The Scalable LLM Inference Stack: vLLM &amp; llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="llmdarch.html">llm-d Architecture Deep Dive: Building the Foundation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appendix/appendix.html">appendix</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/index.html">Taxonomy to Know</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/kvcache.html">Deep Dive on KV Cache Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/trbleshoot.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
+    <li><a href="benefits.html">llm-d Use Cases and Core Benefits</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">llm-d Use Cases and Core Benefits</h1>
+<div class="sect1">
+<h2 id="_the_llm_d_litmus_test_business_problems_solved"><a class="anchor" href="#_the_llm_d_litmus_test_business_problems_solved"></a>The llm-d Litmus Test: Business Problems Solved</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>llm-d is not merely a technical tool; it is a solution engineered to address specific, expensive business problems encountered when scaling Generative AI projects on kubernetes from experimentation to production. If your organization identifies with these symptoms, <code>llm-d</code> is designed to provide the necessary economic and operational viability.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Common Business Problems Solved by llm-d</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Symptom (What You’re Seeing)</th>
+<th class="tableblock halign-left valign-top">Problem/Mandate</th>
+<th class="tableblock halign-left valign-top">How llm-d Solves It</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Skyrocketing AI OpEx &amp; Poor ROI</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Our GPU budget is out of control. We keep buying more hardware, but our user capacity doesn&#8217;t double. We can’t make this project economically viable."</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Intelligent Scheduling (Path 1) and KV Cache Management (Path 4)</strong> stop waste, allowing you to pack more users and models onto the same hardware, directly lowering Total Cost of Ownership (TCO) and improving cost-per-query.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inconsistent or Slow AI Applications</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Users complain the chatbot is 'slow to start' (High TTFT) or 'stutters' during a long answer (High TPOT). Our RAG app times out under load."</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>P/D Disaggregation (Path 2) and Smart Scheduling</strong> eliminate hotspots and optimize the pipeline for fast, consistent responses, enabling you to meet Service Level Objectives (SLOs).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Sovereignty &amp; Security Mandates</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Legal and compliance teams have blocked the use of third-party APIs. We must build this in-house, but we can&#8217;t sacrifice performance."</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>llm-d</code> runs entirely inside your <strong>secure OpenShift cluster</strong>. Your proprietary data, RAG documents, and sensitive prompts never leave your private or hybrid cloud environment, delivering public-cloud performance with private-cloud security.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inability to Run Next-Gen Models</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"We are stuck on smaller models. We want to use a new 8x7B (MoE) model to stay competitive, but we have no way to serve it efficiently."</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wide Expert Parallelism (Path 3)</strong> is specifically designed to handle the brain-melting complexity of serving massive Mixture-of-Experts (MoE) models across many nodes, giving you a clear path to utilize next-generation AI.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_llm_d_architectural_advantage_and_performance_drivers"><a class="anchor" href="#_llm_d_architectural_advantage_and_performance_drivers"></a>llm-d Architectural Advantage and Performance Drivers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>llm-d</code>’s significant performance improvements are the direct result of implementing advanced distributed systems techniques within a clean, cloud-native, three-layered architecture.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="_images/llm-d-benefits.png" alt="llm-d Advantage &amp; Performance Drivers" width="700">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_four_well_lit_paths_of_distributed_inference"><a class="anchor" href="#_the_four_well_lit_paths_of_distributed_inference"></a>The Four "Well-Lit Paths" of Distributed Inference</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Distributed inference with <code>llm-d</code> truly shines by offering a set of powerful, production-ready techniques known as the "Well-Lit Paths" to supercharge your inference workloads.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Path #1: Intelligent Inference Scheduling (Flagship Feature)</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>This is the essential "on-ramp" to distributed inference, adding intelligent routing to any model served with OpenShift AI using vLLM.</p>
+</li>
+<li>
+<p><strong>Why Basic Schedulers Fail:</strong> Traditional schedulers (like round-robin) fail because LLM inference is stateful (using KV caches), requests have variable costs (long RAG prompt vs. short chat query), and basic distribution creates "hotspots" while wasting expensive, idle hardware.</p>
+</li>
+<li>
+<p><strong>How llm-d Solves It:</strong> <code>llm-d</code> replaces the load balancer with an intelligent, metrics-aware <strong>KServe Gateway</strong>. This gateway actively monitors real-time load, queue depth, and in-flight requests. It uses a <strong>two-step "Filter-and-Score" process</strong> to find the perfect home for every request, prioritizing availability, shortest queue, and KV cache affinity.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Path #2: Prefill/Decode (P/D) Disaggregation (Microservices for AI)</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>This path splits the inference process, preventing one server from juggling both compute-heavy Prefill and memory-heavy Decode.</p>
+</li>
+<li>
+<p>It separates the workload into specialized teams: the <strong>Prefill Team (A+ at compute)</strong> and the <strong>Decode Team (Masters of Memory)</strong>, resulting in a massive <strong>25-50% performance boost</strong> for large models. This separation stops long prompts from blocking the queue, maintaining responsiveness.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Path #3: Wide Expert Parallelism</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>This path is reserved for the <strong>"Boss Level"</strong>—serving gargantuan Mixture-of-Experts (MoE) models.</p>
+</li>
+<li>
+<p><code>llm-d</code> handles the complexity of splitting these giant models across many nodes and manages the high-speed networking required to make them work as one cohesive unit.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Path #4: KV Cache Management</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The "short-term memory" (KV Cache) lives in super-expensive GPU RAM.</p>
+</li>
+<li>
+<p>The <code>llm-d-kv-cache-manager</code> is designed to offload this data to <strong>cheaper, more abundant storage</strong>.</p>
+</li>
+<li>
+<p>This system supports <strong>North-South Caching</strong> (moving data to CPU RAM, like keeping a book on your personal desk) and <strong>East-West Caching</strong> (putting the book on a shared table/Redis/Storage for instant team access).</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_who_is_this_for_target_audience_and_positioning"><a class="anchor" href="#_who_is_this_for_target_audience_and_positioning"></a>Who is This For? Target Audience and Positioning</h3>
+<div class="paragraph">
+<p><code>llm-d</code> is a specialist solution designed for a specific set of users, deeply integrated with Kubernetes and requiring a high level of infrastructure expertise.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Persona</th>
+<th class="tableblock halign-left valign-top">Role and Focus</th>
+<th class="tableblock halign-left valign-top">Key Skills Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Persona 1: The Operator</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The primary user (Platform/SRE Team) who installs, configures, and manages <code>llm-d</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strong Kubernetes/OpenShift Expertise</strong> (Operators, networking, security contexts). <strong>Helm &amp; GitOps Fluency</strong>. <strong>Observability Skills</strong> (Prometheus/Grafana for monitoring GPU and scheduler metrics). <strong>Hardware Awareness</strong> (GPU hardware, NVIDIA drivers).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Persona 2: The User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The consumer (Data Scientists &amp; App Developers) who utilizes the deployed service.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Needs to be <strong>API-Driven</strong>, only requiring knowledge of the <strong>OpenAI-compatible API endpoint</strong> provided by the platform team. They are abstracted away from the deep infrastructure complexity.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<strong>Competitive Positioning:</strong> <code>llm-d</code> occupies a strategic niche by prioritizing <strong>infrastructure efficiency and TCO for LLM-specific workloads</strong>. It is best understood as a specialist solution for platform and SRE teams managing large, multi-tenant GPU clusters on Kubernetes, differentiating it from general-purpose, multi-framework servers (like NVIDIA Triton) or application-centric, developer-focused frameworks (like Ray Serve).
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></span>
+  <span class="next"><a href="redhatai.html">AI Factory on Red Hat AI</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

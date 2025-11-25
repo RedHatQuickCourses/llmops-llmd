@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Distributed Inference with llm-d OpenShift AI Architecture :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>OpenShift AI 3.0 Release Notes :: vLLM to AI Factory Scaling with LLM-D</title>
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -38,16 +38,16 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="benefits.html">llm-d Use Cases and Core Benefits</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="vllmllmd.html">The Scalable LLM Inference Stack: vLLM &amp; llm-d</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section1.html">LLM-D Use Cases and Core Benefits</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="section2.html">LLM-D Architecture Deep Dive: Building the Foundation</a>
+    <a class="nav-link" href="llmdarch.html">llm-d Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
@@ -105,7 +105,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section4.html">Distributed Inference with llm-d OpenShift AI Architecture</a></li>
+    <li><a href="section4.html">OpenShift AI 3.0 Release Notes</a></li>
   </ul>
 </nav>
 </div>
@@ -114,307 +114,66 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Distributed Inference with llm-d OpenShift AI Architecture</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="admonitionblock tip tada">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">The Implementer&#8217;s "Litmus Test"</div>
-Wondering if this architecture is the right solution for your project? If you&#8217;re an Operator, Consultant, or Services member and you nod your head to these points, this guide is for you.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-check-square-o"></i> ☸️ Your "world" is Kubernetes and OpenShift, and you need a cloud-native solution that runs on this platform.</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i>  Hybrid_cloud, you must support deployments across a hybrid cloud, from on-prem data centers to public clouds, with a consistent stack.</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> 🤝 You are responsible for multi-tenant clusters and need to serve models to different teams securely and efficiently.</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> 💸 Your primary goal is to lower TCO by maximizing the utilization of expensive, shared GPU resources.</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> 🚀 Your users are demanding guaranteed performance SLOs (like low TTFT), and the current "first-come, first-served" model isn&#8217;t working.</p>
-</li>
-</ul>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect1">
-<h2 id="deep-dive"><a class="anchor" href="#deep-dive"></a>Architecture Deep Dive: For Implementers</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Now that you understand the "why," let&#8217;s explore the "how." As an implementer, your job is to assemble the puzzle. This section details the pieces you&#8217;ll need, all based on the OpenShift AI-integrated architecture.</p>
-</div>
-<div class="sect2">
-<h3 id="_part_1_the_foundation_the_prerequisites"><a class="anchor" href="#_part_1_the_foundation_the_prerequisites"></a>Part 1: The Foundation (The Prerequisites)</h3>
-<div class="paragraph">
-<p>Before you deploy a single model, you must have the right foundation. Failure here is the #1 cause of implementation issues.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Component</th>
-<th class="tableblock halign-left valign-top">Requirement &amp; (The "Why")</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Kubernetes / OpenShift</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Kubernetes 1.30+ or OpenShift 4.19.19+.
-(This is a modern stack that relies on up-to-date Kubernetes features and the Gateway API).</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Gateway API</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>A compliant Gateway API implementation, such as the one provided by OpenShift Service Mesh (Istio) or kGateway.
-(This is the "front door" for all traffic and the integration point for the smart scheduler).</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>GPU Hardware</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>NVIDIA Data Center GPUs (e.g., H100, A100, L40S).
-(This stack is built for high-performance, not consumer cards. vLLM is optimized for these specific architectures).</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>GPU Operators</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>NVIDIA GPU Operator &amp; Node Feature Discovery (NFD) Operator.
-(These are non-negotiable. The GPU Operator manages drivers, and NFD advertises GPU features to the Kubernetes scheduler).</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Networking (CRITICAL)</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>High-Speed, Low-Latency Fabric.
-(For "East-West" traffic between nodes—required for P/D Disaggregation and MoE—you need InfiniBand or RoCE (RDMA). A standard 10GbE TCP/IP network will be a major bottleneck and is not supported for high-performance paths).</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="admonitionblock warning fire">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="title">A Note on Networking</div>
-Do not underestimate the networking requirement. A standard 10GbE TCP/IP network will not be fast enough for high-performance "East-West" cache sharing.
-A slow network will make your distributed system slower than a single pod. Verify your networking fabric before you deploy.
-</td>
-</tr>
-</table>
-</div>
-<hr>
-</div>
-<div class="sect2">
-<h3 id="_part_2_the_core_components_the_puzzle_pieces"><a class="anchor" href="#_part_2_the_core_components_the_puzzle_pieces"></a>Part 2: The Core Components (The "Puzzle Pieces")</h3>
-<div class="paragraph">
-<p>This architecture, based on the high_level_llmd_diagram.jpg reference, shows how llm-d (lowercase) integrates into OpenShift AI as a set of controllers and routing logic.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="_images/high_level_llmd_diagram.jpg" alt="llm-d OpenShift AI Architecture Diagram" width="700">
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Component</th>
-<th class="tableblock halign-left valign-top">Role in the System (What It Does)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Gateway API + Gateway API inference extension
-(e.g., Envoy Proxy)</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is the "Smart Router" and the single entry point for all users, living in the openshift-ingress namespace. It intercepts the user&#8217;s HTTPROUTE request and uses the Gateway API inference extension to ask the "brain" (the scheduler) where to send it.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Inference scheduler (EPP)</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is the "Brain" of llm-d. It is a plug-in to the Gateway that communicates via the Endpoint Picker Protocol (EPP). It does not move data; it only makes decisions. It maintains a real-time view of all vLLM pods and runs its "Filter-and-Score" logic to pick the best one.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>vLLM Pods (Prefill/Decode)</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>These are the "Workers". Deployed by the ModelService CRD, they are vLLM engines running in the user namespace. In advanced "Well-Lit Paths," they are split into two separate deployments:</p>
-</div>
-<div class="paragraph">
-<p>Prefill: A pool of pods optimized for the compute-heavy task of processing the prompt.</p>
-</div>
-<div class="paragraph">
-<p>Decode: A pool of pods optimized for the memory-fast task of generating tokens.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>new ModelService CRD</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is the "Workload Definition". It&#8217;s the simple YAML file you, the user, create. You declare "I want to serve Llama-3-8B" here. This single resource is managed by the controllers below.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>KServe "Next GenAI" Controller
-(RHOAI Operator)</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This is the "Orchestrator". This controller, part of the Red Hat OpenShift AI Operator v2.25+, watches for you to create a ModelService CRD. When it sees one, it springs into action and builds all the complex pieces for you: the Prefill Deployment, the Decode Deployment, the Kubernetes Services, and the HTTPROUTE rules for the Gateway.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Dependant Operators</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Cert Manager Operator, Arthorino Operator and the Leader-Worker_set Operator must be installed to deploy resources using the distributed interence with llm-d.</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<hr>
-</div>
-<div class="sect2">
-<h3 id="_part_3_the_data_flow_the_request_lifecycle"><a class="anchor" href="#_part_3_the_data_flow_the_request_lifecycle"></a>Part 3: The Data Flow (The "Request Lifecycle")</h3>
-<div class="paragraph">
-<p>This is how the pieces work together. Understanding this flow is key to troubleshooting.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Request In: A user sends an OpenAI-compatible request (e.g., /v1/chat/completions) to the HTTPROUTE for the model.</p>
-</li>
-<li>
-<p>Gateway Intercepts: The Gateway API (Envoy) in the openshift-ingress namespace receives the request.</p>
-</li>
-<li>
-<p>The "Brain" is Called: The Gateway API inference extension forwards the request metadata to the Inference scheduler (EPP). It essentially asks, "I have a new request for Llama-3-8B. Where should it go?"</p>
-</li>
-<li>
-<p>Scheduler Decides (Filter &amp; Score): The Scheduler runs its logic:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Filter: It gets a list of all vLLM pods for Llama-3-8B. It filters out any that are overloaded, unhealthy, or incompatible.</p>
-</li>
-<li>
-<p>Score: It scores the remaining, healthy pods. It checks its telemetry: "Which pod has the shortest queue?" and, most importantly, "Does any pod already have the KV Cache for this conversation?"</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Optimal Pod Selected: The Scheduler picks the best pod.</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Cache Hit (Fast Path): It finds decode-pod-7 has the KV Cache and a short queue. It tells the Gateway, "Send it to decode-pod-7."</p>
-</li>
-<li>
-<p>Cache Miss (Slower Path): No pod has the cache. It tells the Gateway, "Send it to prefill-pod-2 (which is least busy) first. The prefill-pod-2 will then process the prompt, write the new KV Cache, and hand the request off to a decode-pod."</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Routing &amp; Response: The Gateway forwards the actual request to the chosen pod (e.g., decode-pod-7). That pod generates the response and streams it back to the user through the Gateway.</p>
-</li>
-</ol>
-</div>
-<hr>
-</div>
-<div class="sect2">
-<h3 id="_part_4_observability_proving_it_works"><a class="anchor" href="#_part_4_observability_proving_it_works"></a>Part 4: Observability (Proving It Works)</h3>
-<div class="paragraph">
-<p>As an implementer, you must prove the value. This stack is built for observability.</p>
-</div>
-<div class="admonitionblock note info">
+<h1 class="page">OpenShift AI 3.0 Release Notes</h1>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">The "Golden Signals" for Implementers</div>
-Your job is to connect these metrics (scraped by Prometheus, viewed in Grafana) to the "Why Buy?" value props.
+<div class="title">OpenShift AI 3.0 Summarized Release Notes for this course</div>
+<div class="paragraph">
+<p><strong>Supported Features in Red Hat OpenShift AI 3.0 and llm-d:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>User Interface (UI) for Deployment:</strong> OpenShift AI now includes a user interface for configuring and deploying Large Language Models (LLMs) on the <code>llm-d</code> Serving Runtime. This streamlined interface simplifies common deployment scenarios by offering essential configuration options with sensible defaults, while still allowing explicit selection of the <code>llm-d</code> runtime.</p>
+</li>
+<li>
+<p><strong>Observability and Grafana Integration:</strong> Platform administrators can now connect observability components to Distributed Inference with <code>llm-d</code> deployments. This allows integration with self-hosted Grafana instances for monitoring inference workloads. Teams can collect and visualize Prometheus metrics from <code>llm-d</code> for performance analysis and custom dashboard creation.</p>
+</li>
+<li>
+<p><strong>Model-as-a-Service (MaaS) Support:</strong> MaaS is currently supported only for models deployed using the Distributed Inference Server with <code>llm-d</code> runtime.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>The following capabilities are not fully supported in OpenShift AI 3.0:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wide Expert-Parallelism multi-node: Developer Preview.</p>
+</li>
+<li>
+<p>Wide Expert-Parallelism on Blackwell B200: Not available but can be provided as a Technology Preview.</p>
+</li>
+<li>
+<p>Multi-node on GB200: Not supported.</p>
+</li>
+<li>
+<p>Gateway discovery and association are not supported in the UI during model deployment in this release. Users must associate models with Gateways by applying the resource manifests directly through the API or CLI.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>llm-d Known Issues in OpenShift AI 3.0:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>While Distributed Inference Server with llm-d appears as an available option for deployment, it is not currently listed on the Serving Runtimes page under the Settings section.</p>
+</li>
+<li>
+<p>Models deployed using llm-d initially display a <strong>Failed</strong> status on the Deployments page in the OpenShift AI dashboard, even if associated pod logs report no errors or failures; the status automatically updates to <strong>Started</strong> when the model is ready.</p>
+</li>
+</ul>
+</div>
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>To Prove Performance (SLOs):</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>vllm_llmd_time_to_first_token_seconds (TTFT):</strong> This is your "responsiveness" metric. Your goal is to keep this low and stable.</p>
-</li>
-<li>
-<p><strong>vllm_llmd_time_per_output_token_seconds (TPOT):</strong> This is your "generation speed."</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>To Prove TCO (Cost Savings):</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>vllm_llmd_kv_cache_hit_rate:</strong> This is your #1 TCO METRIC. A high hit rate (e.g., 90%) means you are skipping the expensive Prefill step 90% of the time. This is a direct measure of your ROI.</p>
-</li>
-<li>
-<p><strong>vllm_llmd_gpu_utilization_seconds:</strong> This proves your GPUs are being used effectively, not sitting idle.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
 </div>
 </article>
   </div>
