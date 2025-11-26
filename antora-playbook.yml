@@ -1,5 +1,5 @@
 site:
-  title: vLLM to AI Factory Scaling with LLM-D
+  title: Maximize Your GPU ROI, Scaling LLM Inference llm-d
   start_page: llmops-llmd::index.adoc
 
 content:

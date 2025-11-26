@@ -1,12 +1,8 @@
-From vLLM to AI Factory: Scaling with llm-d
+Maximize Your GPU ROI, Scaling LLM Inference llm-d
 
 Increase Performance & Reduce Cost with Distributed Inference
 
 The Value of This Course
-
-Public APIs offer convenience, but they fail to answer the three core challenges of enterprise AI: Cost, Performance, and Security.
-
-This course is a comprehensive, value-driven guide to solving all three. You will learn how OpenShift AI and Distributed Inference (powered by llm-d) give you what public APIs cannot:
 
 - The Best TCO: Learn to eliminate "idle GPU" waste and maximize your hardware investment, drastically lowering your Total Cost of Ownership.
 
@@ -16,8 +12,6 @@ This course is a comprehensive, value-driven guide to solving all three. You wil
 
 What You Will Learn
 
-This repository contains a complete learning path, from high-level value to hands-on deployment.
-
 - Master the "Why": Articulate the business value (TCO, ROI, Security) of on-premise, distributed inference.
 
 - Identify Key Use Cases: Learn to identify which AI workloads are prime candidates for llm-d and how to scope their deployment.
@@ -26,35 +20,21 @@ This repository contains a complete learning path, from high-level value to hand
 
 - Understand the Architecture: Get a clear overview of the components, from the intelligent KServe Gateway and scheduler to the vLLM worker pods.
 
-- Get Hands-On: Move from theory to practice by deploying a fully functional, auto-scaling inference service on OpenShift.
+- Get Hands-On: Move from theory to practice via Arcade experience or following along with the Walkthrough to deploya fully functional, intelligent routing inference service on OpenShift AI 3 for all vLLM powered large language models. 
 
 Course Structure
 
 This course is broken down into the following key modules:
 
-- llm-d Benefits & Value: The core business case for llm-d vs. public APIs.
+- The Red Hat AI Enterprise Platform and the role of llm-d
 
-- Use-Case Identification: A framework for identifying high-impact AI workloads.
-
-- The "Well-Lit Paths": A deep dive into the four llm-d deployment patterns.
+- Overview of the vLLM and distributed inference with llm-D as the production grade AI inference stack. 
 
 - Architecture Overview: How the components (Gateway, Scheduler, vLLM) work together.
 
-- Hands-On Lab: Deploying llm-d on OpenShift AI. "Coming Soon"
+- Use-Case Identification: A framework for identifying high-impact AI workloads.
 
-- Hands-On Interactive Lab
-
-The centerpiece of this course is a fully interactive, Arcade-based lab. This walkthrough guides you through the entire llm-d deployment on OpenShift / OpenShift AI.
-
-You will see and build a live deployment that demonstrates:
-
-- The Intelligent Inference Scheduler
-
-- Smart Routing based on real-time pod load
-
-- Auto-scaling LLM workers to meet demand
-
-- Troubleshooting common resource constraints
+- Arcade Interactive experience: The centerpiece of this course is a fully interactive, Arcade-based lab. This walkthrough guides you through the entire llm-d deployment on  OpenShift AI.
 
 Prerequisites
 
