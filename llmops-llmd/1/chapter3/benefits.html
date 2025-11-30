@@ -173,75 +173,10 @@
 <img src="_images/llm-d-benefits.png" alt="llm-d Advantage &amp; Performance Drivers" width="700">
 </div>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="_images/welllitpaths.png" alt="The Four &quot;Well-Lit Paths&quot; of Distributed Inference" width="700">
 </div>
-</div>
-<div class="sect1">
-<h2 id="_the_four_well_lit_paths_of_distributed_inference"><a class="anchor" href="#_the_four_well_lit_paths_of_distributed_inference"></a>The Four "Well-Lit Paths" of Distributed Inference</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Distributed inference with <code>llm-d</code> truly shines by offering a set of powerful, production-ready techniques known as the "Well-Lit Paths" to supercharge your inference workloads.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Path #1: Intelligent Inference Scheduling (Flagship Feature)</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This is the essential "on-ramp" to distributed inference, adding intelligent routing to any model served with OpenShift AI using vLLM.</p>
-</li>
-<li>
-<p><strong>Why Basic Schedulers Fail:</strong> Traditional schedulers (like round-robin) fail because LLM inference is stateful (using KV caches), requests have variable costs (long RAG prompt vs. short chat query), and basic distribution creates "hotspots" while wasting expensive, idle hardware.</p>
-</li>
-<li>
-<p><strong>How llm-d Solves It:</strong> <code>llm-d</code> replaces the load balancer with an intelligent, metrics-aware <strong>KServe Gateway</strong>. This gateway actively monitors real-time load, queue depth, and in-flight requests. It uses a <strong>two-step "Filter-and-Score" process</strong> to find the perfect home for every request, prioritizing availability, shortest queue, and KV cache affinity.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Path #2: Prefill/Decode (P/D) Disaggregation (Microservices for AI)</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This path splits the inference process, preventing one server from juggling both compute-heavy Prefill and memory-heavy Decode.</p>
-</li>
-<li>
-<p>It separates the workload into specialized teams: the <strong>Prefill Team (A+ at compute)</strong> and the <strong>Decode Team (Masters of Memory)</strong>, resulting in a massive <strong>25-50% performance boost</strong> for large models. This separation stops long prompts from blocking the queue, maintaining responsiveness.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Path #3: Wide Expert Parallelism</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This path is reserved for the <strong>"Boss Level"</strong>—serving gargantuan Mixture-of-Experts (MoE) models.</p>
-</li>
-<li>
-<p><code>llm-d</code> handles the complexity of splitting these giant models across many nodes and manages the high-speed networking required to make them work as one cohesive unit.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Path #4: KV Cache Management</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>The "short-term memory" (KV Cache) lives in super-expensive GPU RAM.</p>
-</li>
-<li>
-<p>The <code>llm-d-kv-cache-manager</code> is designed to offload this data to <strong>cheaper, more abundant storage</strong>.</p>
-</li>
-<li>
-<p>This system supports <strong>North-South Caching</strong> (moving data to CPU RAM, like keeping a book on your personal desk) and <strong>East-West Caching</strong> (putting the book on a shared table/Redis/Storage for instant team access).</p>
-</li>
-</ul>
-</div>
-</li>
-</ol>
 </div>
 <div class="sect2">
 <h3 id="_who_is_this_for_target_audience_and_positioning"><a class="anchor" href="#_who_is_this_for_target_audience_and_positioning"></a>Who is This For? Target Audience and Positioning</h3>
