@@ -33,27 +33,8 @@ llm-d is not merely a technical tool; it is a solution engineered to address spe
 
 image::llm-d-benefits.png[llm-d Advantage & Performance Drivers, 700, align="center"]
 
-== The Four "Well-Lit Paths" of Distributed Inference
+image::welllitpaths.png[The Four "Well-Lit Paths" of Distributed Inference,700,align="center"]
 
-Distributed inference with `llm-d` truly shines by offering a set of powerful, production-ready techniques known as the "Well-Lit Paths" to supercharge your inference workloads.
-
-1.  **Path #1: Intelligent Inference Scheduling (Flagship Feature)**
-    *   This is the essential "on-ramp" to distributed inference, adding intelligent routing to any model served with OpenShift AI using vLLM.
-    *   **Why Basic Schedulers Fail:** Traditional schedulers (like round-robin) fail because LLM inference is stateful (using KV caches), requests have variable costs (long RAG prompt vs. short chat query), and basic distribution creates "hotspots" while wasting expensive, idle hardware.
-    *   **How llm-d Solves It:** `llm-d` replaces the load balancer with an intelligent, metrics-aware **KServe Gateway**. This gateway actively monitors real-time load, queue depth, and in-flight requests. It uses a **two-step "Filter-and-Score" process** to find the perfect home for every request, prioritizing availability, shortest queue, and KV cache affinity.
-
-2.  **Path #2: Prefill/Decode (P/D) Disaggregation (Microservices for AI)**
-    *   This path splits the inference process, preventing one server from juggling both compute-heavy Prefill and memory-heavy Decode.
-    *   It separates the workload into specialized teams: the **Prefill Team (A+ at compute)** and the **Decode Team (Masters of Memory)**, resulting in a massive **25-50% performance boost** for large models. This separation stops long prompts from blocking the queue, maintaining responsiveness.
-
-3.  **Path #3: Wide Expert Parallelism**
-    *   This path is reserved for the **"Boss Level"**—serving gargantuan Mixture-of-Experts (MoE) models.
-    *   `llm-d` handles the complexity of splitting these giant models across many nodes and manages the high-speed networking required to make them work as one cohesive unit.
-
-4.  **Path #4: KV Cache Management**
-    *   The "short-term memory" (KV Cache) lives in super-expensive GPU RAM.
-    *   The `llm-d-kv-cache-manager` is designed to offload this data to **cheaper, more abundant storage**.
-    *   This system supports **North-South Caching** (moving data to CPU RAM, like keeping a book on your personal desk) and **East-West Caching** (putting the book on a shared table/Redis/Storage for instant team access).
 
 ### Who is This For? Target Audience and Positioning
 

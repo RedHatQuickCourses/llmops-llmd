@@ -54,23 +54,29 @@ For the latest updates, vist the https://docs.redhat.com/en/documentation/red_ha
 
 How distributed inference with **llm-d** on Red Hat OpenShift AI, delivers a superior value proposition across three critical areas:
 
-image::llm-d_advantage.png[llm-d OpenShift AI Advantage, 500, align="center"]
+image::llm-d_advantage.png[llm-d OpenShift AI Advantage, 700, align="center"]
 
-=== Optimize Total Cost of Ownership (TCO):
+[%collapsible]
+.The llm-d Advantage Text
+====
+
+**Optimize Total Cost of Ownership (TCO):**
 
  * Eliminate "Paying for Idle GPUs" by implementing **llm-d’s Intelligent Inference Scheduling**, which replaces basic, AI-unaware Kubernetes scheduling to balance the cluster and maximize the usage of expensive hardware. 
  * Additionally, discover how **KV Cache Management** offloads the model’s "memory" from expensive GPU VRAM to cheaper CPU RAM to maximize GPU density and allow running more models on the same hardware.
 
-=== Guarantee Performance & Service Level Objectives (SLOs):
+**Guarantee Performance & Service Level Objectives (SLOs):**
 
  * Move beyond the "Best Effort" performance of public APIs. Learn how **llm-d’s Disaggregated Inference** ensures interactive applications remain responsive by separating the compute-heavy "Prefill" phase from the memory-fast "Decode" phase . 
  * LLM-D handles Mixture of Expert (MOE) models complexity by splitting these giant models across many nodes, managing the high-speed networking needed to make them work as one cohesive unit.
 
-=== Ensure Total Security & Control (Sovereign AI):
+**Ensure Total Security & Control (Sovereign AI):**
 
  * Achieve **"Sovereign AI"** by deploying the entire high-performance inference stack inside your own OpenShift cluster, ensuring proprietary RAG documents, customer data, and sensitive prompts never leave your control. 
 
  * This approach empowers you to **Own Your Hybrid Cloud Strategy**, deploying a secure, consistent, and performant AI inference platform wherever your data lives—on-premise, in a private cloud, or at the edge.
+
+====
 
 ==  Lab Walkthrough Experience
 
