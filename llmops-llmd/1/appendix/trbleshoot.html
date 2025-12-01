@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Appendix: Troubleshooting &amp; FAQ :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
+    <title>Troubleshooting &amp; FAQ :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
     <link rel="prev" href="lws.html">
     <meta name="description" content="Common errors and solutions for llm-d deployments on Red Hat OpenShift AI.">
     <meta name="generator" content="Antora 3.1.3">
@@ -117,7 +117,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Appendix: Troubleshooting &amp; FAQ</h1>
+<h1 class="page">Troubleshooting &amp; FAQ</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="quoteblock abstract">
@@ -132,11 +132,11 @@ Distributed systems can be fragile during setup. This appendix documents the mos
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Symptom:</strong>
-[cite_start]You deploy the model, but the pods (specifically <code>ms-kv-events-llm-d-modelservice-decode</code>) remain in <code>Pending</code> status indefinitely[cite: 81].</p>
+You deploy the model, but the pods (specifically <code>ms-kv-events-llm-d-modelservice-decode</code>) remain in <code>Pending</code> status indefinitely.</p>
 </div>
 <div class="paragraph">
 <p><strong>Cause:</strong>
-[cite_start]This often happens when using specific GPU nodes (like <code>NVIDIA-L40S-PRIVATE</code>) that have <strong>Taints</strong> applied to reserve them for specific workloads[cite: 82]. The standard deployment does not have the matching "Toleration."</p>
+This often happens when using specific GPU nodes (like <code>NVIDIA-L40S-PRIVATE</code>) that have <strong>Taints</strong> applied to reserve them for specific workloads. The standard deployment does not have the matching "Toleration."</p>
 </div>
 <div class="paragraph">
 <p><strong>Fix:</strong>
@@ -148,9 +148,6 @@ You must patch the deployment to add the toleration for the GPU node.</p>
 -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu","operator":"Equal","value":"NVIDIA-L40S-PRIVATE","effect":"NoSchedule"}]}}}}'</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p><em class="cite_start">[cite: 84, 85]</em></p>
-</div>
 <hr>
 </div>
 </div>
@@ -159,7 +156,7 @@ You must patch the deployment to add the toleration for the GPU node.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Symptom:</strong>
-[cite_start]Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently[cite: 25].</p>
+Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently.</p>
 </div>
 <div class="paragraph">
 <p><strong>Cause:</strong>
@@ -174,9 +171,6 @@ Manually enforce the replica count back to the required number (2 for Disaggrega
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Replace with your specific machineset name
 oc scale machineset &lt;gpu-machineset-name&gt; -n openshift-machine-api --replicas=2</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p><em class="cite_start">[cite: 25]</em></p>
 </div>
 <hr>
 </div>

@@ -130,7 +130,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_1_the_core_problem_scaling_distributed_ai_workloads"><a class="anchor" href="#_1_the_core_problem_scaling_distributed_ai_workloads"></a>1. The Core Problem: Scaling Distributed AI Workloads</h2>
+<h2 id="_the_core_problem_scaling_distributed_ai_workloads"><a class="anchor" href="#_the_core_problem_scaling_distributed_ai_workloads"></a>The Core Problem: Scaling Distributed AI Workloads</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Using Large Language Models (LLMs) for inference often requires massive compute resources. A single model can be so large that it must be "sharded" (split) across multiple GPUs on multiple different nodes.</p>
@@ -157,7 +157,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_2_what_is_the_leaderworkerset_lws"><a class="anchor" href="#_2_what_is_the_leaderworkerset_lws"></a>2. What is the LeaderWorkerSet (LWS)?</h2>
+<h2 id="_what_is_the_leaderworkerset_lws"><a class="anchor" href="#_what_is_the_leaderworkerset_lws"></a>What is the LeaderWorkerSet (LWS)?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The LeaderWorkerSet is a custom Kubernetes API (implemented on OpenShift by the LWS Operator) designed specifically to solve this problem.</p>
@@ -166,7 +166,7 @@
 <p>It gives you the ability to deploy and manage a group of pods as a single, coordinated, and atomic unit, sometimes called a "super pod."</p>
 </div>
 <div class="sect2">
-<h3 id="_2_1_lws_architecture"><a class="anchor" href="#_2_1_lws_architecture"></a>2.1. LWS Architecture</h3>
+<h3 id="_lws_architecture"><a class="anchor" href="#_lws_architecture"></a>LWS Architecture</h3>
 <div class="paragraph">
 <p>When you create a LeaderWorkerSet resource, you define a template for a "leader" pod and a "worker" pod, and specify how many workers are in each group (the size).</p>
 </div>
@@ -189,7 +189,7 @@
 <hr>
 </div>
 <div class="sect2">
-<h3 id="_2_2_key_features"><a class="anchor" href="#_2_2_key_features"></a>2.2. Key Features</h3>
+<h3 id="_key_features"><a class="anchor" href="#_key_features"></a>Key Features</h3>
 <div class="paragraph">
 <p>LWS provides critical features for distributed AI workloads:</p>
 </div>
@@ -214,7 +214,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_3_reference_example_how_lws_is_used_with_vllm"><a class="anchor" href="#_3_reference_example_how_lws_is_used_with_vllm"></a>3. Reference Example: How LWS is Used with vLLM</h2>
+<h2 id="_reference_example_how_lws_is_used_with_vllm"><a class="anchor" href="#_reference_example_how_lws_is_used_with_vllm"></a>Reference Example: How LWS is Used with vLLM</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>While our lab uses the "Well-Lit Paths" provided by llm-d to manage deployments, it&#8217;s useful to see how LWS is used by the open-source community to manage distributed inference engines like vLLM.</p>
@@ -238,7 +238,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_4_summary_why_we_install_it"><a class="anchor" href="#_4_summary_why_we_install_it"></a>4. Summary: Why We Install It</h2>
+<h2 id="_summary_why_we_install_it"><a class="anchor" href="#_summary_why_we_install_it"></a>Summary: Why We Install It</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>You are installing the Leader Worker Set Operator because it provides a foundational Kubernetes-native capability that OpenShift AI builds upon. It is the "engine" that enables the robust deployment, scaling, and lifecycle management of complex, multi-pod AI applications.</p>
