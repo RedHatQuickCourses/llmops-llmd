@@ -7,7 +7,7 @@ The Leader Worker Set (LWS) Operator from the OpenShift Operator Hub is a prereq
 
 This reference page explains what the LWS Operator is and why it is a critical piece of infrastructure for running modern AI/ML workloads.
 
-== 1. The Core Problem: Scaling Distributed AI Workloads
+== The Core Problem: Scaling Distributed AI Workloads
 
 Using Large Language Models (LLMs) for inference often requires massive compute resources. A single model can be so large that it must be "sharded" (split) across multiple GPUs on multiple different nodes.
 
@@ -21,13 +21,13 @@ This creates a significant deployment challenge for standard Kubernetes:
 
 Standard Kubernetes objects like Deployments or StatefulSets are not designed to manage these tightly-coupled "groups" of pods as a single, atomic unit.
 
-== 2. What is the LeaderWorkerSet (LWS)?
+== What is the LeaderWorkerSet (LWS)?
 
 The LeaderWorkerSet is a custom Kubernetes API (implemented on OpenShift by the LWS Operator) designed specifically to solve this problem.
 
 It gives you the ability to deploy and manage a group of pods as a single, coordinated, and atomic unit, sometimes called a "super pod."
 
-=== 2.1. LWS Architecture
+=== LWS Architecture
 
 When you create a LeaderWorkerSet resource, you define a template for a "leader" pod and a "worker" pod, and specify how many workers are in each group (the size).
 
@@ -41,7 +41,7 @@ The entire group (1 leader + N workers) is treated as a single entity for its en
 
 ---
 
-=== 2.2. Key Features
+=== Key Features
 
 LWS provides critical features for distributed AI workloads:
 
@@ -55,7 +55,7 @@ Topology-Aware Placement: LWS can ensure that all pods within the same group are
 
 ---
 
-== 3. Reference Example: How LWS is Used with vLLM
+== Reference Example: How LWS is Used with vLLM
 
 While our lab uses the "Well-Lit Paths" provided by llm-d to manage deployments, it's useful to see how LWS is used by the open-source community to manage distributed inference engines like vLLM.
 
@@ -71,6 +71,6 @@ When a request comes in, the leader pod coordinates with all 7 worker pods to pe
 
 ---
 
-== 4. Summary: Why We Install It
+== Summary: Why We Install It
 
 You are installing the Leader Worker Set Operator because it provides a foundational Kubernetes-native capability that OpenShift AI builds upon. It is the "engine" that enables the robust deployment, scaling, and lifecycle management of complex, multi-pod AI applications.

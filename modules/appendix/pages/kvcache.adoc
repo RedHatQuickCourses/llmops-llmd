@@ -38,6 +38,9 @@ The KV Cache lives in the most expensive, limited resource you have: GPU VRAM.
 
 === Why is the Cache a Performance Bottleneck?
 
+image::kvcachevllm.png[KV Cache Management using vLLM,700,align="center"]
+
+
 The KV Cache is the root of two major performance problems:
 
 [cols="1a,1a"]

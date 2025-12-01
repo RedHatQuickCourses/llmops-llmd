@@ -1,4 +1,4 @@
-= Appendix: Troubleshooting & FAQ
+= Troubleshooting & FAQ
 :navtitle: Troubleshooting
 :page-topic-type: reference
 :description: Common errors and solutions for llm-d deployments on Red Hat OpenShift AI.
@@ -9,10 +9,10 @@ Distributed systems can be fragile during setup. This appendix documents the mos
 == Issue 1: Pods Stuck in "Pending" State
 
 **Symptom:**
-[cite_start]You deploy the model, but the pods (specifically `ms-kv-events-llm-d-modelservice-decode`) remain in `Pending` status indefinitely[cite: 81].
+You deploy the model, but the pods (specifically `ms-kv-events-llm-d-modelservice-decode`) remain in `Pending` status indefinitely.
 
 **Cause:**
-[cite_start]This often happens when using specific GPU nodes (like `NVIDIA-L40S-PRIVATE`) that have **Taints** applied to reserve them for specific workloads[cite: 82]. The standard deployment does not have the matching "Toleration."
+This often happens when using specific GPU nodes (like `NVIDIA-L40S-PRIVATE`) that have **Taints** applied to reserve them for specific workloads. The standard deployment does not have the matching "Toleration."
 
 **Fix:**
 You must patch the deployment to add the toleration for the GPU node.
@@ -21,14 +21,14 @@ You must patch the deployment to add the toleration for the GPU node.
 oc patch deployment ms-kv-events-llm-d-modelservice-decode \
 -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu","operator":"Equal","value":"NVIDIA-L40S-PRIVATE","effect":"NoSchedule"}]}}}}'
 ----
-[cite_start]_[cite: 84, 85]_
+
 
 ---
 
 == Issue 2: MachineSets Scaling Unexpectedly
 
 **Symptom:**
-[cite_start]Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently[cite: 25].
+Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently.
 
 **Cause:**
 In lab environments using Spot Instances, nodes may be reclaimed, or the autoscaler may aggressively scale down if it detects idle periods during your setup phase.
@@ -40,7 +40,6 @@ Manually enforce the replica count back to the required number (2 for Disaggrega
 # Replace with your specific machineset name
 oc scale machineset <gpu-machineset-name> -n openshift-machine-api --replicas=2
 ----
-[cite_start]_[cite: 25]_
 
 ---
 
