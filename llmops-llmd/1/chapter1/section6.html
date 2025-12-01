@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>LLM-D Benefits :: vLLM to AI Factory Scaling with LLM-D</title>
+    <title>Lab Demo: llm-d Deployment Guide Arcade Experience :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
+    <link rel="prev" href="benefits.html">
+    <link rel="next" href="../appendix/appendix.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -13,7 +15,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">vLLM to AI Factory Scaling with LLM-D</a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
@@ -33,24 +35,24 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></h3>
+    <h3 class="title"><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/redhatai.html">AI Factory on Red Hat AI</a>
+    <a class="nav-link" href="redhatai.html">AI Factory on Red Hat AI</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/vllmllmd.html">The Scalable LLM Inference Stack: vLLM &amp; llm-d</a>
+    <a class="nav-link" href="vllmllmd.html">The Scalable LLM Inference Stack: vLLM &amp; llm-d</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/llmdarch.html">llm-d Architecture Deep Dive: Building the Foundation</a>
+    <a class="nav-link" href="llmdarch.html">llm-d Architecture Deep Dive: Building the Foundation</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/benefits.html">llm-d Use Cases and Core Benefits</a>
+    <a class="nav-link" href="benefits.html">llm-d Use Cases and Core Benefits</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter3/section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a>
   </li>
 </ul>
   </li>
@@ -81,12 +83,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">vLLM to AI Factory Scaling with LLM-D</span>
+    <span class="title">Maximize Your GPU ROI, Scaling LLM Inference llm-d</span>
     <span class="version">1</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <a class="title" href="../index.html">vLLM to AI Factory Scaling with LLM-D</a>
+      <a class="title" href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1</a>
@@ -104,8 +106,8 @@
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">vLLM to AI Factory Scaling with LLM-D</a></li>
-    <li><a href="section6.html">LLM-D Benefits</a></li>
+    <li><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></li>
+    <li><a href="section6.html">Lab Demo: llm-d Deployment Guide Arcade Experience</a></li>
   </ul>
 </nav>
 </div>
@@ -114,38 +116,161 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">LLM-D Benefits</h1>
-<div class="admonitionblock tip moneybag">
+<h1 class="page">Lab Demo: llm-d Deployment Guide Arcade Experience</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note icon-cogs">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Your Starting Point</div>
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift with OpenShift AI environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_follow_these_six_steps_in_order_to_complete_the_lab"><a class="anchor" href="#_follow_these_six_steps_in_order_to_complete_the_lab"></a>Follow these six steps in order to complete the lab.</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_1_requesting_the_lab_environment"><a class="anchor" href="#_1_requesting_the_lab_environment"></a>1. Requesting the Lab Environment</h3>
+<div class="paragraph">
+<p>This first Arcade experience showcases requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.</p>
+</div>
+<div class="paragraph">
+<p>Below is the direct link to the catalog item you will need to order. The Arcade will walk you through the ordering process.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod&amp;utm_source=webapp&amp;utm_medium=share-link" target="blank">Red Hat OpenShift Container Platform Cluster (AWS)</a></p>
+</div>
+<iframe src="https://demo.arcade.software/t8r64IXbTp9k7H4zdlRq?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_initial_cluster_login_validation"><a class="anchor" href="#_2_initial_cluster_login_validation"></a>2. Initial Cluster Login &amp; Validation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to ensure you have an llm-d compatible environment. Before deploying, you must validate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OCP Version: Must be 4.19+ which includse the new Intelligent Inference Scheduler (KGateway API).</p>
+</li>
+<li>
+<p>GPU Nodes: A GPU MachineSet must be created, and the resulting worker nodes must be in a "Ready" state.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>These nodes will be created during lab exercise.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Core Operators: Validate which Operators are already installed in the cluster.</p>
+</li>
+</ul>
+</div>
+<iframe src="https://demo.arcade.software/scyKqZfQIPidN6XsPezv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_enhanced_terminal_operator_installation"><a class="anchor" href="#_3_enhanced_terminal_operator_installation"></a>3. Enhanced Terminal Operator Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This experience begins with your running RHDP environment. It shows the first hands-on steps to log into the OpenShift Console and validate that the MachineSet and GPU worker nodes are available to the cluster.</p>
+</div>
+<div class="paragraph">
+<p>Below is the direct link to Github repository hosting our Lab code and instructions. This Arcade will walk you through the first steps of the lab.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/redhat-na-ssa/demo-ocp-llm-d.git" target="blank">llm-d Deployment Guide repository link</a></p>
+</div>
+<iframe src="https://demo.arcade.software/iDl0tHu8c55tzoTZoWe3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_configuring_cluster_dependencies_operators"><a class="anchor" href="#_4_configuring_cluster_dependencies_operators"></a>4. Configuring Cluster Dependencies (Operators)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This Arcade shows how to use the AI BU Services GitHub repository to clone setup files and configure your cluster. You will learn how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the prerequisite installer for OpenShift 4.19.</p>
+</li>
+<li>
+<p>Manually install two Operators that were missing from the base environment.</p>
+</li>
+</ul>
+</div>
+<iframe src="https://demo.arcade.software/PmJgJNoo3ZE09ryfH7Vv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_deploying_the_demo_troubleshooting"><a class="anchor" href="#_5_deploying_the_demo_troubleshooting"></a>5. Deploying the Demo &amp; Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With the dependencies installed, we will now deploy the intelligent inference demo. In this walkthrough, we intentionally run into resource constraints and walk through the OpenShift Console to determine where the failures are.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+One notable issue we encountered in the lab environment was intermittent node instability. Periodically, a worker or GPU node would go offline, potentially due to the environment&#8217;s use of spot instances. We also observed the GPU MachineSet, which was configured for 2 replicas, unexpectedly scaling down to 1. The fix was straightforward: in all cases, manually resetting the MachineSet back to 2 replicas resolved the issue.
+</td>
+</tr>
+</table>
+</div>
+<iframe src="https://demo.arcade.software/Lo1Aoc2e04KKMvif55fw?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_validating_the_deployment"><a class="anchor" href="#_6_validating_the_deployment"></a>6. Validating the Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the final step, we run a query to ensure our Inference Server is successfully deployed, responding to requests, and performing as expected.</p>
+</div>
+<iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_7_exploring_the_lab_guide_code"><a class="anchor" href="#_7_exploring_the_lab_guide_code"></a>7. Exploring the Lab Guide Code</h2>
+<div class="sectionbody">
+<div class="admonitionblock tip icon-code">
 <table>
 <tr>
 <td class="icon">
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<div class="title">Performance, Performance, Performance!</div>
-<div class="paragraph">
-<p>At the end of the day, it&#8217;s all about results. LLM-D delivers tangible gains that you can show to your boss.</p>
-</div>
+<div class="title">Optional: Understanding the Automation</div>
+This section is not a formal lab step, but it is highly recommended. It provides a review of the repository code blocks that automate the llm-d deployment for this lab.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Here&#8217;s a taste of what public benchmarks have shown:</p>
+<p>We&#8217;ve included this so you can reverse engineer the process and adapt the automation to fit your own unique deployment and solution needs</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>3x LOWER</strong> 📉 average Time-To-First-Token (TTFT). Users perceive your app as being 3x faster!</p>
-</li>
-<li>
-<p><strong>2x HIGHER</strong> 📈 queries-per-second (QPS). Serve double the users with the same hardware!</p>
-</li>
-<li>
-<p><strong>Massive TCO Reduction</strong> 💸. Achieve more with less. Stop buying more GPUs and start using the ones you have more efficiently.</p>
-</li>
-</ul>
+<iframe src="https://demo.arcade.software/WEGLJwtnv2ZAO70slxlA?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 </div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="benefits.html">llm-d Use Cases and Core Benefits</a></span>
+  <span class="next"><a href="../appendix/appendix.html">appendix</a></span>
+</nav>
 </article>
   </div>
 </main>
