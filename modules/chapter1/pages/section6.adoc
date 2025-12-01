@@ -1,99 +1,117 @@
-= Lab Demo: llm-d Deployment Guide Arcade Experience
+= Lab Demo: llm-d Deployment Guided Arcade Experience
 
 [NOTE.icon-cogs]
 .Your Starting Point
-This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift with OpenShift AI environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the llm-d QuickStart demo.
+This page provides a series of interactive (Arcade) walkthroughs to help you provision and configure your OpenShift and OpenShift AI environment. You will use the Red Hat Demo Platform (RHDP) to order your cluster, configure the necessary components, and deploy the a small Granite 4 using distributed inference with llm-d on a single GPU. 
 
 == Follow these six steps in order to complete the lab.
 
 
 === 1. Requesting the Lab Environment
 
-This first Arcade experience showcases requesting your lab environment from the Red Hat Demo Platform (RHDP) catalog.
+This first Arcade experience demonstrates how to request your lab environment from the Red Hat Demo Platform (RHDP) catalog.
 
-Below is the direct link to the catalog item you will need to order. The Arcade will walk you through the ordering process.
+Below is the direct link to the catalog item you need to order. The Arcade will guide you through the ordering process.
 
-https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod&utm_source=webapp&utm_medium=share-link[Red Hat OpenShift Container Platform Cluster (AWS), window=blank]
+This environment automatically deploys a Llama-3.2-3b Generative AI model to enable LlamaStack features in OpenShift AI. Please note that this automatically consumes GPU resources on the 4x and 8x instance types.
+
+If you do not intend to use LlamaStack, select smaller instance types to save on costs,  stopping or removing the Llama-3.2-3b model to free up the GPU.
+
+Selecting the g6.12xlarge instance will provision a single node with four 24GB GPUs, enabling the deployment of large models and intra-GPU scenarios.
+
+https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/published.openshift-ai-v3.prod&utm_source=webapp&utm_medium=share-link[Red Hat OpenShift AI 3.0, window=blank]
+
+
 
 ++++
 
-<iframe src="https://demo.arcade.software/t8r64IXbTp9k7H4zdlRq?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+<iframe src="https://demo.arcade.software/w6HfuWHzkJ0rx9yXCzQk?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
+
+
 
 == 2. Initial Cluster Login & Validation
 
-This Arcade reviews the OpenShift Container Platform (OCP) Console checklist to ensure you have an llm-d compatible environment. Before deploying, you must validate:
+This interactive experience provides a brief tour of the new menu options in OpenShift AI 3.0. In addition, we review the now-mandatory Hardware Profiles section, where predefined instance sizes can be configured to manage compute resources.
 
- * OCP Version: Must be 4.19+ which includse the new Intelligent Inference Scheduler (KGateway API).
+Next, we deploy a Granite model from the AI Hub Catalog to validate that the model inference components are fully available for standard vLLM deployments.
 
- * GPU Nodes: A GPU MachineSet must be created, and the resulting worker nodes must be in a "Ready" state.
-
- ** These nodes will be created during lab exercise.
-
- * Core Operators: Validate which Operators are already installed in the cluster.
 
 ++++
 
-<iframe src="https://demo.arcade.software/scyKqZfQIPidN6XsPezv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+<iframe src="https://demo.arcade.software/GfqvGnWw1uQdlBhkLhy9?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
-== 3. Enhanced Terminal Operator Installation
 
-This experience begins with your running RHDP environment. It shows the first hands-on steps to log into the OpenShift Console and validate that the MachineSet and GPU worker nodes are available to the cluster.
 
-Below is the direct link to Github repository hosting our Lab code and instructions. This Arcade will walk you through the first steps of the lab.
+== 3. OpenShift Console Configuiration and Settings
 
-https://github.com/redhat-na-ssa/demo-ocp-llm-d.git[llm-d Deployment Guide repository link, window=blank]
+This interactive experience begins with your first hands-on steps: logging into the OpenShift Console to validate that the necessary Operators and OCP versions are ready to support llm-d.
 
-++++
+We will first review the installed Operators from the ecosystem menu. Following this, we will install the Leader Worker Set Operator, which is required for llm-d to manage a fleet of pods for distributed inference.
 
-<iframe src="https://demo.arcade.software/iDl0tHu8c55tzoTZoWe3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
-++++
+Next, we will verify the hardware to ensure sufficient capacity is available and confirm that the OpenShift version is at least 4.19.
 
-== 4. Configuring Cluster Dependencies (Operators)
+Finally, we will double-check that all operators have installed successfully before proceeding to the next segment.
 
-This Arcade shows how to use the AI BU Services GitHub repository to clone setup files and configure your cluster. You will learn how to:
-
- * Deploy the prerequisite installer for OpenShift 4.19.
-
- * Manually install two Operators that were missing from the base environment.
 
 ++++
 
-<iframe src="https://demo.arcade.software/PmJgJNoo3ZE09ryfH7Vv?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+<iframe src="https://demo.arcade.software/S1dHIjii1Vjkqi0phdSd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
-== 5. Deploying the Demo & Troubleshooting
 
-With the dependencies installed, we will now deploy the intelligent inference demo. In this walkthrough, we intentionally run into resource constraints and walk through the OpenShift Console to determine where the failures are.
+== 4. Deploying an Model using llm-d via the OpenShift AI Console
 
-[WARNING]
-One notable issue we encountered in the lab environment was intermittent node instability. Periodically, a worker or GPU node would go offline, potentially due to the environment's use of spot instances. We also observed the GPU MachineSet, which was configured for 2 replicas, unexpectedly scaling down to 1. The fix was straightforward: in all cases, manually resetting the MachineSet back to 2 replicas resolved the issue.
+This interactive experience begins in the OpenShift AI console and quickly proceeds to deploy a Granite model using the llm-d runtime.
+
+We start by selecting Deploy a model from the project menu. Next, we utilize an existing data connection to provide the Granite AI model files.
+
+Proceed by entering the model name and selecting the runtime. For the Hardware Profile, ensure you select the profile configured for GPU usage.
+
+Finally, deselect the option to use token authentication. In this specific environment, keeping token authentication enabled may prevent the deployment from completing successfully.
+
+Optionally, you can choose to make this model available in the Playground (also known as the OpenShift AI Studio).
 
 ++++
 
-<iframe src="https://demo.arcade.software/Lo1Aoc2e04KKMvif55fw?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+<iframe src="https://demo.arcade.software/WDbYI8agiNhgCIfYPLp9?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
+
+
+
+
+== 5. View the Deployment Progress in OpenShift
+
+
+In this interactive experience, we return to the OpenShift Console to monitor the deployment of our llm-d inference service.
+
+First, we will verify the deployed Pods. We should expect to see two specific pods: the intelligent scheduler and the vLLM-powered inference Pod responsible for running the model.
+
+Next, we will examine the Topology view, logs, and events to track the progress of our deployment.
+
+
+
+++++
+
+<iframe src="https://demo.arcade.software/z3WQEOr7Vd1QrGmxVRQf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"  width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
 
 == 6. Validating the Deployment
 
-In the final step, we run a query to ensure our Inference Server is successfully deployed, responding to requests, and performing as expected.
+In this final interactive experience, we execute a query to confirm that our Inference Server is successfully deployed, responding to requests, and performing as expected.
+
+We will start by using a Workbench to launch a Jupyter Notebook environment. Next, we will clone a Git repository containing the notebook that provides the specific instructions for querying our model.
+
+After running the initial cell, you must customize the Model Name and the Inference Endpoint. Be sure to set the API Key to a null value, as we disabled token authentication during the deployment phase.
+
+Finally, we will send a couple of distinct queries to validate the model's functionality and response quality. 
 
 ++++
 
-<iframe src="https://demo.arcade.software/aaYK3RnOKT3QIvR7b2Qf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+<iframe src="https://demo.arcade.software/cKkaV0pgSsSJnRM0wRsj?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
-== 7. Exploring the Lab Guide Code
-
-[TIP.icon-code] 
-.Optional: Understanding the Automation
-This section is not a formal lab step, but it is highly recommended. It provides a review of the repository code blocks that automate the llm-d deployment for this lab.
-
-We've included this so you can reverse engineer the process and adapt the automation to fit your own unique deployment and solution needs
-
-++++
-
-<iframe src="https://demo.arcade.software/WEGLJwtnv2ZAO70slxlA?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
-++++
 
