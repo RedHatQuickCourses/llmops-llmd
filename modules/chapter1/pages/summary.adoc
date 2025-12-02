@@ -1,0 +1,49 @@
+= Course Summary
+
+Welcome to the conclusion of *Maximize Your GPU ROI: Scaling LLM Inference llm-d with OpenShift AI*!
+
+This course provided the knowledge to transform monolithic, hard-to-scale architectures that lead to skyrocketing OpEx into a repeatable, scalable, and economically viable *Intelligence Factory* on Red Hat OpenShift AI. 
+
+You should now understand when **Distributed Inference with llm-d**, a Generally Available feature in OpenShift AI 3.0, is the correct solution for managing multi-tenant clusters securely and efficiently.
+
+== Key Takeaways: The llm-d Advantage
+
+The course focused on how the `llm-d` Kubernetes-native framework abstracts the difficulty of scaling LLMs and extends the high-performance vLLM inference engine, delivering superior value across three critical areas:
+
+=== 1. Optimize Total Cost of Ownership (TCO)
+
+You learned to maximize the utilization of expensive hardware by eliminating the costly problem of "Paying for Idle GPUs".
+
+*   **Intelligent Inference Scheduling:** Replaces basic scheduling to balance the cluster and eliminate wasted GPU cycles.
+*   **KV Cache Management:** Offloads the model’s memory from expensive GPU VRAM to cheaper CPU RAM, which is essential to maximize GPU density and allow running more models on the same hardware.
+
+=== 2. Guarantee Performance & Service Level Objectives (SLOs)
+
+You moved beyond "Best Effort" performance by learning techniques that ensure responsive, high-throughput inference:
+
+*   **Disaggregated Inference:** Separates the compute-heavy "Prefill" phase from the memory-fast "Decode" phase to ensure interactive applications remain responsive .
+*   **MOE Model Management:** `llm-d` handles the complexity of Mixture of Expert (MOE) models by splitting these giant models across many nodes.
+
+=== 3. Ensure Total Security & Control (Sovereign AI)
+
+You learned how to meet critical security and regulatory requirements:
+
+*   **Own Your Hybrid Cloud Strategy:** By deploying the entire high-performance inference stack inside your OpenShift cluster, you ensure proprietary RAG documents and sensitive prompts never leave your control, achieving **"Sovereign AI"**.
+
+== Practical Skills and Deployment (GA Features)
+
+The Interactive Lab Experience provided hands-on knowledge of the deployment processes:
+
+*   You gained familiarity with the new **User Interface (UI) for Deployment** in OpenShift AI 3.0, which simplifies common deployment scenarios.
+*   You practiced deploying models using both the standard vLLM serving runtime and the `llm-d` distributed inference component.
+
+
+=== Key Implementation Caveats for OpenShift AI 3.0
+
+For successful production deployment, always remember these limitations of the current release:
+
+*   **Gateway Association:** Gateway discovery and association are not supported in the UI during model deployment; users must associate models with Gateways by applying the resource manifests directly through the API or CLI.
+*   **Dashboard Status:** Models deployed using `llm-d` initially display a **Failed** status on the Deployments page, even if logs show no errors. The status will automatically update to **Started** when the model is ready.
+*   **Unsupported Features:** Advanced features like Wide Expert-Parallelism (multi-node) and Multi-node on GB200 are currently not fully supported.
+
+We hope you leave this course prepared to architect deploy complex, production-grade Generative AI workloads that are faster, cheaper, and more manageable across your hybrid cloud environment.

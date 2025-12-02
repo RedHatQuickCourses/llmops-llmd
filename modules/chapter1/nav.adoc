@@ -2,6 +2,6 @@
 ** xref:vllmllmd.adoc[]
 ** xref:llmdarch.adoc[]
 ** xref:benefits.adoc[]
-// ** xref:section5.adoc[]
 ** xref:walkthrough.adoc[]
+** xref:summary.adoc[]
 
