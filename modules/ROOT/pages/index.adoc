@@ -92,8 +92,9 @@ This course provide an Interactive Lab Experience
 
 NOTE: This course was created with assistance from AI tools to accelerate content development and improve quality. However, all content is built, edited, tested, and reviewed by experienced human engineers to ensure technical accuracy and real-world applicability. We believe in transparency about our tools while maintaining human expertise and oversight at every step.
 
-== Additional Resources
-*  Appendix: Taxonomy to Know
-*  Deep Dive on KV Cache Management
-*  LeaderWorkerSet (LWS) Operator
-*  Step by Step Hands on Lab
+== Additional Appendix Resources
+*  xref:appendix:index.adoc[Taxonomy to Know]
+*  xref:appendix:kvcache.adoc[Deep Dive on KV Cache Management]
+*  xref:aappendix:lws.adoc[LeaderWorkerSet (LWS) Operator]
+*  xref:appendix:trbleshoot.adoc[Step by Step Hands on Lab]
+
