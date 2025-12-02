@@ -1,0 +1,98 @@
+= Lab Demo: Your Interactive Guide to llm-d Deployment
+
+== Your Starting Point: The Arcade Experience
+
+Welcome to the interactive labs! Before we dive deep into hands-on technical configurations in the next course, we want to give you a "flight simulator" experience of what it's like to work with OpenShift AI.
+
+We are using Arcade walkthroughs here to provide a guided, high-speed tour of the entire process—from ordering a lab environment to deploying a Generative AI model using distributed inference with llm-d. This lets you explore the workflow and understand the "big picture" steps without worrying about resource costs or waiting for provisioning times.
+
+Ready to see how it all comes together? Let's jump in.
+
+
+
+== 1. Requesting Your Lab Environment
+
+Every great project starts with the right infrastructure. In this first interactive segment, we'll walk through the process of requesting a lab environment from the Red Hat Demo Platform (RHDP) catalog.
+
+Think of this as ordering the raw materials for your AI factory. We'll show you how to select the right OpenShift AI cluster configuration. You'll see options for different GPU sizes—from standard setups suitable for smaller models to massive multi-GPU nodes designed for large-scale inter-GPU scenarios.
+
+Don't worry about the costs right now; this simulation just shows you how to make those choices in a real scenario.
+
+https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/published.openshift-ai-v3.prod&utm_source=webapp&utm_medium=share-link[Red Hat OpenShift AI 3.0 catalog link, window=blank]
+
+
+++++
+
+<iframe src="https://demo.arcade.software/w6HfuWHzkJ0rx9yXCzQk?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
+
+== 2. Initial Cluster Login & A Quick Tour
+
+Your environment is ready—now let's move in. This segment guides you through your first login to the OpenShift AI 3.0 interface.
+
+We'll take a brief tour of the new menu options and introduce you to the crucial "Hardware Profiles" section, where you define how compute resources (like GPUs) are carved up for your models. To make sure the foundations are solid, we'll also do a quick "smoke test" by deploying a standard Granite model from the catalog, verifying that the basic vLLM inference components are ready for action.
+
+
+++++
+
+<iframe src="https://demo.arcade.software/GfqvGnWw1uQdlBhkLhy9?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
+
+== 3. Checking Under the Hood: OpenShift Console Configuration
+
+Before we deploy complex distributed models, we need to ensure the engine room is prepped. In this walkthrough, we dive down a layer into the OpenShift Container Platform console.
+
+This is a pre-flight check. We will verify that the necessary infrastructure Operators are installed—specifically the "Leader Worker Set Operator," which is the secret sauce llm-d uses to manage fleets of pods for distributed inference. We'll also confirm that our OpenShift version meets the requirements for these advanced features.
+
+
+++++
+
+<iframe src="https://demo.arcade.software/S1dHIjii1Vjkqi0phdSd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
+== 4. The Main Event: Deploying with llm-d
+
+Everything is configured; it's time to deploy. This segment returns to the OpenShift AI console for the main event: deploying a Granite model using the specialized llm-d runtime.
+
+You'll see just how straightforward the process is. We will select our model files via an existing data connection, choose the appropriate GPU Hardware Profile, and select the llm-d serving runtime.
+
+Note: For the purposes of this specific simulation environment, we will disable token authentication to ensure the deployment completes smoothly during the walkthrough.
+
+++++
+
+<iframe src="https://demo.arcade.software/WDbYI8agiNhgCIfYPLp9?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
+== 5. Watching it Come Alive: Monitoring the Deployment
+
+You've clicked "Deploy," but what's happening in the background? In this step, we hop back over to the OpenShift Console to watch our distributed service spin up.
+
+We aren't just looking for one pod anymore. We'll check the Topology view and logs to verify that two distinct components are successfully launching: the intelligent scheduler pod and the vLLM-powered inference pod responsible for the heavy lifting.
+
+
+
+++++
+
+<iframe src="https://demo.arcade.software/z3WQEOr7Vd1QrGmxVRQf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"  width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
+
+== 6. The Moment of Truth: Validating the Deployment
+
+The pods are green, but does it actually work? Let's find out.
+
+In this final interactive experience, we'll launch a Jupyter Notebook environment via a Workbench. We'll clone a testing repository, point it at our newly created inference endpoint, and send a few distinct queries to the model. This is the final validation that your llm-d deployment is live and correctly responding to requests.
+
+++++
+
+<iframe src="https://demo.arcade.software/cKkaV0pgSsSJnRM0wRsj?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="600px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
+++++
+
+
