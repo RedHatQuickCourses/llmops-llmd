@@ -95,6 +95,6 @@ NOTE: This course was created with assistance from AI tools to accelerate conten
 == Additional Appendix Resources
 *  xref:appendix:index.adoc[Taxonomy to Know]
 *  xref:appendix:kvcache.adoc[Deep Dive on KV Cache Management]
-*  xref:aappendix:lws.adoc[LeaderWorkerSet (LWS) Operator]
+*  xref:appendix:lws.adoc[LeaderWorkerSet (LWS) Operator]
 *  xref:appendix:trbleshoot.adoc[Step by Step Hands on Lab]
 
