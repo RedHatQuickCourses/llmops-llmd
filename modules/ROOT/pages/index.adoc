@@ -5,11 +5,9 @@
 
 Welcome to Maximize Your GPU ROI: Scaling LLM Inference llm-d with OpenShift AI!
 
-This course is a practical Technical Level 2 (TL2) immersion designed for implementers, architects, consultants, and operators who are responsible for running Generative AI workloads in production. 
+This course is a technical level 2 (TL2) experience designed for implementers, architects, consultants, and operators who are responsible for running Generative AI workloads at scale.
 
-We begin by tackling the core market challenge: the reality that ad-hoc AI experiments often fail to deliver ROI due due to skyrocketing OpEx and relying on monolithic, hard-to-scale architectures. This course provides the knowledge to transform those experiments into a repeatable, scalable, and economically viable Intelligence Factory on Red Hat OpenShift AI.
-
-OpenShift AI abstracts the difficulting of mastering the llm-d Kubernetes-native framework, by providing the operational control plane and extends the high-performance vLLM inference engine.
+We begin by tackling the core market challenge: the reality that ad-hoc AI experiments often fail to deliver ROI due due to skyrocketing OpEx and relying on monolithic, hard-to-scale architectures. This course provides the concepts of usign llm-d to transform those experiments into a repeatable, scalable, and economically viable Intelligence Factory on Red Hat OpenShift AI.
 
 Upon completion, you will understand when distributed inference with llm-d is the correct solution to deliver production-grade Generative AI workloads using OpenShift AI. That are faster, cheaper, and more manageable across a hybrid cloud environment, ensuring your platform is the right solution for managing multi-tenant clusters securely and efficiently.
 
@@ -85,7 +83,7 @@ This course provide an Interactive Lab Experience
 *   Using Red Hat Demo Platform Catalog item: OpenShift AI 3.0.
 *   Adding depandant operators for Distributed Inference with llm-d.
 *   Deploy a model using OpenShift AI's vLLM serving runtime.
-*   Use a Workbench to insure inference is working.
+*   Use a Workbench & Jupyter Notebook to insure inference is working.
 *   Deploy a model using OpenShift AI's distributed inference component.
 
 ---
@@ -98,3 +96,11 @@ NOTE: This course was created with assistance from AI tools to accelerate conten
 *  xref:appendix:lws.adoc[LeaderWorkerSet (LWS) Operator]
 *  xref:appendix:trbleshoot.adoc[Step by Step Hands on Lab]
 
+== Author
+Karlos Knox
+Training Content Architect
+Red Hat - Product Portfolio Marketing & Learning
+
+Special thanks to Fernando Lozano and Stephen Buck for all their support while writing this course and their feedback on early versions.
+
+Many thanks to Naina Singh for her support in reviewing the course design, its outline, work-in-progress contents, and answering my newbie questions, and also to Philip Hays for excellent llm-d deployment instructions for RHOAI 2.25 & 3.0.

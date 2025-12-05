@@ -9,7 +9,7 @@ This segment centers on transforming ad-hoc AI experiments into an enterprise-re
 
 The AI Factory is not a product but an operational framework that industrializes the production of intelligence. It requires the convergence of three pillars: People (new roles), Process (DataOps, MLOps, ModelOps), and Platform. Red Hat AI 3 acts as that platform—the unifying environment that makes the factory possible.
 
-=== The structure of the AI Factory built on Red Hat AI includes:
+=== The structure as delivered on Red Hat AI includes:
 
 ==== The Control Plane (The Front Office): 
 This is the primary user interface where teams interact with the platform. Components include the AI Hub (for Platform Admins to govern the factory) and the Gen AI Studio (for developers to build and experiment with Agentic AI solutions).
