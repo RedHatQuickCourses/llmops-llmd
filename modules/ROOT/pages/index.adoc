@@ -98,9 +98,8 @@ NOTE: This course was created with assistance from AI tools to accelerate conten
 
 == Author
 
-Karlos Knox
-
-Training Content Architect
+*Karlos Knox* +
+Training Content Architect +
 Product Portfolio Marketing & Learning
 
 Special thanks to Fernando Lozano and Stephen Buck for all their support while writing this course and their feedback on early versions.
