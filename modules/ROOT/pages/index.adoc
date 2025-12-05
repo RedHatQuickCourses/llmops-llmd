@@ -97,8 +97,11 @@ NOTE: This course was created with assistance from AI tools to accelerate conten
 *  xref:appendix:trbleshoot.adoc[Step by Step Hands on Lab]
 
 == Author
+
 Karlos Knox
+
 Training Content Architect
+
 Red Hat - Product Portfolio Marketing & Learning
 
 Special thanks to Fernando Lozano and Stephen Buck for all their support while writing this course and their feedback on early versions.
