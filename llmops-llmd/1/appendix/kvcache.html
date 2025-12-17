@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Deep Dive: The Physics of Latency (KV Cache) :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
+    <title>Deep Dive: (KV Cache) :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
     <link rel="prev" href="trbleshoot.html">
-    <link rel="next" href="lws.html">
+    <link rel="next" href="reference.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -63,16 +63,16 @@
     <a class="nav-link" href="appendix.html">Appendix</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="well-lit-paths.html">Mission Data: Reference &amp; Glossary</a>
+    <a class="nav-link" href="well-lit-paths.html">The "Well-Lit Paths" of Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a>
+    <a class="nav-link" href="trbleshoot.html">Troubleshooting &amp; FAQs</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="kvcache.html">Deep Dive: The Physics of Latency (KV Cache)</a>
+    <a class="nav-link" href="kvcache.html">Deep Dive: (KV Cache)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lws.html">LeaderWorkerSet (LWS) Operator</a>
+    <a class="nav-link" href="reference.html">Reference &amp; Glossary</a>
   </li>
 </ul>
   </li>
@@ -108,7 +108,7 @@
   <ul>
     <li><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></li>
     <li><a href="appendix.html">Appendix</a></li>
-    <li><a href="kvcache.html">Deep Dive: The Physics of Latency (KV Cache)</a></li>
+    <li><a href="kvcache.html">Deep Dive: (KV Cache)</a></li>
   </ul>
 </nav>
 </div>
@@ -117,16 +117,16 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Deep Dive: The Physics of Latency (KV Cache)</h1>
+<h1 class="page">Deep Dive: (KV Cache)</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="imageblock text-left">
 <div class="content">
-<img src="https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token" alt="Red Hat OpenShift AI" width="200">
+<img src="_images/llmd-banner.png" alt="Red Hat OpenShift AI" width="200">
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Role:</strong> System Architect
+<p><strong>Role:</strong> System Architect<br>
 <strong>Technical Objective:</strong> Understand why "KV Cache" is the #1 bottleneck for LLM performance and how <code>llm-d</code> eliminates it.</p>
 </div>
 <hr>
@@ -136,10 +136,20 @@
 <h2 id="_the_litmus_test_do_you_have_a_cache_problem"><a class="anchor" href="#_the_litmus_test_do_you_have_a_cache_problem"></a>The Litmus Test: Do you have a Cache Problem?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The KV Cache is the model&#8217;s "short-term memory." If you face these symptoms, effective cache management is your solution:
-* [x] Your expensive GPU VRAM is constantly full, limiting user concurrency.
-* [x] You suffer from high <strong>Time-To-First-Token (TTFT)</strong> (laggy starts).
-* [x] Your application (Chatbot/RAG) requires long conversation histories.</p>
+<p>The KV Cache is the model&#8217;s "short-term memory." If you face these symptoms, effective cache management is your solution:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> Your expensive GPU VRAM is constantly full, limiting user concurrency.</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> You suffer from high <strong>Time-To-First-Token (TTFT)</strong> (laggy starts).</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Your application (Chatbot/RAG) requires long conversation histories.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -147,9 +157,17 @@
 <h2 id="_the_mechanics_why_it_breaks"><a class="anchor" href="#_the_mechanics_why_it_breaks"></a>The Mechanics: Why it breaks</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When an LLM processes a prompt ("Prefill"), it generates heavy intermediate data (Keys and Values).
-1.  <strong>The Bottleneck:</strong> This data lives in <strong>GPU VRAM</strong>—the most expensive resource you have.
-2.  <strong>The Head-of-Line Blocking:</strong> In standard systems, a new, long request blocks all other fast requests behind it while it computes this cache.</p>
+<p>When an LLM processes a prompt ("Prefill"), it generates heavy intermediate data (Keys and Values).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>The Bottleneck:</strong> This data lives in <strong>GPU VRAM</strong>—the most expensive resource you have.</p>
+</li>
+<li>
+<p><strong>The Head-of-Line Blocking:</strong> In standard systems, a new, long request blocks all other fast requests behind it while it computes this cache.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -210,8 +228,8 @@
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a></span>
-  <span class="next"><a href="lws.html">LeaderWorkerSet (LWS) Operator</a></span>
+  <span class="prev"><a href="trbleshoot.html">Troubleshooting &amp; FAQs</a></span>
+  <span class="next"><a href="reference.html">Reference &amp; Glossary</a></span>
 </nav>
 </article>
   </div>

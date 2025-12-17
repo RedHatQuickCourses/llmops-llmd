@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Mission Data: Reference &amp; Glossary :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
+    <title>The "Well-Lit Paths" of Deployment :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
     <link rel="prev" href="appendix.html">
     <link rel="next" href="trbleshoot.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -63,16 +63,16 @@
     <a class="nav-link" href="appendix.html">Appendix</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="well-lit-paths.html">Mission Data: Reference &amp; Glossary</a>
+    <a class="nav-link" href="well-lit-paths.html">The "Well-Lit Paths" of Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a>
+    <a class="nav-link" href="trbleshoot.html">Troubleshooting &amp; FAQs</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="kvcache.html">Deep Dive: The Physics of Latency (KV Cache)</a>
+    <a class="nav-link" href="kvcache.html">Deep Dive: (KV Cache)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lws.html">LeaderWorkerSet (LWS) Operator</a>
+    <a class="nav-link" href="reference.html">Reference &amp; Glossary</a>
   </li>
 </ul>
   </li>
@@ -108,7 +108,7 @@
   <ul>
     <li><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></li>
     <li><a href="appendix.html">Appendix</a></li>
-    <li><a href="well-lit-paths.html">Mission Data: Reference &amp; Glossary</a></li>
+    <li><a href="well-lit-paths.html">The "Well-Lit Paths" of Deployment</a></li>
   </ul>
 </nav>
 </div>
@@ -117,91 +117,110 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Mission Data: Reference &amp; Glossary</h1>
+<h1 class="page">The "Well-Lit Paths" of Deployment</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="imageblock text-left">
 <div class="content">
-<img src="https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token" alt="Red Hat OpenShift AI" width="200">
+<img src="_images/llmd-banner.png" alt="Red Hat OpenShift AI" width="200">
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Role:</strong> All Personas
-<strong>Objective:</strong> Definitions of core taxonomy and low-level infrastructure components.</p>
+<p><strong>Role:</strong> System Architect<br>
+<strong>Technical Objective:</strong> Select the correct distributed inference topology based on model complexity and performance requirements.</p>
 </div>
 <hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_taxonomy_speaking_the_language"><a class="anchor" href="#_taxonomy_speaking_the_language"></a>Taxonomy: Speaking the Language</h2>
+<h2 id="_the_three_paths_of_distributed_inference"><a class="anchor" href="#_the_three_paths_of_distributed_inference"></a>The Three Paths of Distributed Inference</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>In Red Hat OpenShift AI 3.0, we define three "Well-Lit Paths" for deploying <code>llm-d</code>. These represent increasing levels of complexity and capability.</p>
+</div>
+<div class="sect2">
+<h3 id="_path_1_intelligent_inference_scheduling_the_on_ramp"><a class="anchor" href="#_path_1_intelligent_inference_scheduling_the_on_ramp"></a>Path 1: Intelligent Inference Scheduling (The "On-Ramp")</h3>
+<div class="paragraph">
+<p><strong>Target:</strong> Standard Models (e.g., Llama-3-8B, Mistral-7B) on Single Nodes.<br>
+<strong>Key Feature:</strong> Cache-Aware Routing.</p>
+</div>
+<div class="paragraph">
+<p>This is the flagship feature and the starting point for most teams.
+* <strong>The Logic:</strong> It keeps the standard architecture (one pod = full model) but adds the "Smart Router".
+* <strong>The Benefit:</strong> It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.
+* <strong>Use Case:</strong> General-purpose chatbots and low-latency internal tools.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_path_2_prefilldecode_disaggregation_the_optimizer"><a class="anchor" href="#_path_2_prefilldecode_disaggregation_the_optimizer"></a>Path 2: Prefill/Decode Disaggregation (The "Optimizer")</h3>
+<div class="paragraph">
+<p><strong>Target:</strong> High-Throughput Production Services.<br>
+<strong>Key Feature:</strong> Specialized Microservices.</p>
+</div>
+<div class="paragraph">
+<p>This path splits the monolithic inference process into two distinct specialized roles:
+* <strong>Prefill Pods (Compute-Heavy):</strong> Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.
+* <strong>Decode Pods (Memory-Heavy):</strong> Optimized to generate the response token-by-token. They read from the KV Cache and stream output.
+* <strong>The Benefit:</strong> Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_path_3_wide_expert_parallelism_the_boss_level"><a class="anchor" href="#_path_3_wide_expert_parallelism_the_boss_level"></a>Path 3: Wide Expert Parallelism (The "Boss Level")</h3>
+<div class="paragraph">
+<p><strong>Target:</strong> Massive Models (e.g., Mixtral 8x22B, Grok-1) spanning multiple nodes.<br>
+<strong>Key Feature:</strong> Multi-Node Tensor Parallelism.</p>
+</div>
+<div class="paragraph">
+<p>Reserved for "Mixture-of-Experts" (MoE) models that are too large to fit on a single GPU or even a single node.
+* <strong>The Logic:</strong> The model is sharded across multiple physical nodes. <code>llm-d</code> manages the high-speed interconnects to make them behave as one giant GPU.
+* <strong>The Requirement:</strong> This path strictly requires high-performance networking (InfiniBand/RoCE) to function.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_persona_guide_who_owns_this_stack"><a class="anchor" href="#_persona_guide_who_owns_this_stack"></a>Persona Guide: Who owns this stack?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Implementing <code>llm-d</code> is a specialized task. We identify two distinct personas for this workflow.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Definition</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Persona</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Role &amp; Focus</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Required Skills</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>vLLM</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The high-performance inference engine. It runs the model, but <code>llm-d</code> scales it.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The Operator</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Platform/SRE Team</strong><br>
+Installs, configures, and monitors the <code>llm-d</code> infrastructure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">* Kubernetes Operators &amp; Networking
+* Prometheus/Grafana Observability
+* GPU Hardware Drivers</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Inference Gateway (EPP)</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The "Brain." The smart router that intercepts requests and decides which pod handles them based on cache affinity.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Prefill</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Phase 1 of Inference. Processing the user&#8217;s prompt. Compute-heavy and slow.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Decode</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Phase 2 of Inference. Generating the response. Memory-bandwidth heavy and fast.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>KV Cache</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The "Short-Term Memory" of the model. Reusing this via smart routing is the primary way to cut costs.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>TTFT</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Time-To-First-Token.</strong> Responsiveness metric (how long until the first word appears?).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Scientist / App Dev</strong><br>
+Consumes the service via API.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">* OpenAI-compatible API usage
+* Prompt Engineering
+* <strong>Abstracted away from infrastructure complexity.</strong></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_infrastructure_deep_dive_leaderworkerset_lws"><a class="anchor" href="#_infrastructure_deep_dive_leaderworkerset_lws"></a>Infrastructure Deep Dive: LeaderWorkerSet (LWS)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The <strong>LeaderWorkerSet (LWS)</strong> Operator is a prerequisite for advanced distributed inference. It solves the "Gang Scheduling" problem in Kubernetes.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>The Problem:</strong> Large models are sharded across multiple GPUs (e.g., 8 GPUs). If one pod fails, the whole model breaks. Standard Kubernetes Deployments don&#8217;t know this.</p>
-</li>
-<li>
-<p><strong>The LWS Solution:</strong> It manages a group of pods as a single atomic unit ("Super Pod").</p>
-</li>
-<li>
-<p><strong>Group Lifecycle:</strong> If one pod fails, LWS restarts the entire group to ensure consistency.</p>
-</li>
-<li>
-<p><strong>Topology Awareness:</strong> Ensures all pods in the group are co-located (same rack/node) for high-speed interconnects (NVLink/InfiniBand).</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
 <nav class="pagination">
   <span class="prev"><a href="appendix.html">Appendix</a></span>
-  <span class="next"><a href="trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a></span>
+  <span class="next"><a href="trbleshoot.html">Troubleshooting &amp; FAQs</a></span>
 </nav>
 </article>
   </div>

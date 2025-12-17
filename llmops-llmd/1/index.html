@@ -62,16 +62,16 @@
     <a class="nav-link" href="appendix/appendix.html">Appendix</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="appendix/well-lit-paths.html">Mission Data: Reference &amp; Glossary</a>
+    <a class="nav-link" href="appendix/well-lit-paths.html">The "Well-Lit Paths" of Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="appendix/trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a>
+    <a class="nav-link" href="appendix/trbleshoot.html">Troubleshooting &amp; FAQs</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="appendix/kvcache.html">Deep Dive: The Physics of Latency (KV Cache)</a>
+    <a class="nav-link" href="appendix/kvcache.html">Deep Dive: (KV Cache)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+    <a class="nav-link" href="appendix/reference.html">Reference &amp; Glossary</a>
   </li>
 </ul>
   </li>
@@ -116,11 +116,15 @@
 </aside>
 <article class="doc">
 <h1 class="page">Maximize Your GPU ROI: Scaling LLM Inference with llm-d</h1>
-<div class="sect1">
-<h2 id="_red_hat_openshift_ai"><a class="anchor" href="#_red_hat_openshift_ai"></a>Red Hat OpenShift AI</h2>
+<div id="preamble">
 <div class="sectionbody">
+<div class="imageblock text-left">
+<div class="content">
+<img src="_images/llmd-banner.png" alt="Red Hat OpenShift AI" width="200">
+</div>
+</div>
 <div class="paragraph">
-<p><strong>Role:</strong> Platform Architect &amp; Engineer
+<p><strong>Role:</strong> Platform Architect &amp; Engineer<br>
 <strong>Strategic Imperative:</strong> Transform Generative AI from a high-cost experiment into a scalable, economically viable enterprise service.</p>
 </div>
 <hr>
@@ -133,12 +137,12 @@
 <p>"We cannot afford to let expensive infrastructure sit idle while users wait for results."</p>
 </div>
 <div class="paragraph">
-<p>As organizations move Generative AI from pilot to production, they encounter a "Scale Wall"—a tripartite challenge that threatens the return on investment (ROI) of AI initiatives.</p>
+<p>As organizations move Generative AI from pilot to production, they encounter a "Scale Wall"—a triple challenge that threatens the return on investment (ROI) of AI initiatives.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Skyrocketing Operational Costs:</strong> Paying for GPU capacity that sits significantly idle due to inefficient, monolithic scheduling.</p>
+<p><strong>Skyrocketing Operational Costs:</strong> Paying for GPU capacity that sits significantly idle due to inefficient, single pod scheduling.</p>
 </li>
 <li>
 <p><strong>Unpredictable Performance:</strong> "Time-To-First-Token" (TTFT) spikes during high concurrency, frustrating users and missing Service Level Objectives (SLOs).</p>
@@ -253,7 +257,7 @@ This release introduces significant capabilities for production-grade AI, but re
 <h2 id="_your_mission_checklist_the_lab"><a class="anchor" href="#_your_mission_checklist_the_lab"></a>Your Mission Checklist (The Lab)</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We will move beyond theory to build a functioning, governed inference stack. This interactive lab covers the full lifecycle[cite: 973]:</p>
+<p>We will move beyond theory to build a functioning, governed inference stack. This interactive lab covers the full lifecycle:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -261,7 +265,7 @@ This release introduces significant capabilities for production-grade AI, but re
 <p><strong>Foundation:</strong> Install the critical dependent Operators, including Red Hat Connectivity Link for security and the LeaderWorkerSet (LWS) Operator for orchestration.</p>
 </li>
 <li>
-<p><strong>Baseline:</strong> Deploy a standard vLLM runtime to establish a performance benchmark.</p>
+<p><strong>Baseline:</strong> Deploy a standard vLLM runtime to establish a performance benchmark. (simulation section only)</p>
 </li>
 <li>
 <p><strong>Evolution:</strong> Deploy the <strong>Distributed <code>llm-d</code> Component</strong> via the new OpenShift AI 3.0 interface and CLI to enable intelligent routing.</p>
@@ -281,7 +285,7 @@ This release introduces significant capabilities for production-grade AI, but re
 <td class="content">
 <div class="title">A Note on Methodology</div>
 <div class="paragraph">
-<p>This content is engineered to reflect real-world production patterns. Every architectural decision—from security contexts to resource limits—has been validated by Red Hat engineers to ensure reliability.</p>
+<p>This content is engineered to reflect real-world production patterns. This course use AI Generated assets and content. Every architectural decision—from security contexts to resource limits—has been verfied by cross functional teams.</p>
 </div>
 </td>
 </tr>
@@ -295,16 +299,16 @@ This release introduces significant capabilities for production-grade AI, but re
 <div class="ulist">
 <ul>
 <li>
-<p><a href="appendix/index.html" class="xref page"><strong>Taxonomy:</strong> The Terminology of Distributed Systems</a></p>
+<p><a href="#appendix:index.adoc" class="xref unresolved">Mission Data: Reference &amp; Glossary</a></p>
 </li>
 <li>
 <p><a href="appendix/kvcache.html" class="xref page"><strong>Deep Dive:</strong> Understanding KV Cache Management</a></p>
 </li>
 <li>
-<p><a href="appendix/lws.html" class="xref page"><strong>Reference:</strong> The LeaderWorkerSet (LWS) Operator</a></p>
+<p><a href="#appendix:lws.adoc" class="xref unresolved">Deep Dive: The Physics of Latency (KV Cache)</a></p>
 </li>
 <li>
-<p><a href="appendix/trbleshoot.html" class="xref page"><strong>Troubleshooting:</strong> Step-by-Step Lab Guide</a></p>
+<p><a href="appendix/trbleshoot.html" class="xref page">Mission Recovery: Troubleshooting &amp; FAQs</a></p>
 </li>
 </ul>
 </div>
