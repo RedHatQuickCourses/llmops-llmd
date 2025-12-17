@@ -82,7 +82,7 @@ We will move beyond theory to build a functioning, governed inference stack. Thi
 [TIP]
 .A Note on Methodology
 ====
-This content is engineered to reflect real-world production patterns. This course use AI Generated assets and content. Every architectural decision—from security contexts to resource limits—has been verfied by cross functional teams.
+This content is engineered to reflect real-world production patterns. This course use AI Generated assets and content. Every architectural decision—from security contexts to resource limits—has been verified by cross functional teams. even so, this is new type of asset our team is developing and errors may exist. 
 ====
 
 == Support Resources
@@ -98,6 +98,6 @@ This content is engineered to reflect real-world production patterns. This cours
 Karlos Knox, +
 Product Portfolio Marketing & Learning 
 
-*Special Thanks to these inividuals for technical suggestions, validation, and exmaple lab guides:* 
+*Special Thanks to these individuals for technical suggestions, validation, and example lab guides:* 
 
 Fernando Lozano, Stephen Buck, Naina Singh, and Philip Hays.
