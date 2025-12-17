@@ -145,10 +145,20 @@
 <strong>Key Feature:</strong> Cache-Aware Routing.</p>
 </div>
 <div class="paragraph">
-<p>This is the flagship feature and the starting point for most teams.
-* <strong>The Logic:</strong> It keeps the standard architecture (one pod = full model) but adds the "Smart Router".
-* <strong>The Benefit:</strong> It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.
-* <strong>Use Case:</strong> General-purpose chatbots and low-latency internal tools.</p>
+<p>This is the flagship feature and the starting point for most teams.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The Logic:</strong> It keeps the standard architecture (one pod = full model) but adds the "Smart Router".</p>
+</li>
+<li>
+<p><strong>The Benefit:</strong> It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.</p>
+</li>
+<li>
+<p><strong>Use Case:</strong> General-purpose chatbots and low-latency internal tools.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -158,10 +168,20 @@
 <strong>Key Feature:</strong> Specialized Microservices.</p>
 </div>
 <div class="paragraph">
-<p>This path splits the monolithic inference process into two distinct specialized roles:
-* <strong>Prefill Pods (Compute-Heavy):</strong> Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.
-* <strong>Decode Pods (Memory-Heavy):</strong> Optimized to generate the response token-by-token. They read from the KV Cache and stream output.
-* <strong>The Benefit:</strong> Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).</p>
+<p>This path splits the monolithic inference process into two distinct specialized roles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Prefill Pods (Compute-Heavy):</strong> Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.</p>
+</li>
+<li>
+<p><strong>Decode Pods (Memory-Heavy):</strong> Optimized to generate the response token-by-token. They read from the KV Cache and stream output.</p>
+</li>
+<li>
+<p><strong>The Benefit:</strong> Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -171,9 +191,17 @@
 <strong>Key Feature:</strong> Multi-Node Tensor Parallelism.</p>
 </div>
 <div class="paragraph">
-<p>Reserved for "Mixture-of-Experts" (MoE) models that are too large to fit on a single GPU or even a single node.
-* <strong>The Logic:</strong> The model is sharded across multiple physical nodes. <code>llm-d</code> manages the high-speed interconnects to make them behave as one giant GPU.
-* <strong>The Requirement:</strong> This path strictly requires high-performance networking (InfiniBand/RoCE) to function.</p>
+<p>Reserved for "Mixture-of-Experts" (MoE) models that are too large to fit on a single GPU or even a single node.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The Logic:</strong> The model is sharded across multiple physical nodes. <code>llm-d</code> manages the high-speed interconnects to make them behave as one giant GPU.</p>
+</li>
+<li>
+<p><strong>The Requirement:</strong> This path strictly requires high-performance networking (InfiniBand/RoCE) to function.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
