@@ -22,26 +22,29 @@ In Red Hat OpenShift AI 3.0, we define three "Well-Lit Paths" for deploying `llm
 **Key Feature:** Cache-Aware Routing.
 
 This is the flagship feature and the starting point for most teams.
-* **The Logic:** It keeps the standard architecture (one pod = full model) but adds the "Smart Router".
-* **The Benefit:** It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.
-* **Use Case:** General-purpose chatbots and low-latency internal tools.
+
+ * **The Logic:** It keeps the standard architecture (one pod = full model) but adds the "Smart Router".
+ * **The Benefit:** It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.
+ * **Use Case:** General-purpose chatbots and low-latency internal tools.
 
 === Path 2: Prefill/Decode Disaggregation (The "Optimizer")
 **Target:** High-Throughput Production Services. +
 **Key Feature:** Specialized Microservices.
 
 This path splits the monolithic inference process into two distinct specialized roles:
-* **Prefill Pods (Compute-Heavy):** Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.
-* **Decode Pods (Memory-Heavy):** Optimized to generate the response token-by-token. They read from the KV Cache and stream output.
-* **The Benefit:** Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).
+
+ * **Prefill Pods (Compute-Heavy):** Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.
+ * **Decode Pods (Memory-Heavy):** Optimized to generate the response token-by-token. They read from the KV Cache and stream output.
+ * **The Benefit:** Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).
 
 === Path 3: Wide Expert Parallelism (The "Boss Level")
 **Target:** Massive Models (e.g., Mixtral 8x22B, Grok-1) spanning multiple nodes. +
 **Key Feature:** Multi-Node Tensor Parallelism.
 
 Reserved for "Mixture-of-Experts" (MoE) models that are too large to fit on a single GPU or even a single node.
-* **The Logic:** The model is sharded across multiple physical nodes. `llm-d` manages the high-speed interconnects to make them behave as one giant GPU.
-* **The Requirement:** This path strictly requires high-performance networking (InfiniBand/RoCE) to function.
+
+ * **The Logic:** The model is sharded across multiple physical nodes. `llm-d` manages the high-speed interconnects to make them behave as one giant GPU.
+ * **The Requirement:** This path strictly requires high-performance networking (InfiniBand/RoCE) to function.
 
 == Persona Guide: Who owns this stack?
 
