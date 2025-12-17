@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab Mission: Deploying Distributed Inference :: Maximize Your GPU ROI, Scaling LLM Inference llm-d</title>
+    <link rel="prev" href="simulator.html">
+    <link rel="next" href="summary.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="llmops-llmd" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="vllmllmd.html">The Distributed Inference Stack: vLLM &amp; llm-d</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="llmdarch.html">System Mechanics: Building the Foundation &amp; Request Lifecycle</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="simulator.html">Mission Simulator: Distributed Inference Operations</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="labguide.html">Lab Mission: Deploying Distributed Inference</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="summary.html">Mission Debrief: Maximizing ROI &amp; Next Steps</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/well-lit-paths.html">Mission Data: Reference &amp; Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/trbleshoot.html">Mission Recovery: Troubleshooting &amp; FAQs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/kvcache.html">Deep Dive: The Physics of Latency (KV Cache)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../appendix/lws.html">LeaderWorkerSet (LWS) Operator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Maximize Your GPU ROI, Scaling LLM Inference llm-d</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Maximize Your GPU ROI, Scaling LLM Inference llm-d</a></li>
+    <li><a href="labguide.html">Lab Mission: Deploying Distributed Inference</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab Mission: Deploying Distributed Inference</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock text-left">
+<div class="content">
+<img src="https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token" alt="Red Hat OpenShift AI" width="200">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Role:</strong> Platform Engineer
+<strong>Objective:</strong> Deploy a cache-aware inference service, expose it via the Gateway, and verify intelligent routing.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_phase_1_deploy_the_service_day_1"><a class="anchor" href="#_phase_1_deploy_the_service_day_1"></a>Phase 1: Deploy the Service (Day 1)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We will deploy a Qwen-7B model using the <code>LLMInferenceService</code> CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.</p>
+</div>
+<div class="listingblock">
+<div class="title">Step 1: Create the Project</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project my-ai-lab</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Step 2: Apply the LLMInferenceService</div>
+<p>Save the following as <code>manifests/llm-inference-service.yaml</code> and apply it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: qwen-7b-distributed
+  namespace: my-ai-lab
+spec:
+  replicas: 2  # Minimum 2 replicas to test routing logic
+  model:
+    uri: hf://RedHatAI/Qwen2-7B-Instruct
+    name: qwen-7b
+  # Enable Intelligent Routing
+  scheduler: {}
+  gateway: {}
+  router:
+    route: {}
+  template:
+    containers:
+      name: main
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+          memory: 24Gi
+          cpu: "4"
+        requests:
+          nvidia.com/gpu: "1"
+          memory: 16Gi
+          cpu: "2"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f manifests/llm-inference-service.yaml</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Status Check</div>
+<div class="paragraph">
+<p>The status may briefly show <strong>Failed</strong> in the dashboard while images pull.
+Check the pods: <code>oc get pods -n my-ai-lab</code>
+Wait for <code>ms-kv-events-llm-d-modelservice-decode-xxx</code> to be <code>Running</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_phase_2_expose_and_secure_the_gateway"><a class="anchor" href="#_phase_2_expose_and_secure_the_gateway"></a>Phase 2: Expose and Secure (The Gateway)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In OpenShift AI 3.0, you must explicitly configure the route if the UI didn&#8217;t auto-associate it.</p>
+</div>
+<div class="listingblock">
+<div class="title">Step 1: Verify the HTTPRoute</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get httproute -n my-ai-lab</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Ensure the route points to the <code>openshift-ai-inference</code> gateway.</strong></p>
+</div>
+<div class="paragraph">
+<div class="title">Step 2: Get the Authentication Token</div>
+<p>Since <code>llm-d</code> is secured by default, retrieve the ServiceAccount token created for this model.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># The secret name usually follows the pattern &lt;model-name&gt;-sa-token
+SECRET_NAME=$(oc get serviceaccount qwen-7b-distributed-sa -o jsonpath='{.secrets[0].name}')
+export TOKEN=$(oc get secret $SECRET_NAME -o jsonpath='{.data.token}' | base64 -d)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Step 3: Get the Inference URL</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INFERENCE_URL=$(oc get httproute qwen-7b-distributed -o jsonpath='{.spec.hostnames[0]}')
+echo "Targeting: https://$INFERENCE_URL"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_phase_3_verify_intelligent_routing_the_test"><a class="anchor" href="#_phase_3_verify_intelligent_routing_the_test"></a>Phase 3: Verify Intelligent Routing (The Test)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We will prove that the scheduler is routing based on cache affinity.</p>
+</div>
+<div class="paragraph">
+<div class="title">Step 1: The "Cold" Request (Baseline)</div>
+<p>Send a request with a unique system prompt. Measure the total time.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">time curl -k -X POST "https://$INFERENCE_URL/v1/chat/completions" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen-7b",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant talking about OpenShift AI."},
+      {"role": "user", "content": "Explain Kubernetes in 50 words."}
+    ]
+  }'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Step 2: The "Warm" Request (Cache Hit)</div>
+<p>Send the <strong>exact same</strong> request immediately. The Scheduler should recognize the prefix hash and route to the same pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Run the exact same command again.
+# Compare the 'real' time. The second request should be significantly faster (lower TTFT).</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_phase_4_observability_golden_signals"><a class="anchor" href="#_phase_4_observability_golden_signals"></a>Phase 4: Observability (Golden Signals)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Validate your test using the Dashboard metrics.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to <strong>OpenShift AI Dashboard</strong> &#8594; <strong>Deployments</strong>.</p>
+</li>
+<li>
+<p>Select <code>qwen-7b-distributed</code>.</p>
+</li>
+<li>
+<p>Click the <strong>Endpoint Performance</strong> tab.</p>
+</li>
+<li>
+<p>Set <strong>Refresh Interval</strong> to <code>15 seconds</code>.</p>
+</li>
+<li>
+<p>Look for:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Request Count:</strong> You should see your 2 spikes.</p>
+</li>
+<li>
+<p><strong>Avg Response Time:</strong> The second spike should be lower than the first.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="simulator.html">Mission Simulator: Distributed Inference Operations</a></span>
+  <span class="next"><a href="summary.html">Mission Debrief: Maximizing ROI &amp; Next Steps</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
