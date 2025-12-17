@@ -1,4 +1,4 @@
-= Mission Simulator: Distributed Inference Operations
+= Simulator: Distributed Inference Operations
 :toc: macro
 :toc-title: Flight Deck
 
@@ -6,14 +6,14 @@
 image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** All Personas (No Lab Required)
+**Role:** All Personas (No Lab Required) +
 **Objective:** Execute a complete end-to-end deployment cycle—from infrastructure provisioning to validation—in a guided, risk-free simulation.
 
 ---
 
 == The Interactive Experience
 
-Welcome to the **Mission Simulator**. This module provides a high-speed, guided tour of the entire `llm-d` workflow on Red Hat OpenShift AI 3.0.
+Welcome to the **Distributed Inference Simulator**. This module provides a high-speed, guided tour of the entire `llm-d` workflow on Red Hat OpenShift AI 3.0.
 
 Use this simulator if:
 
@@ -23,31 +23,32 @@ Use this simulator if:
 
 ---
 
-== Phase 1: Infrastructure Provisioning (The Foundation)
 
-Before we deploy models, we must secure the factory floor. These simulations cover the extraction of raw compute and the verification of the underlying operators.
+== Phase 1: Infrastructure Provisioning
+
+Before we deploy models, we must secure the OpenShift AI 3.0 Environment. This simulations use Red Hat demo plaform to provision a RHOAI 3.0 platform.
 
 === 1.1 Requesting the Environment
-**Task:** Provision a Red Hat OpenShift AI cluster with the correct GPU hardware profiles from the catalog.
+**Task:** Provision a Red Hat OpenShift cluster with the OpenShift AI 3.0 operator installed; selectable with 1-4 accelerators.
 ++++
 <iframe src="https://demo.arcade.software/w6HfuWHzkJ0rx9yXCzQk?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="500px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
 === 1.2 Access & Hardware Verification
-**Task:** Log in to the console and inspect the "Hardware Profiles" to understand how we carve up physical GPUs for inference.
+**Task:** Log in to the RHOAI console, review the dashboard, inspect the "Hardware Profiles" to understand allocate physical GPUs for inference, then deploy a model from the RHOAI Model Catalog.
 ++++
 <iframe src="https://demo.arcade.software/GfqvGnWw1uQdlBhkLhy9?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="500px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
 === 1.3 Operator Health Check
-**Task:** Verify the "Leader Worker Set (LWS)" Operator is active. This is the secret sauce `llm-d` uses to manage pod fleets.
+**Task:** From the Openshift Dashboard install the "Leader Worker Set (LWS)" Operator. This is the secret sauce `llm-d` uses to manage pod fleets.  Explore OpenShift console to validate a version of 4.19 or greater, with 4.20 preferred is installed.  Install the Terminal operator to interact with our cluster via the command line.
 ++++
 <iframe src="https://demo.arcade.software/S1dHIjii1Vjkqi0phdSd?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="500px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
 ---
 
-== Phase 2: The Build (Deployment)
+== Phase 2: The Distributed Inference Deployment
 
 Now that the foundation is solid, we execute the deployment. These simulations show the transition from "Config" to "Running Service."
 
@@ -58,19 +59,19 @@ Now that the foundation is solid, we execute the deployment. These simulations s
 ++++
 
 === 2.2 Observability & Topology
-**Task:** Inspect the OpenShift Topology view to confirm the separation of the **Inference Scheduler** (Control Plane) and **vLLM Pods** (Engine).
+**Task:** Inspect the OpenShift Topology view to confirm the separation of the **Inference Scheduler** (Control Plane) and **vLLM Pods** (Engine). Explore the pods state during the llm-d inference deployment via the OpenShift console.
 ++++
 <iframe src="https://demo.arcade.software/z3WQEOr7Vd1QrGmxVRQf?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"  width="100%" height="500px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++
 
 ---
 
-== Phase 3: Mission Validation (The Test)
+== Phase 3: Validation (The Test)
 
 A deployment is only successful if it answers questions.
 
 === 3.1 Inference Validation
-**Task:** Launch a Jupyter Notebook, connect to the new inference endpoint, and validate the response latency.
+**Task:** Launch a Jupyter Notebook, connect to the new inference endpoint, and validate the response and percieved latency.
 ++++
 <iframe src="https://demo.arcade.software/cKkaV0pgSsSJnRM0wRsj?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true" width="100%" height="500px" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="clipboard-write" muted> </iframe>
 ++++

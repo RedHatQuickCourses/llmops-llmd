@@ -85,12 +85,12 @@ We will move beyond theory to build a functioning, governed inference stack. Thi
 This content is engineered to reflect real-world production patterns. This course use AI Generated assets and content. Every architectural decision—from security contexts to resource limits—has been verfied by cross functional teams.
 ====
 
-== Mission Support Resources
+== Support Resources
 
-* xref:appendix:index.adoc[Mission Data: Reference & Glossary] 
-* xref:appendix:kvcache.adoc[**Deep Dive:** Understanding KV Cache Management] 
-* xref:appendix:lws.adoc[Deep Dive: The Physics of Latency (KV Cache)] 
-* xref:appendix:trbleshoot.adoc[Mission Recovery: Troubleshooting & FAQs]
+* xref:appendix:well-lit-paths.adoc[The "Well-Lit Paths" of Deployment] 
+* xref:appendix:trbleshoot.adoc[Troubleshooting & FAQs] 
+* xref:appendix:kvcache.adoc[Deep Dive: KV Cache)]
+* xref:appendix:reference.adoc[Reference & Glossary]
 
 '''
 
@@ -98,6 +98,6 @@ This content is engineered to reflect real-world production patterns. This cours
 Karlos Knox, +
 Product Portfolio Marketing & Learning 
 
-*Technical Validation & Lab Guides:* 
+*Special Thanks to these inividuals for technical suggestions, validation, and exmaple lab guides:* 
 
 Fernando Lozano, Stephen Buck, Naina Singh, and Philip Hays.

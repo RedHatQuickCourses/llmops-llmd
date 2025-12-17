@@ -1,4 +1,4 @@
-= System Mechanics: Building the Foundation & Request Lifecycle
+= Building the Foundation & Request Lifecycle
 :toc: macro
 :toc-title: Engineering Deep Dive
 

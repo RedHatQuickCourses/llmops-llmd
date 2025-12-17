@@ -6,7 +6,7 @@
 image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** System Architect
+**Role:** System Architect +
 **Technical Objective:** Understand the "Stacked Architecture" that decouples orchestration (Control Plane) from execution (Inference Engine).
 
 ---

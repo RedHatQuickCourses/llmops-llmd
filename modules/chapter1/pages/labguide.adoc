@@ -1,4 +1,4 @@
-= Lab Mission: Deploying Distributed Inference
+= Deploying Distributed Inference
 :toc: macro
 :toc-title: Operational Runbook
 
@@ -6,12 +6,12 @@
 image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** Platform Engineer
+**Role:** Platform Engineer +
 **Objective:** Deploy a cache-aware inference service, expose it via the Gateway, and verify intelligent routing.
 
 ---
 
-== Phase 1: Deploy the Service (Day 1)
+== Deploy using Distributed Inference with llm-d
 
 We will deploy a Qwen-7B model using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
 
