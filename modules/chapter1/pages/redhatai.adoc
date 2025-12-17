@@ -1,6 +1,7 @@
 = AI Factory on Red Hat AI
 
-image::aifactoryblueprint.png[llm-d OpenShift AI Benefits Diagram,700,align="center"]
+// Header Image placeholder
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 
 == Introduction to the AI Factory on Red Hat AI

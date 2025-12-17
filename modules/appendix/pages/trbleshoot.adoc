@@ -1,12 +1,12 @@
-= Mission Recovery: Troubleshooting & FAQs
+= Troubleshooting & FAQs
 :toc: macro
 :toc-title: Diagnostic Playbook
 
 // Header Image placeholder
-image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** Reliability Engineer (SRE)
+**Role:** Reliability Engineer (SRE) +
 **Objective:** Diagnose and resolve common blocking issues during distributed inference deployment.
 
 ---

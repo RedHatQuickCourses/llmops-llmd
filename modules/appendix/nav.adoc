@@ -2,5 +2,5 @@
 ** xref:well-lit-paths.adoc[]
 ** xref:trbleshoot.adoc[]
 ** xref:kvcache.adoc[]
-** xref:lws.adoc[]
+** xref:reference.adoc[]
 // ** xref:apigateway.adoc[]

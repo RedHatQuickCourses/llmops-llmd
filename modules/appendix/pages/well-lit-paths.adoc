@@ -1,46 +1,67 @@
-= Mission Data: Reference & Glossary
+= The "Well-Lit Paths" of Deployment
 :toc: macro
-:toc-title: Technical Reference
+:toc-title: Deployment Topologies
 
 // Header Image placeholder
-image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** All Personas
-**Objective:** Definitions of core taxonomy and low-level infrastructure components.
+**Role:** System Architect +
+**Technical Objective:** Select the correct distributed inference topology based on model complexity and performance requirements.
 
 ---
 
-== Taxonomy: Speaking the Language
+== The Three Paths of Distributed Inference
 
-[cols="1,3"]
+In Red Hat OpenShift AI 3.0, we define three "Well-Lit Paths" for deploying `llm-d`. These represent increasing levels of complexity and capability.
+
+
+
+=== Path 1: Intelligent Inference Scheduling (The "On-Ramp")
+**Target:** Standard Models (e.g., Llama-3-8B, Mistral-7B) on Single Nodes. +
+**Key Feature:** Cache-Aware Routing.
+
+This is the flagship feature and the starting point for most teams.
+* **The Logic:** It keeps the standard architecture (one pod = full model) but adds the "Smart Router".
+* **The Benefit:** It stops the "Cold Start" problem. By routing requests to the GPU that holds the KV cache, it enables high responsiveness without changing the underlying model topology.
+* **Use Case:** General-purpose chatbots and low-latency internal tools.
+
+=== Path 2: Prefill/Decode Disaggregation (The "Optimizer")
+**Target:** High-Throughput Production Services. +
+**Key Feature:** Specialized Microservices.
+
+This path splits the monolithic inference process into two distinct specialized roles:
+* **Prefill Pods (Compute-Heavy):** Optimized to process the massive "Prompt" context quickly. They calculate the initial state and write it to the KV Cache.
+* **Decode Pods (Memory-Heavy):** Optimized to generate the response token-by-token. They read from the KV Cache and stream output.
+* **The Benefit:** Guaranteed SLOs. A massive incoming prompt (Prefill) will never block a user waiting for a simple response (Decode).
+
+=== Path 3: Wide Expert Parallelism (The "Boss Level")
+**Target:** Massive Models (e.g., Mixtral 8x22B, Grok-1) spanning multiple nodes. +
+**Key Feature:** Multi-Node Tensor Parallelism.
+
+Reserved for "Mixture-of-Experts" (MoE) models that are too large to fit on a single GPU or even a single node.
+* **The Logic:** The model is sharded across multiple physical nodes. `llm-d` manages the high-speed interconnects to make them behave as one giant GPU.
+* **The Requirement:** This path strictly requires high-performance networking (InfiniBand/RoCE) to function.
+
+== Persona Guide: Who owns this stack?
+
+Implementing `llm-d` is a specialized task. We identify two distinct personas for this workflow.
+
+[cols="1,2,2"]
 |===
-| **Term** | **Definition**
+| **Persona** | **Role & Focus** | **Required Skills**
 
-| **vLLM**
-| The high-performance inference engine. It runs the model, but `llm-d` scales it.
+| **The Operator**
+| **Platform/SRE Team** +
+Installs, configures, and monitors the `llm-d` infrastructure.
+| * Kubernetes Operators & Networking
+* Prometheus/Grafana Observability
+* GPU Hardware Drivers
 
-| **Inference Gateway (EPP)**
-| The "Brain." The smart router that intercepts requests and decides which pod handles them based on cache affinity.
-
-| **Prefill**
-| Phase 1 of Inference. Processing the user's prompt. Compute-heavy and slow.
-
-| **Decode**
-| Phase 2 of Inference. Generating the response. Memory-bandwidth heavy and fast.
-
-| **KV Cache**
-| The "Short-Term Memory" of the model. Reusing this via smart routing is the primary way to cut costs.
-
-| **TTFT**
-| **Time-To-First-Token.** Responsiveness metric (how long until the first word appears?).
+| **The User**
+| **Data Scientist / App Dev** +
+Consumes the service via API.
+| * OpenAI-compatible API usage
+* Prompt Engineering
+* *Abstracted away from infrastructure complexity.*
 |===
-
-== Infrastructure Deep Dive: LeaderWorkerSet (LWS)
-
-The **LeaderWorkerSet (LWS)** Operator is a prerequisite for advanced distributed inference. It solves the "Gang Scheduling" problem in Kubernetes.
-
-* **The Problem:** Large models are sharded across multiple GPUs (e.g., 8 GPUs). If one pod fails, the whole model breaks. Standard Kubernetes Deployments don't know this.
-* **The LWS Solution:** It manages a group of pods as a single atomic unit ("Super Pod").
-    * **Group Lifecycle:** If one pod fails, LWS restarts the entire group to ensure consistency.
-    * **Topology Awareness:** Ensures all pods in the group are co-located (same rack/node) for high-speed interconnects (NVLink/InfiniBand).

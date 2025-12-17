@@ -1,26 +1,29 @@
-= Deep Dive: The Physics of Latency (KV Cache)
+= Deep Dive: (KV Cache)
 :toc: macro
 :toc-title: Architecture Deep Dive
 
 // Header Image placeholder
-image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** System Architect
+**Role:** System Architect +
 **Technical Objective:** Understand why "KV Cache" is the #1 bottleneck for LLM performance and how `llm-d` eliminates it.
 
 ---
 
 == The Litmus Test: Do you have a Cache Problem?
+
 The KV Cache is the model's "short-term memory." If you face these symptoms, effective cache management is your solution:
-* [x] Your expensive GPU VRAM is constantly full, limiting user concurrency.
-* [x] You suffer from high **Time-To-First-Token (TTFT)** (laggy starts).
-* [x] Your application (Chatbot/RAG) requires long conversation histories.
+
+ * [x] Your expensive GPU VRAM is constantly full, limiting user concurrency.
+ * [x] You suffer from high **Time-To-First-Token (TTFT)** (laggy starts).
+ * [x] Your application (Chatbot/RAG) requires long conversation histories.
 
 == The Mechanics: Why it breaks
 When an LLM processes a prompt ("Prefill"), it generates heavy intermediate data (Keys and Values).
-1.  **The Bottleneck:** This data lives in **GPU VRAM**—the most expensive resource you have.
-2.  **The Head-of-Line Blocking:** In standard systems, a new, long request blocks all other fast requests behind it while it computes this cache.
+
+ 1.  **The Bottleneck:** This data lives in **GPU VRAM**—the most expensive resource you have.
+ 2.  **The Head-of-Line Blocking:** In standard systems, a new, long request blocks all other fast requests behind it while it computes this cache.
 
 == The Solution: Two Strategies
 `llm-d` offers two distinct architectural patterns to solve this.
@@ -28,15 +31,15 @@ When an LLM processes a prompt ("Prefill"), it generates heavy intermediate data
 === Strategy 1: Independent Caching (North-South)
 **"The VRAM Expander"**
 
-* **Concept:** The engine intelligently offloads "cold" (unused) cache data from expensive GPU VRAM to cheap CPU RAM within the same pod.
-* **Mechanism:** When a user returns, the pod swaps the cache back into VRAM instantly.
-* **Use Case:** **Default / TCO Optimization.** Use this to fit more users onto a single GPU.
+ * **Concept:** The engine intelligently offloads "cold" (unused) cache data from expensive GPU VRAM to cheap CPU RAM within the same pod.
+ * **Mechanism:** When a user returns, the pod swaps the cache back into VRAM instantly.
+ * **Use Case:** **Default / TCO Optimization.** Use this to fit more users onto a single GPU.
 
 === Strategy 2: Shared Caching (East-West)
 **"The Disaggregated Pool"**
 
-* **Concept:** Used when "Prefill" and "Decode" are on different pods. A shared external pool (like Redis) acts as the single source of truth.
-* **Mechanism:**
+ * **Concept:** Used when "Prefill" and "Decode" are on different pods. A shared external pool (like Redis) acts as the single source of truth.
+ * **Mechanism:**
     1.  **Prefill Pod** computes the prompt and writes cache to Redis.
     2.  **Decode Pod** reads the cache from Redis to generate tokens.
-* **Use Case:** **Extreme Scale.** Use this when you need to scale compute (Prefill) separately from memory (Decode).
+ * **Use Case:** **Extreme Scale.** Use this when you need to scale compute (Prefill) separately from memory (Decode).

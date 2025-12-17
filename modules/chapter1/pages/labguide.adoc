@@ -3,7 +3,7 @@
 :toc-title: Operational Runbook
 
 // Header Image placeholder
-image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
 **Role:** Platform Engineer

@@ -3,7 +3,7 @@
 :toc-title: Flight Deck
 
 // Header Image placeholder
-image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
 **Role:** All Personas (No Lab Required)
@@ -11,14 +11,15 @@ image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Sta
 
 ---
 
-== The Flight Simulator
+== The Interactive Experience
 
 Welcome to the **Mission Simulator**. This module provides a high-speed, guided tour of the entire `llm-d` workflow on Red Hat OpenShift AI 3.0.
 
 Use this simulator if:
-* You do not have access to a GPU-enabled OpenShift cluster today.
-* You need to validate the "ClickOps" workflow before building automation.
-* You want to see the "Big Picture" operations without waiting for provisioning times.
+
+ * You do not have access to a GPU-enabled OpenShift cluster today.
+ * You need to validate the "ClickOps" workflow before building automation.
+ * You want to see the "Big Picture" operations without waiting for provisioning times.
 
 ---
 

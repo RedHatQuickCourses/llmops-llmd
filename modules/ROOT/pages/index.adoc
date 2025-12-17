@@ -2,11 +2,11 @@
 :toc: macro
 :toc-title: Strategic Overview
 
-// Header Image
-== Red Hat OpenShift AI
+// Header Image placeholder
+image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 [ABSTRACT]
-**Role:** Platform Architect & Engineer
+**Role:** Platform Architect & Engineer +
 **Strategic Imperative:** Transform Generative AI from a high-cost experiment into a scalable, economically viable enterprise service.
 
 ---
@@ -15,9 +15,9 @@
 
 "We cannot afford to let expensive infrastructure sit idle while users wait for results."
 
-As organizations move Generative AI from pilot to production, they encounter a "Scale Wall"—a tripartite challenge that threatens the return on investment (ROI) of AI initiatives.
+As organizations move Generative AI from pilot to production, they encounter a "Scale Wall"—a triple challenge that threatens the return on investment (ROI) of AI initiatives.
 
- .  **Skyrocketing Operational Costs:** Paying for GPU capacity that sits significantly idle due to inefficient, monolithic scheduling.
+ .  **Skyrocketing Operational Costs:** Paying for GPU capacity that sits significantly idle due to inefficient, single pod scheduling.
  .  **Unpredictable Performance:** "Time-To-First-Token" (TTFT) spikes during high concurrency, frustrating users and missing Service Level Objectives (SLOs).
  .  **Governance & Sovereignty Risks:** "Shadow AI" adoption creating data leaks, with sensitive proprietary data leaving the secure perimeter.
 
@@ -70,10 +70,10 @@ This release introduces significant capabilities for production-grade AI, but re
 
 == Your Mission Checklist (The Lab)
 
-We will move beyond theory to build a functioning, governed inference stack. This interactive lab covers the full lifecycle[cite: 973]:
+We will move beyond theory to build a functioning, governed inference stack. This interactive lab covers the full lifecycle:
 
 1.  **Foundation:** Install the critical dependent Operators, including Red Hat Connectivity Link for security and the LeaderWorkerSet (LWS) Operator for orchestration.
-2.  **Baseline:** Deploy a standard vLLM runtime to establish a performance benchmark.
+2.  **Baseline:** Deploy a standard vLLM runtime to establish a performance benchmark. (simulation section only)
 3.  **Evolution:** Deploy the **Distributed `llm-d` Component** via the new OpenShift AI 3.0 interface and CLI to enable intelligent routing.
 4.  **Verification:** Use a Workbench to run inference tests, validating latency reduction and routing logic.
 
@@ -82,15 +82,15 @@ We will move beyond theory to build a functioning, governed inference stack. Thi
 [TIP]
 .A Note on Methodology
 ====
-This content is engineered to reflect real-world production patterns. Every architectural decision—from security contexts to resource limits—has been validated by Red Hat engineers to ensure reliability.
+This content is engineered to reflect real-world production patterns. This course use AI Generated assets and content. Every architectural decision—from security contexts to resource limits—has been verfied by cross functional teams.
 ====
 
 == Mission Support Resources
 
-* xref:appendix:index.adoc[**Taxonomy:** The Terminology of Distributed Systems] 
+* xref:appendix:index.adoc[Mission Data: Reference & Glossary] 
 * xref:appendix:kvcache.adoc[**Deep Dive:** Understanding KV Cache Management] 
-* xref:appendix:lws.adoc[**Reference:** The LeaderWorkerSet (LWS) Operator] 
-* xref:appendix:trbleshoot.adoc[**Troubleshooting:** Step-by-Step Lab Guide]
+* xref:appendix:lws.adoc[Deep Dive: The Physics of Latency (KV Cache)] 
+* xref:appendix:trbleshoot.adoc[Mission Recovery: Troubleshooting & FAQs]
 
 '''
 
