@@ -57,4 +57,6 @@ You are now prepared to architect complex, production-grade Generative AI worklo
 
 '''
 
-*Content Architect:* Karlos Knox, Product Portfolio Marketing & Learning
+Thanks for taking this solution focused course: Maximize Your GPU ROI: Scaling LLM Inference with llm-d.  
+
+Have a suggestion for improvement, https://github.com/RedHatQuickCourses/llmops-llmd/issues[submit an issue here, window=blank].
