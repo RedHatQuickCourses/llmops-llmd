@@ -1,76 +1,57 @@
-= Troubleshooting & FAQ
-:navtitle: Troubleshooting
-:page-topic-type: reference
-:description: Common errors and solutions for llm-d deployments on Red Hat OpenShift AI.
+= Mission Recovery: Troubleshooting & FAQs
+:toc: macro
+:toc-title: Diagnostic Playbook
 
-[abstract]
-Distributed systems can be fragile during setup. This appendix documents the most common "Gotchas" encountered during the lab and their fixes.
+// Header Image placeholder
+image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
 
-== Issue 1: Pods Stuck in "Pending" State
-
-**Symptom:**
-You deploy the model, but the pods (specifically `ms-kv-events-llm-d-modelservice-decode`) remain in `Pending` status indefinitely.
-
-**Cause:**
-This often happens when using specific GPU nodes (like `NVIDIA-L40S-PRIVATE`) that have **Taints** applied to reserve them for specific workloads. The standard deployment does not have the matching "Toleration."
-
-**Fix:**
-You must patch the deployment to add the toleration for the GPU node.
-[source,bash]
-----
-oc patch deployment ms-kv-events-llm-d-modelservice-decode \
--p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu","operator":"Equal","value":"NVIDIA-L40S-PRIVATE","effect":"NoSchedule"}]}}}}'
-----
-
+[ABSTRACT]
+**Role:** Reliability Engineer (SRE)
+**Objective:** Diagnose and resolve common blocking issues during distributed inference deployment.
 
 ---
 
-== Issue 2: MachineSets Scaling Unexpectedly
+== Common Deployment Blockers
 
-**Symptom:**
-Your GPU MachineSet scales down to 1 replica, or nodes appear to go offline intermittently.
+Distributed systems can be fragile during setup. Use this playbook to resolve the most common "Gotchas" encountered in the field.
 
-**Cause:**
-In lab environments using Spot Instances, nodes may be reclaimed, or the autoscaler may aggressively scale down if it detects idle periods during your setup phase.
+=== Issue 1: Pods Stuck in "Pending" State
+* **Symptom:** You deploy the model, but the pods (specifically `ms-kv-events-llm-d-modelservice-decode`) remain in `Pending` status indefinitely.
+* **Diagnosis:** This often happens on nodes with specific Taints (e.g., `NVIDIA-L40S-PRIVATE`) where the standard deployment lacks the matching **Toleration**.
+* **Fix:** Patch the deployment to add the required toleration.
 
-**Fix:**
-Manually enforce the replica count back to the required number (2 for Disaggregated labs).
+[source,bash]
+----
+oc patch deployment ms-kv-events-llm-d-modelservice-decode \
+  -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu", "operator": "Equal", "value": "NVIDIA-L40S-PRIVATE", "effect": "NoSchedule"}]}}}}'
+----
+
+=== Issue 2: MachineSets Scaling Unexpectedly
+* **Symptom:** Your GPU MachineSet scales down to 1 replica, or nodes go offline intermittently.
+* **Diagnosis:** In lab environments using Spot Instances, the cluster autoscaler may aggressively scale down if it detects idle periods during setup.
+* **Fix:** Manually enforce the replica count (ensure you have 2 nodes for Disaggregated labs).
+
 [source,bash]
 ----
 # Replace with your specific machineset name
 oc scale machineset <gpu-machineset-name> -n openshift-machine-api --replicas=2
 ----
 
----
+=== Issue 3: "Gateway Address Pending"
+* **Symptom:** When running `oc get gateways`, the `ADDRESS` column remains empty.
+* **Diagnosis:** The underlying Service Mesh (Istio) Load Balancer has not been assigned an IP by the cloud provider.
+* **Fix:** Check the Istio Ingress Gateway status. If it hangs, verify you haven't exceeded your cloud account's Load Balancer quota.
 
-== Issue 3: "Gateway Address Pending"
-
-**Symptom:**
-When running `oc get gateways`, the `ADDRESS` column remains empty.
-
-**Cause:**
-The underlying Service Mesh (Istio) LoadBalancer service has not been assigned an IP address by the cloud provider (AWS/Azure).
-
-**Fix:**
-Check the status of the Istio Ingress Gateway service:
 [source,bash]
 ----
 oc get svc -n istio-system
 ----
-If it shows `<pending>`, check your Cloud Controller Manager logs or ensure you haven't exceeded your cloud account's Load Balancer quota.
 
----
+=== Issue 4: 403 Forbidden on Inference Requests
+* **Symptom:** You receive a `403 Forbidden` error when `curl`-ing the endpoint, even though the pod is running.
+* **Diagnosis:** **Authorino** is active and blocking the request because the `Authorization` header is missing or invalid.
+* **Fix:** You must generate and pass a valid ServiceAccount token.
 
-== Issue 4: 403 Forbidden on Inference Requests
-
-**Symptom:**
-You receive a `403 Forbidden` error when `curl`-ing the endpoint, even though the pod is running.
-
-**Cause:**
-**Authorino** is active and blocking the request because the Authorization header is missing or invalid.
-
-**Fix:**
-Ensure you are passing a valid ServiceAccount token.
 [source,bash]
 ----
 export TOKEN=$(oc create token default -n <namespace>)

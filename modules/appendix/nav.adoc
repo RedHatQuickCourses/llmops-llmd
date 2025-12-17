@@ -1,6 +1,6 @@
 * xref:appendix.adoc[]
-** xref:index.adoc[]
+** xref:well-lit-paths.adoc[]
+** xref:trbleshoot.adoc[]
 ** xref:kvcache.adoc[]
 ** xref:lws.adoc[]
-** xref:trbleshoot.adoc[]
 // ** xref:apigateway.adoc[]

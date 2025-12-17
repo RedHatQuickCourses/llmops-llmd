@@ -1,7 +1,8 @@
-** xref:redhatai.adoc[]
+//** xref:redhatai.adoc[]
 ** xref:vllmllmd.adoc[]
 ** xref:llmdarch.adoc[]
-** xref:benefits.adoc[]
-** xref:walkthrough.adoc[]
+** xref:simulator.adoc[]
+** xref:labguide.adoc[]
 ** xref:summary.adoc[]
+
 

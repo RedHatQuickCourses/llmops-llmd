@@ -1,0 +1,136 @@
+= Lab Mission: Deploying Distributed Inference
+:toc: macro
+:toc-title: Operational Runbook
+
+// Header Image placeholder
+image::https://www.redhat.com/cms/managed-files/styles/wysiwyg_full_width/s3/Standard%20Logo.png?itok=media_token[Red Hat OpenShift AI, 200, align="left"]
+
+[ABSTRACT]
+**Role:** Platform Engineer
+**Objective:** Deploy a cache-aware inference service, expose it via the Gateway, and verify intelligent routing.
+
+---
+
+== Phase 1: Deploy the Service (Day 1)
+
+We will deploy a Qwen-7B model using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
+
+.Step 1: Create the Project
+[source,bash]
+----
+oc new-project my-ai-lab
+----
+
+.Step 2: Apply the LLMInferenceService
+Save the following as `manifests/llm-inference-service.yaml` and apply it.
+
+[source,yaml]
+----
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: qwen-7b-distributed
+  namespace: my-ai-lab
+spec:
+  replicas: 2  # Minimum 2 replicas to test routing logic
+  model:
+    uri: hf://RedHatAI/Qwen2-7B-Instruct
+    name: qwen-7b
+  # Enable Intelligent Routing
+  scheduler: {} 
+  gateway: {}
+  router:
+    route: {}
+  template:
+    containers:
+      name: main
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+          memory: 24Gi
+          cpu: "4"
+        requests:
+          nvidia.com/gpu: "1"
+          memory: 16Gi
+          cpu: "2"
+----
+
+[source,bash]
+----
+oc apply -f manifests/llm-inference-service.yaml
+----
+
+[NOTE]
+.Status Check
+====
+The status may briefly show *Failed* in the dashboard while images pull.
+Check the pods: `oc get pods -n my-ai-lab`
+Wait for `ms-kv-events-llm-d-modelservice-decode-xxx` to be `Running`.
+====
+
+== Phase 2: Expose and Secure (The Gateway)
+
+In OpenShift AI 3.0, you must explicitly configure the route if the UI didn't auto-associate it.
+
+.Step 1: Verify the HTTPRoute
+[source,bash]
+----
+oc get httproute -n my-ai-lab
+----
+*Ensure the route points to the `openshift-ai-inference` gateway.*
+
+.Step 2: Get the Authentication Token
+Since `llm-d` is secured by default, retrieve the ServiceAccount token created for this model.
+[source,bash]
+----
+# The secret name usually follows the pattern <model-name>-sa-token
+SECRET_NAME=$(oc get serviceaccount qwen-7b-distributed-sa -o jsonpath='{.secrets[0].name}')
+export TOKEN=$(oc get secret $SECRET_NAME -o jsonpath='{.data.token}' | base64 -d)
+----
+
+.Step 3: Get the Inference URL
+[source,bash]
+----
+export INFERENCE_URL=$(oc get httproute qwen-7b-distributed -o jsonpath='{.spec.hostnames[0]}')
+echo "Targeting: https://$INFERENCE_URL"
+----
+
+== Phase 3: Verify Intelligent Routing (The Test)
+
+We will prove that the scheduler is routing based on cache affinity.
+
+.Step 1: The "Cold" Request (Baseline)
+Send a request with a unique system prompt. Measure the total time.
+[source,bash]
+----
+time curl -k -X POST "https://$INFERENCE_URL/v1/chat/completions" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen-7b",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant talking about OpenShift AI."},
+      {"role": "user", "content": "Explain Kubernetes in 50 words."}
+    ]
+  }'
+----
+
+.Step 2: The "Warm" Request (Cache Hit)
+Send the **exact same** request immediately. The Scheduler should recognize the prefix hash and route to the same pod.
+[source,bash]
+----
+# Run the exact same command again.
+# Compare the 'real' time. The second request should be significantly faster (lower TTFT).
+----
+
+== Phase 4: Observability (Golden Signals)
+
+Validate your test using the Dashboard metrics.
+
+1.  Navigate to **OpenShift AI Dashboard** -> **Deployments**.
+2.  Select `qwen-7b-distributed`.
+3.  Click the **Endpoint Performance** tab.
+4.  Set **Refresh Interval** to `15 seconds`.
+5.  Look for:
+    * **Request Count:** You should see your 2 spikes.
+    * **Avg Response Time:** The second spike should be lower than the first.
