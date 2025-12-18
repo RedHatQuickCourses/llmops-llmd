@@ -64,7 +64,6 @@ This release introduces significant capabilities for production-grade AI, but re
 * **Model-as-a-Service (MaaS):** Currently supported explicitly for models deployed via the `llm-d` runtime.
 
 === 2. Implementation Caveats
-* **Gateway Association:** You cannot associate a Gateway directly in the UI during creation. You *must* apply the `HTTPRoute` resource via CLI/API after deployment to expose the service.
 * **Status Indicators:** Models may initially show a *Failed* status in the dashboard while initializing. This is often a UI synchronization delay; check the pod logs. The status will automatically flip to *Started* when ready.
 * **Hardware Topologies:** Multi-node support on GB200 is not currently supported. Wide Expert-Parallelism (multi-node sharding) is currently in Developer Preview.
 
