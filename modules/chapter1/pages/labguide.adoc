@@ -195,11 +195,11 @@ Send the **exact same** request immediately. The Scheduler should recognize the 
 
 Validate your test using the Dashboard metrics.
 
-1.  Navigate to **OpenShift -> Dashboard** -> **Deployments**.
-2.  Networking/Ingress
-3.  Prometheus
-4.  NVIDIA DCGM Exporter Dashboard
-5.  Look for:
+1.  Navigate to **OpenShift -> Observe** -> **Dashboards**.
+ **  Networking/Ingress
+ **  Prometheus
+ **  NVIDIA DCGM Exporter Dashboard
+2.  Look for:
     * **Request Count:** You should see your 2 spikes.
     * **Avg Response Time:** The second spike should be lower than the first.
 
