@@ -8,7 +8,7 @@ content:
 
 asciidoc:
   attributes:
-  #  page-pagination: true
+    page-pagination: true
 
 ui:
   bundle:
