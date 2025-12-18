@@ -142,7 +142,7 @@ oc apply -f llm-inference-service.yaml
 ====
 The status may briefly show *Failed* in the dashboard while images pull.
 Check the pods: `oc get pods -n my-ai-lab`
-Wait for `ms-kv-events-llm-d-modelservice-decode-xxx` to be `Running`.
+Wait for `model and inference kserve pods` to be `Running`.
 ====
 
 == Phase 2: Expose and Secure (The Gateway)
