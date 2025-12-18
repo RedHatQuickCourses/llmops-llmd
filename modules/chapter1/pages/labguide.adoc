@@ -13,7 +13,7 @@ image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 == Deploy using Distributed Inference with llm-d
 
-We will deploy a Qwen-7B model using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
+We will deploy a IBM Granite4 micro model using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
 
 .Step 1: Create the Project
 [source,bash]
@@ -22,37 +22,103 @@ oc new-project my-ai-lab
 ----
 
 .Step 2: Apply the LLMInferenceService
-Save the following as `manifests/llm-inference-service.yaml` and apply it.
+Save the following as `llm-inference-service.yaml` and apply it.
 
 [source,yaml]
 ----
 apiVersion: serving.kserve.io/v1alpha1
 kind: LLMInferenceService
 metadata:
-  name: qwen-7b-distributed
-  namespace: my-ai-lab
+  name: granite4
+  namespace: my-api-lab
 spec:
-  replicas: 2  # Minimum 2 replicas to test routing logic
+  replicas: 1
   model:
-    uri: hf://RedHatAI/Qwen2-7B-Instruct
-    name: qwen-7b
-  # Enable Intelligent Routing
-  scheduler: {} 
-  gateway: {}
+    uri: hf://ibm-granite/granite-4.0-micro
+    name: granite-4.0-micro
   router:
-    route: {}
+    scheduler:
+      template:
+        tolerations:
+          - key: "nvidia.com/gpu"
+            operator: "Exists"
+            effect: "NoSchedule"
+        containers:
+          - name: main
+            args:
+              - -v=4 # Debug level
+              - --poolName
+              - "{{ ChildName .ObjectMeta.Name `-inference-pool` }}"
+              - --poolNamespace
+              - "{{ .ObjectMeta.Namespace }}"
+              - --zap-encoder
+              - json
+              - --grpcPort
+              - "9002"
+              - --grpcHealthPort
+              - "9003"
+              - --secureServing
+              - --modelServerMetricsScheme
+              - https
+              - --modelServerMetricsHttpsInsecureSkipVerify
+              - --certPath
+              - /etc/ssl/certs
+              - --configText
+              - |2
+              
+                apiVersion: inference.networking.x-k8s.io/v1alpha1
+                kind: EndpointPickerConfig
+                plugins:
+                - type: single-profile-handler
+                - type: max-score-picker
+                - type: queue-scorer
+                - type: kv-cache-scorer
+                - type: prefix-cache-scorer
+                  parameters:
+                    hashBlockSize: 64             # block size 16 * 4 chars / token
+                    maxPrefixBlocksToMatch: 256   # this matches up to ~4k tokens
+                    lruCapacityPerServer: 39744   # total blocks (635904) / block size (16)
+                schedulingProfiles:
+                - name: default
+                  plugins:
+                    - pluginRef: prefix-cache-scorer
+                      weight: 5.0
+                    - pluginRef: queue-scorer
+                      weight: 1.0
+                    - pluginRef: kv-cache-scorer
+                      weight: 1.0
+                    - pluginRef: max-score-picker
+    route: { }
+    gateway: { }
   template:
+    tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "True"
+        effect: "NoSchedule"
     containers:
-      name: main
-      resources:
-        limits:
-          nvidia.com/gpu: "1"
-          memory: 24Gi
-          cpu: "4"
-        requests:
-          nvidia.com/gpu: "1"
-          memory: 16Gi
-          cpu: "2"
+      - name: main
+        env:
+          - name: VLLM_ADDITIONAL_ARGS
+            value: "--disable-uvicorn-access-log"
+        resources:
+          limits:
+            cpu: '1'
+            memory: 8Gi
+            nvidia.com/gpu: 1
+          requests:
+            cpu: '1'
+            memory: 8Gi
+            nvidia.com/gpu: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTPS
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 5
 ----
 
 [source,bash]
