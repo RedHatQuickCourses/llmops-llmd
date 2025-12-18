@@ -195,10 +195,10 @@ Send the **exact same** request immediately. The Scheduler should recognize the 
 
 Validate your test using the Dashboard metrics.
 
-1.  Navigate to **OpenShift AI Dashboard** -> **Deployments**.
-2.  Select `qwen-7b-distributed`.
-3.  Click the **Endpoint Performance** tab.
-4.  Set **Refresh Interval** to `15 seconds`.
+1.  Navigate to **OpenShift -> Dashboard** -> **Deployments**.
+2.  Networking/Ingress
+3.  Prometheus
+4.  NVIDIA DCGM Exporter Dashboard
 5.  Look for:
     * **Request Count:** You should see your 2 spikes.
     * **Avg Response Time:** The second spike should be lower than the first.
