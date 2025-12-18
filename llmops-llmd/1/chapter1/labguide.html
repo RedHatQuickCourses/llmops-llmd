@@ -257,7 +257,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f manifests/llm-inference-service.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f llm-inference-service.yaml</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -294,22 +294,11 @@ Wait for <code>ms-kv-events-llm-d-modelservice-decode-xxx</code> to be <code>Run
 <div class="paragraph">
 <p><strong>Ensure the route points to the <code>openshift-ai-inference</code> gateway.</strong></p>
 </div>
-<div class="paragraph">
-<div class="title">Step 2: Get the Authentication Token</div>
-<p>Since <code>llm-d</code> is secured by default, retrieve the ServiceAccount token created for this model.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># The secret name usually follows the pattern &lt;model-name&gt;-sa-token
-SECRET_NAME=$(oc get serviceaccount qwen-7b-distributed-sa -o jsonpath='{.secrets[0].name}')
-export TOKEN=$(oc get secret $SECRET_NAME -o jsonpath='{.data.token}' | base64 -d)</code></pre>
-</div>
-</div>
 <div class="listingblock">
 <div class="title">Step 3: Get the Inference URL</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INFERENCE_URL=$(oc get httproute qwen-7b-distributed -o jsonpath='{.spec.hostnames[0]}')
-echo "Targeting: https://$INFERENCE_URL"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INFERENCE_URL=$(oc get gateway openshift-ai-inference -n openshift-ingress -o jsonpath='{.status.addresses[0].value}')
+echo "Targeting: http://$INFERENCE_URL/my-ai-lab/qwen/v1"</code></pre>
 </div>
 </div>
 </div>
@@ -326,11 +315,11 @@ echo "Targeting: https://$INFERENCE_URL"</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">time curl -k -X POST "https://$INFERENCE_URL/v1/chat/completions" \
-  -H "Authorization: Bearer $TOKEN" \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">time curl -k -X POST "http://$INFERENCE_URL/my-ai-lab/qwen/v1/chat/completions" \
+  -H "{}" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen-7b",
+    "model": "Qwen/Qwen3-0.6B",
     "messages": [
       {"role": "system", "content": "You are a helpful assistant talking about OpenShift AI."},
       {"role": "user", "content": "Explain Kubernetes in 50 words."}
