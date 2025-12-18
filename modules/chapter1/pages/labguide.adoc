@@ -13,7 +13,7 @@ image::llmd-banner.png[Red Hat OpenShift AI, 200, align="left"]
 
 == Deploy using Distributed Inference with llm-d
 
-We will deploy a IBM Granite4 micro model using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
+We will deploy a super small Qwen/Qwen3-0.6B model for quick loading using the `LLMInferenceService` CR. This resource tells the operator to spin up the vLLM pods and the Inference Scheduler.
 
 .Step 1: Create the Project
 [source,bash]
