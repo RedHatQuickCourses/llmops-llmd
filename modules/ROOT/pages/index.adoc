@@ -30,7 +30,7 @@ This course is your blueprint for solving these challenges. You will learn to de
 In this Technical Level 2 (TL2) experience, we replace standard inference methods with `llm-d`, a Kubernetes-native framework designed to industrialize model serving.
 
 .The Strategic Advantage of llm-d
-image::llm-d_advantage.png[The llm-d Architectural Advantage, 700, align="center"]
+image::llm-d_advantagev2.png[The llm-d Architectural Advantage, 700, align="center"]
 
 [cols="1,3"]
 |===
