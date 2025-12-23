@@ -86,10 +86,10 @@ Engineered for Reality: This content reflects verified production patterns and u
 
 == Support Resources
 
-* xref:appendix:well-lit-paths.adoc[The "Well-Lit Paths" of Deployment] 
-* xref:appendix:trbleshoot.adoc[Troubleshooting & FAQs] 
-* xref:appendix:kvcache.adoc[Deep Dive: KV Cache)]
-* xref:appendix:reference.adoc[Reference & Glossary]
+* xref:appendix:well-lit-paths.adoc[The "Well-Lit Paths" of Deployment, window="blank"] 
+* xref:appendix:trbleshoot.adoc[Troubleshooting & FAQs, window="blank"] 
+* xref:appendix:kvcache.adoc[Deep Dive: KV Cache), window="blank"]
+* xref:appendix:reference.adoc[Reference & Glossary, window="blank"]
 
 '''
 
