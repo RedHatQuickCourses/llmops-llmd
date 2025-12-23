@@ -57,14 +57,16 @@ Implementing `llm-d` is a specialized task. We identify two distinct personas fo
 | **The Operator**
 | **Platform/SRE Team** +
 Installs, configures, and monitors the `llm-d` infrastructure.
-| * Kubernetes Operators & Networking
+a|  
+* Kubernetes Operators & Networking
 * Prometheus/Grafana Observability
-* GPU Hardware Drivers
+* GPU Hardware Drivers*
 
 | **The User**
 | **Data Scientist / App Dev** +
 Consumes the service via API.
-| * OpenAI-compatible API usage
+a| 
+* OpenAI-compatible API usage
 * Prompt Engineering
 * *Abstracted away from infrastructure complexity.*
 |===
