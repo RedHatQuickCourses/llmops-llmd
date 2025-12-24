@@ -3,4 +3,3 @@ title: Maximize Your GPU ROI, Scaling LLM Inference llm-d
 version: 1
 nav:
 - modules/chapter1/nav.adoc
-- modules/appendix/nav.adoc
