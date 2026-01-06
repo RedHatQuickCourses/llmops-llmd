@@ -90,9 +90,8 @@ Engineered for Reality: This content reflects verified production patterns and u
 * xref:appendix:trbleshoot.adoc[Troubleshooting & FAQs, window="blank"] 
 * xref:appendix:kvcache.adoc[Deep Dive: KV Cache), window="blank"]
 * xref:appendix:reference.adoc[Reference & Glossary, window="blank"]
-* xref:https://youtu.be/CNKGgOphAPM?si=svtIu-tscvtN1raW[LLM‑D Explained: Building Next‑Gen AI with LLMs, RAG & Kubernetes
-, window='blank']
-'''
+
+---
 
 *Content Architect:* +
 Karlos Knox, +
@@ -101,3 +100,5 @@ Product Portfolio Marketing & Learning
 *Special Thanks to these individuals for technical suggestions, validation, and example lab guides:* 
 
 Fernando Lozano, Stephen Buck, Naina Singh, and Philip Hays.
+
+
