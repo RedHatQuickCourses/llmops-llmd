@@ -41,7 +41,6 @@ As you move from this course to your production environment, keep these specific
 [WARNING]
 .Critical Caveats for Release 3.0
 ====
-* **Gateway Association:** You cannot associate a Gateway in the UI during creation. You must apply the `HTTPRoute` resource via CLI/API after deployment to expose the service.
 * **"Failed" Status False Positive:** Models may initially show a *Failed* status in the dashboard while initializing. This is often a UI delay; check the pod logs. The status will flip to *Started* when ready.
 * **Unsupported Topologies:** Multi-node on GB200 is not supported. Wide Expert-Parallelism (multi-node) is currently Developer Preview.
 ====

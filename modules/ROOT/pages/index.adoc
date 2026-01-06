@@ -71,7 +71,7 @@ This release introduces significant capabilities for production-grade AI, but re
 
 We will move beyond theory to build a functioning, governed inference stack. This interactive lab covers the full lifecycle:
 
-1.  **Foundation:** Install the critical dependent Operators, including Red Hat Connectivity Link for security and the LeaderWorkerSet (LWS) Operator for orchestration.
+1.  **Foundation:** Install the critical dependent Operators, including Red Hat Connectivity Link for security and the LeaderWorkerSet (LWS) Operator for MOE orchestration.
 2.  **Baseline:** Deploy a standard vLLM runtime to establish a performance benchmark. (simulation section only)
 3.  **Evolution:** Deploy the **Distributed `llm-d` Component** via the new OpenShift AI 3.0 interface and CLI to enable intelligent routing.
 4.  **Verification:** Use a Workbench to run inference tests, validating latency reduction and routing logic.
